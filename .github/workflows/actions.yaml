@@ -27,8 +27,8 @@ jobs:
 
       - name: print out variables
         run: |
-          echo "spring.data.mongodb.uri=${{ secrets.SPRING_DATA_MONGODB_URI}}"
-          echo "spring.data.mongodb.database=${{ env.MONGO_DB_NAME}}"
+          echo "spring.data.mongodb.uri=${secrets.SPRING_DATA_MONGODB_URI}"
+          echo "spring.data.mongodb.database=${env.MONGO_DB_NAME}"
         shell: bash
 
       - name: Setup backend variables to application.properties
