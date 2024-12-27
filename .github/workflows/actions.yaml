@@ -22,22 +22,22 @@ jobs:
           cache: 'maven'
 
       - name: Setup backend MongoDB url
-        run: echo "spring.data.mongodb.uri=${{ secrets.SPRING_DATA_MONGODB_URI}} " >> ./backend/src/main/resources/application.properties
+        run: echo "spring.data.mongodb.uri=${{ secrets.SPRING_DATA_MONGODB_URI}} " >> ./health_care_booking/src/main/resources/application.properties
 
       - name: Setup backend MongoDB database name
-        run: echo "spring.data.mongodb.uri=${{ env.MONGO_DB_NAME}} " >> ./backend/src/main/resources/application.properties
+        run: echo "spring.data.mongodb.uri=${{ env.MONGO_DB_NAME}} " >> ./health_care_booking/src/main/resources/application.properties
   
       - name: Setup application name
-        run: echo "spring.data.mongodb.uri=${{ env.SPRING_APPLICATION_NAME}} " >> ./backend/src/main/resources/application.properties
+        run: echo "spring.data.mongodb.uri=${{ env.SPRING_APPLICATION_NAME}} " >> ./health_care_booking/src/main/resources/application.properties
 
       - name: Setup auto index
-        run: echo "spring.data.mongodb.uri=${{ env.SPRING_DATA_MONGODB_AUTO_INDEX_CREATION}} " >> ./backend/src/main/resources/application.properties
+        run: echo "spring.data.mongodb.uri=${{ env.SPRING_DATA_MONGODB_AUTO_INDEX_CREATION}} " >> ./health_care_booking/src/main/resources/application.properties
 
       - name: Setup jwt secret
-        run: echo "spring.data.mongodb.uri=${{ secrets.JWT_SECRET}} " >> ./backend/src/main/resources/application.properties
+        run: echo "spring.data.mongodb.uri=${{ secrets.JWT_SECRET}} " >> ./health_care_booking/src/main/resources/application.properties
         
       - name: Setup jwt expiration
-        run: echo "spring.data.mongodb.uri=${{ secrets.JWT_EXPIRATION_MS}} " >> ./backend/src/main/resources/application.properties
+        run: echo "spring.data.mongodb.uri=${{ secrets.JWT_EXPIRATION_MS}} " >> ./health_care_booking/src/main/resources/application.properties
 
       - name: Validate, compile, test and package maven project
         run: mvn -B package --file ./health_care_booking/pom.xml
