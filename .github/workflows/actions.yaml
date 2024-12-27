@@ -22,7 +22,7 @@ jobs:
           cache: 'maven'
   
       - name: Validate, compile, test and package maven project
-        run: mvn -B package --file ./backend/pom.xml
+        run: mvn -B package --file ./health_care_booking/pom.xml
 
       # Frontend
 
