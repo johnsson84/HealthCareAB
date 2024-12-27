@@ -11,6 +11,7 @@ public class RegisterResponse {
     private String username;
     private Set<Role> roles;
 
+
     public RegisterResponse() {
     }
 

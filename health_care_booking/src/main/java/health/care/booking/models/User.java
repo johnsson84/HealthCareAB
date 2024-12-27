@@ -13,16 +13,22 @@ public class User {
 
     private String username;
     private String password;
+    private String mail;
+    private String firstName;
+    private String lastName;
 
     private Set<Role> roles;
 
     public User() {
     }
 
-    public User(String username, String password, Set<Role> roles) {
+    public User(String username, String password, Set<Role> roles, String mail, String firstName, String lastName) {
         this.username = username;
         this.password = password;
         this.roles = roles;
+        this.mail = mail;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
 
@@ -53,5 +59,29 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }
