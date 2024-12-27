@@ -25,19 +25,14 @@ jobs:
         run: mkdir -p ./health_care_booking/src/main/resources/
         shell: bash
 
-      - name: print out variables
-        run: echo "spring.data.mongodb.uri=${{secrets.TEST}}"
-        shell: bash
-
       - name: Setup backend variables to application.properties
         run: |
-          echo "spring.data.mongodb.uri=${{ secrets.SPRING_DATA_MONGODB_URI}} " >> ./health_care_booking/src/main/resources/application.properties
-          echo "spring.data.mongodb.database=${{ env.MONGO_DB_NAME}} " >> ./health_care_booking/src/main/resources/application.properties
-          echo "spring.application.name=${{ env.SPRING_APPLICATION_NAME}} " >> ./health_care_booking/src/main/resources/application.properties
-          echo "spring.data.mongodb.auto-index-creation=${{ env.SPRING_DATA_MONGODB_AUTO_INDEX_CREATION}} " >> ./health_care_booking/src/main/resources/application.properties
-          echo "jwt.secret=${{ secrets.JWT_SECRET}} " >> ./health_care_booking/src/main/resources/application.properties
-          echo "jwt.expirationMs=${{ secrets.JWT_EXPIRATION_MS}} " >> ./health_care_booking/src/main/resources/application.properties
-          cat ./health_care_booking/src/main/resources/application.properties
+          echo "spring.data.mongodb.uri=${{ secrets.MONGO_URI}}" >> ./health_care_booking/src/main/resources/application.properties
+          echo "spring.data.mongodb.database=HealthCareAB" >> ./health_care_booking/src/main/resources/application.properties
+          echo "spring.application.name=booking" >> ./health_care_booking/src/main/resources/application.properties
+          echo "spring.data.mongodb.auto-index-creation=true" >> ./health_care_booking/src/main/resources/application.properties
+          echo "jwt.secret=${{secrets.JWT_SECRET}}" >> ./health_care_booking/src/main/resources/application.properties
+          echo "jwt.expirationMs=36000000}" >> ./health_care_booking/src/main/resources/application.properties
         shell: bash
 
       - name: Validate, compile, test and package maven project
