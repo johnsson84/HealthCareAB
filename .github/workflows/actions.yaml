@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Backend
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Backend
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -23,6 +23,12 @@ jobs:
 
       - name: Create resources folder
         run: mkdir -p ./health_care_booking/src/main/resources/
+        shell: bash
+
+      - name: print out variables
+        run: |
+          echo "spring.data.mongodb.uri=${{ secrets.SPRING_DATA_MONGODB_URI}}
+          echo "spring.data.mongodb.database=${{ env.MONGO_DB_NAME}}"
         shell: bash
 
       - name: Setup backend variables to application.properties
@@ -40,10 +46,6 @@ jobs:
         run: mvn -B package --file ./health_care_booking/pom.xml
 
       # Frontend
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Setup Node  
         uses: actions/setup-node@v4
         with:
