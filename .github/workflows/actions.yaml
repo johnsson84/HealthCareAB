@@ -32,7 +32,7 @@ jobs:
           echo "spring.application.name=booking" >> ./health_care_booking/src/main/resources/application.properties
           echo "spring.data.mongodb.auto-index-creation=true" >> ./health_care_booking/src/main/resources/application.properties
           echo "jwt.secret=${{secrets.JWT_SECRET}}" >> ./health_care_booking/src/main/resources/application.properties
-          echo "jwt.expirationMs=36000000}" >> ./health_care_booking/src/main/resources/application.properties
+          echo "jwt.expirationMs=36000000" >> ./health_care_booking/src/main/resources/application.properties
         shell: bash
 
       - name: Validate, compile, test and package maven project
