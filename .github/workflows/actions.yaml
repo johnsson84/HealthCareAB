@@ -24,11 +24,11 @@ jobs:
       - name: Setup backend variables to application.properties
         run: |
           echo "spring.data.mongodb.uri=${{ secrets.SPRING_DATA_MONGODB_URI}} " >> ./health_care_booking/src/main/resources/application.properties
-          echo "spring.data.mongodb.uri=${{ env.MONGO_DB_NAME}} " >> ./health_care_booking/src/main/resources/application.properties
-          echo "spring.data.mongodb.uri=${{ env.SPRING_APPLICATION_NAME}} " >> ./health_care_booking/src/main/resources/application.properties
-          echo "spring.data.mongodb.uri=${{ env.SPRING_DATA_MONGODB_AUTO_INDEX_CREATION}} " >> ./health_care_booking/src/main/resources/application.properties
-          echo "spring.data.mongodb.uri=${{ secrets.JWT_SECRET}} " >> ./health_care_booking/src/main/resources/application.properties
-          echo "spring.data.mongodb.uri=${{ secrets.JWT_EXPIRATION_MS}} " >> ./health_care_booking/src/main/resources/application.properties
+          echo "spring.data.mongodb.database=${{ env.MONGO_DB_NAME}} " >> ./health_care_booking/src/main/resources/application.properties
+          echo "spring.application.name=${{ env.SPRING_APPLICATION_NAME}} " >> ./health_care_booking/src/main/resources/application.properties
+          echo "spring.data.mongodb.auto-index-creation=${{ env.SPRING_DATA_MONGODB_AUTO_INDEX_CREATION}} " >> ./health_care_booking/src/main/resources/application.properties
+          echo "jwt.secret=${{ secrets.JWT_SECRET}} " >> ./health_care_booking/src/main/resources/application.properties
+          echo "jwt.expirationMs=${{ secrets.JWT_EXPIRATION_MS}} " >> ./health_care_booking/src/main/resources/application.properties
         shell: bash
 
       - name: Validate, compile, test and package maven project
