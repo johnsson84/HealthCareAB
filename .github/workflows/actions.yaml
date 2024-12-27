@@ -21,6 +21,10 @@ jobs:
           java-version: '17'
           cache: 'maven'
 
+      - name: Create resources folder
+        run: mkdir -p ./health_care_booking/src/main/resources/
+        shell: bash
+
       - name: Setup backend variables to application.properties
         run: |
           echo "spring.data.mongodb.uri=${{ secrets.SPRING_DATA_MONGODB_URI}} " >> ./health_care_booking/src/main/resources/application.properties
