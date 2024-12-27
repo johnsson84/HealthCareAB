@@ -26,7 +26,7 @@ jobs:
         shell: bash
 
       - name: print out variables
-        run: echo "spring.data.mongodb.uri=${{HealthCareAB.secrets.SPRING_DATA_MONGODB_URI}}"
+        run: echo "spring.data.mongodb.uri=${{secrets.TEST}}"
         shell: bash
 
       - name: Setup backend variables to application.properties
