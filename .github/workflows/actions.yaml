@@ -1,7 +1,7 @@
 name: HealthCareAB_actions
 on:
   push:
-    branches: [main, dev]
+    branches: [main, dev, 20-ci_pipeline]
   pull_request:
       branches: [main, dev]
 
