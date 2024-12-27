@@ -1,0 +1,46 @@
+name: HealthCareAB_actions
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+      branches: [main, dev]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Backend
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+  
+      - name: Validate, compile, test and package maven project
+        run: mvn -B package --file ./backend/pom.xml
+
+      # Frontend
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node  
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: './medical-app-client/'
+
+      - name: Create package-lock # Seems necessary
+        run: cd medical-app-client && npm install --package-lock-only
+
+      - name: Install deps
+        run: cd medical-app-client && npm ci
+
+      - name: Run tests
+        run: cd medical-app-client && npm test
