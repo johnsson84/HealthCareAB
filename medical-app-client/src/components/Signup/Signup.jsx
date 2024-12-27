@@ -16,8 +16,8 @@ function Signup() {
     username: "",
     password: "",
     mail: "",
-    firstname: "",
-    lastname: "",
+    firstName: "",
+    lastName: "",
   });
   const [error, setError] = useState("");
 
@@ -25,8 +25,11 @@ function Signup() {
     setCredentials((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleNavigateToLogin = () => {
+    navigate("/home");
+  };
+
   const handleSignup = async (e) => {
-    console.log(credentials);
     e.preventDefault();
     try {
       const response = await axios.post(
@@ -67,7 +70,8 @@ function Signup() {
       <Title>Register</Title>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form className="formWrapper" onSubmit={handleSignup}>
-        <label>Username: </label>
+        <p>* = Mandatory</p>
+        <label>* Username: </label>
         <input
           className="styledInput"
           name="username"
@@ -76,7 +80,7 @@ function Signup() {
           onChange={handleInputChange}
           required
         />
-        <label>Password: </label>
+        <label>* Password: </label>
         <input
           className="styledInput"
           name="password"
@@ -85,7 +89,7 @@ function Signup() {
           onChange={handleInputChange}
           required
         />
-        <label>Mail:</label>
+        <label>* Mail:</label>
         <input
           className="styledInput"
           name="mail"
@@ -94,21 +98,21 @@ function Signup() {
           onChange={handleInputChange}
           required
         />
-        <label>First Name:</label>
+        <label>* First Name:</label>
         <input
           className="styledInput"
-          name="firstname"
+          name="firstName"
           type="text"
-          value={credentials.firstname}
+          value={credentials.firstName}
           onChange={handleInputChange}
           required
         />
-        <label>Last Name:</label>
+        <label>* Last Name:</label>
         <input
           className="styledInput"
-          name="lastname"
+          name="lastName"
           type="text"
-          value={credentials.lastname}
+          value={credentials.lastName}
           onChange={handleInputChange}
           required
         />
@@ -116,6 +120,11 @@ function Signup() {
           Sign Up
         </button>
       </form>
+      <div className="haveAccountContainer">
+        <button className="haveAccountButton" onClick={handleNavigateToLogin}>
+          Already have an account?
+        </button>
+      </div>
     </div>
   );
 }
