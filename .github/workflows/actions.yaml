@@ -21,6 +21,9 @@ jobs:
           java-version: '17'
           cache: 'maven'
 
+      - name: Create application.properties
+        run: touch ./health_care_booking/src/main/resources/application.properties
+
       - name: Setup backend MongoDB url
         run: echo "spring.data.mongodb.uri=${{ secrets.SPRING_DATA_MONGODB_URI}} " >> ./health_care_booking/src/main/resources/application.properties
 
