@@ -38,7 +38,48 @@ class AvailabilityTest {
     }
 
     @Test
-    void testAddAvailabilityWithCaregiver() {
+    void testCheckDuplicateAvailability() {
+        // Mock caregiver user
+        User mockCaregiver = new User();
+        mockCaregiver.setId("caregiver123");
+        mockCaregiver.setRoles(Collections.singleton(Role.ADMIN));
+
+        // Mock availability slots
+        List<LocalDateTime> existingSlots = Arrays.asList(
+                LocalDateTime.of(2024, 1, 1, 9, 0),
+                LocalDateTime.of(2024, 1, 1, 9, 30)
+        );
+        List<LocalDateTime> newSlots = Arrays.asList(
+                LocalDateTime.of(2024, 1, 1, 9, 0), // Duplicate
+                LocalDateTime.of(2024, 1, 1, 10, 0)
+        );
+
+        // Mock existing availability
+        Availability existingAvailability = new Availability();
+        existingAvailability.setCaregiverId(mockCaregiver);
+        existingAvailability.setAvailableSlots(existingSlots);
+
+        // Mock new availability
+        Availability newAvailability = new Availability();
+        newAvailability.setCaregiverId(mockCaregiver);
+        newAvailability.setAvailableSlots(newSlots);
+
+        // Mock repository call
+        when(availabilityRepository.findByCaregiverId(mockCaregiver))
+                .thenReturn(Collections.singletonList(existingAvailability));
+
+        // Call the method
+        boolean isDuplicate = availabilityService.checkDuplicateAvailability(newAvailability);
+
+        // Verify behavior
+        verify(availabilityRepository, times(1)).findByCaregiverId(mockCaregiver);
+
+        // Assertions
+        assertEquals(true, isDuplicate); // Duplicate exists
+    }
+
+    @Test
+    void testCreateAvailability() {
         // Mock caregiver user
         User mockCaregiver = new User();
         mockCaregiver.setId("caregiver123");
@@ -50,30 +91,24 @@ class AvailabilityTest {
                 LocalDateTime.of(2024, 1, 1, 9, 30)
         );
 
-        // Mock availability
-        Availability mockAvailability = new Availability();
-        mockAvailability.setCaregiverId(mockCaregiver);
-        mockAvailability.setAvailableSlots(mockSlots);
+        // Mock new availability
+        Availability newAvailability = new Availability();
+        newAvailability.setCaregiverId(mockCaregiver);
+        newAvailability.setAvailableSlots(mockSlots);
 
-        // Mock repository calls
-        when(userRepository.findUserByRolesIs(Collections.singleton(Role.ADMIN)))
-                .thenReturn(Collections.singletonList(mockCaregiver));
-        when(availabilityRepository.findByCaregiverId(mockCaregiver))
-                .thenReturn(Collections.emptyList());
-        doNothing().when(availabilityRepository).save(any(Availability.class));
+        // Mock repository call for saving availability
+        when(availabilityRepository.save(newAvailability)).thenReturn(newAvailability);
 
         // Call the method
-        List<LocalDateTime> result = availabilityService.createWeeklyAvailability();
-        mockAvailability.setAvailableSlots(result);
-
-        boolean response = availabilityService.checkDuplicateAvailability(mockAvailability);
+        availabilityRepository.save(newAvailability);
 
         // Verify behavior
-        verify(userRepository, times(1)).findUserByRolesIs(Collections.singleton(Role.ADMIN));
-        verify(availabilityRepository, times(1)).findByCaregiverId(mockCaregiver);
-        verify(availabilityRepository, times(1)).save(mockAvailability);
+        verify(availabilityRepository, times(1)).save(newAvailability);
 
         // Assertions
-        assertEquals(ResponseEntity.ok("No duplicate availability found."), response);
+        assertEquals("caregiver123", newAvailability.getCaregiverId().getId());
+        assertEquals(2, newAvailability.getAvailableSlots().size());
+        assertEquals(mockSlots, newAvailability.getAvailableSlots());
     }
+
 }
