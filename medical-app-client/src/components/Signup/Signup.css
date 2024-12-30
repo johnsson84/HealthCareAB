@@ -24,6 +24,9 @@
   margin-top: -5px;
   font-size: x-small;
 }
+.formWrapper label{
+  color: gray;
+}
 .loginButton {
   cursor: pointer;
   padding: 10px 30px;
