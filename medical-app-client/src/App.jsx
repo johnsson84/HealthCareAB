@@ -12,6 +12,7 @@ import Unauthorized from "./components/Unauthorized";
 import Home from "./components/Home";
 import RequireAuth from "./components/RequireAuth";
 import GlobalStyle from "./styles/GlobalStyle";
+import Signup from "./components/Signup/Signup";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
             />
             <Route path="/" element={<Home />} />
             <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="/signup" element={<Signup />} />
           </Routes>
         </Router>
       </div>
