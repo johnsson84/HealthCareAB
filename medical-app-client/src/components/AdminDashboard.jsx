@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import Logo from "../assets/health_care_logo.svg";
 import styled from "styled-components";
+import Footer from "./footer/Footer";
 import Logout from "./Logout";
 // admin page, can only visit if you have role ADMIN
 const AdminContainer = styled.div`
@@ -35,6 +36,7 @@ function AdminDashboard() {
       <Title>Admin Dashboard</Title>
       <Text>Welcome, {user}!</Text>
       <Logout />
+      <Footer userType="doctor" />
     </AdminContainer>
   );
 }
