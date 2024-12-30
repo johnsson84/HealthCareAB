@@ -22,7 +22,7 @@ public class UserController {
 
 
     @GetMapping("/find/{username}")
-    public ResponseEntity<?> findUserById(@Valid @PathVariable String username) {
+    public ResponseEntity<?> findUserByUsername(@Valid @PathVariable String username) {
         try {
             return ResponseEntity.ok(userService.findByUsername(username));
         } catch (Exception e) {
