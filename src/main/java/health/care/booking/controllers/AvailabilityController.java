@@ -46,16 +46,15 @@ public class AvailabilityController {
             if (!availabilityService.checkDuplicateAvailability(availability)){
                 availabilityRepository.save(availability);
             }else {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("There are duplicate availabilities");
+                System.out.println("User " + availability.getCaregiverId().getUsername() + " has duplicate availability");
             }
 
         }
-        return ResponseEntity.ok("All caregivers appointments have been set.");
+        return ResponseEntity.ok("All caregivers availability have been set.");
     }
 
     @PostMapping("/set/one")
     public ResponseEntity<?> setAvailabilityForOne(@RequestBody AvailabilityRequest availabilityRequest) {
-        System.out.println(availabilityRequest.username);
         User careGiver = userRepository.findByUsername(availabilityRequest.username)
                 .orElseThrow(() -> new RuntimeException("Hitta inte"));
 
