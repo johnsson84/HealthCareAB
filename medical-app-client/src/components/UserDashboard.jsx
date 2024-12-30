@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import Logo from "../assets/health_care_logo.svg";
 import styled from "styled-components";
-import Footer from "./footer/footer";
+import Footer from "./footer/Footer";
 import Logout from "./Logout";
 // div with styles
 const UserContainer = styled.div`
