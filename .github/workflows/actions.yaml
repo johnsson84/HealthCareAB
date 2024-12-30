@@ -1,0 +1,39 @@
+name: HealthCareAB_actions
+on:
+  push:
+    branches: [main, dev, 20-ci_pipeline_backend]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Backend
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Create resources folder
+        run: mkdir -p ./src/main/resources/
+        shell: bash
+
+      - name: Setup backend variables to application.properties
+        run: |
+          echo "spring.data.mongodb.uri=${{ secrets.MONGO_URI}}" >> ./src/main/resources/application.properties
+          echo "spring.data.mongodb.database=HealthCareAB" >> ./src/main/resources/application.properties
+          echo "spring.application.name=booking" >> ./src/main/resources/application.properties
+          echo "spring.data.mongodb.auto-index-creation=true" >> ./src/main/resources/application.properties
+          echo "jwt.secret=${{secrets.JWT_SECRET}}" >> ./src/main/resources/application.properties
+          echo "jwt.expirationMs=36000000" >> ./src/main/resources/application.properties
+        shell: bash
+
+      - name: Validate, compile, test and package maven project
+        run: mvn -B package --file ./pom.xml
