@@ -155,8 +155,8 @@ function Signup() {
           type="text"
           value={credentials.lastName}
           onChange={handleInputChange}
-          minLength={2}
-          maxLength={30}
+          minLength="2"
+          maxLength="30"
           pattern="^[a-zA-ZÀ-ÿñÑ'\\-\\s]+$"
           title="Last name should be 2-30 characters and contain only letters, no numbers."
           required
