@@ -1,6 +1,5 @@
 package health.care.booking.controllers;
 
-import health.care.booking.models.Appointment;
 import health.care.booking.models.Availability;
 import health.care.booking.models.Role;
 import health.care.booking.models.User;
@@ -38,7 +37,7 @@ public class AvailabilityController {
         }
         for (int i = 0; i < caregiverList.size(); i++) {
             Availability availability = new Availability();
-            availability.setAvailableSlots(availabilityService.createWeeklyAppointments());
+            availability.setAvailableSlots(availabilityService.createWeeklyAvailability());
             availability.setCaregiverId(caregiverList.get(i));
             availabilityRepository.save(availability);
         }
