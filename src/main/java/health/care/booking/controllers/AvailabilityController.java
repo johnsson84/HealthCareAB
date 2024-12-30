@@ -1,21 +1,24 @@
 package health.care.booking.controllers;
 
+import health.care.booking.dto.AuthRequest;
+import health.care.booking.dto.AvailabilityRequest;
 import health.care.booking.models.Availability;
 import health.care.booking.models.Role;
 import health.care.booking.models.User;
 import health.care.booking.respository.AvailabilityRepository;
 import health.care.booking.respository.UserRepository;
 import health.care.booking.services.AvailabilityService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/availability")
@@ -48,6 +51,24 @@ public class AvailabilityController {
 
         }
         return ResponseEntity.ok("All caregivers appointments have been set.");
+    }
+
+    @PostMapping("/set/one")
+    public ResponseEntity<?> setAvailabilityForOne(@RequestBody AvailabilityRequest availabilityRequest) {
+        System.out.println(availabilityRequest.username);
+        User careGiver = userRepository.findByUsername(availabilityRequest.username)
+                .orElseThrow(() -> new RuntimeException("Hitta inte"));
+
+        Availability newAvailability = new Availability();
+
+        newAvailability.setCaregiverId(careGiver);
+        newAvailability.setAvailableSlots(availabilityService.createWeeklyAvailability());
+        if (!availabilityService.checkDuplicateAvailability(newAvailability)){
+            availabilityRepository.save(newAvailability);
+        }else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("There are duplicates");
+        }
+        return ResponseEntity.ok("Added available times for user: " + careGiver.getUsername());
     }
 
     @GetMapping
