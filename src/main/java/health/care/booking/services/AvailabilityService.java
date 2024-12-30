@@ -1,5 +1,10 @@
 package health.care.booking.services;
 
+import health.care.booking.models.Availability;
+import health.care.booking.respository.AvailabilityRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -10,6 +15,9 @@ import java.util.List;
 
 @Service
 public class AvailabilityService {
+
+    @Autowired
+    AvailabilityRepository availabilityRepository;
 
     public List<LocalDateTime> createWeeklyAvailability() {
         List<LocalDateTime> availabilities = new ArrayList<>();
@@ -27,5 +35,22 @@ public class AvailabilityService {
             }
         }
         return availabilities;
+    }
+
+    public boolean checkDuplicateAvailability(Availability availability) {
+        // Fetch existing availability slots for the given caregiver
+        List<Availability> existingAvailabilities = availabilityRepository.findByCaregiverId(availability.getCaregiverId());
+
+        // Check if any of the new slots already exist in the existing slots
+        for (LocalDateTime newAvailability : availability.getAvailableSlots()) {
+            for (Availability existingAvailability : existingAvailabilities) {
+                if (existingAvailability.getAvailableSlots().contains(newAvailability)) {
+                    return true;
+                }
+            }
+        }
+
+        // If no duplicates are found
+        return false;
     }
 }

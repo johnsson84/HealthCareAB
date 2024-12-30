@@ -9,6 +9,7 @@ import health.care.booking.services.AvailabilityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,8 +40,18 @@ public class AvailabilityController {
             Availability availability = new Availability();
             availability.setAvailableSlots(availabilityService.createWeeklyAvailability());
             availability.setCaregiverId(caregiverList.get(i));
-            availabilityRepository.save(availability);
+            if (!availabilityService.checkDuplicateAvailability(availability)){
+                availabilityRepository.save(availability);
+            }else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("There are duplicate availabilities");
+            }
+
         }
         return ResponseEntity.ok("All caregivers appointments have been set.");
+    }
+
+    @GetMapping
+    public List<Availability> getAllAvailability() {
+        return availabilityRepository.findAll();
     }
 }
