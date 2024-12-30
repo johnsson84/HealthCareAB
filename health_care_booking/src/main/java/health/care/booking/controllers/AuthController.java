@@ -110,6 +110,9 @@ public class AuthController {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());
+        user.setMail(request.getMail());
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
 
         // assign roles
         if (request.getRoles() == null || request.getRoles().isEmpty()) {

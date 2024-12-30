@@ -19,7 +19,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public void registerUser(User user) {
+    public User registerUser(User user) {
         // hash the password
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
@@ -30,6 +30,7 @@ public class UserService {
         }
 
         userRepository.save(user);
+        return user;
     }
 
     public User findByUsername(String username) {
@@ -40,4 +41,9 @@ public class UserService {
     public boolean existsByUsername(String username) {
         return userRepository.findByUsername(username).isPresent();
     }
+
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
 }
