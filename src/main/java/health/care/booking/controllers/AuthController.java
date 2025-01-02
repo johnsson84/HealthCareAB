@@ -1,10 +1,8 @@
 package health.care.booking.controllers;
 
-import health.care.booking.dto.AuthRequest;
-import health.care.booking.dto.AuthResponse;
-import health.care.booking.dto.RegisterRequest;
-import health.care.booking.dto.RegisterResponse;
+import health.care.booking.dto.*;
 import health.care.booking.models.Role;
+import health.care.booking.models.TokenPasswordReset;
 import health.care.booking.models.User;
 import health.care.booking.services.CustomUserDetailsService;
 import health.care.booking.services.PasswordResetService;
@@ -181,5 +179,11 @@ public class AuthController {
         String email = request.get("email");
         passwordResetService.sendPasswordResetLink(email);
         return ResponseEntity.ok("Password reset link sent");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        passwordResetService.updatePassword(request.getToken(), request.getNewPassword());
+        return ResponseEntity.ok("Password successfully updated");
     }
 }

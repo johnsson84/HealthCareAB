@@ -11,10 +11,34 @@ public class TokenPasswordReset {
     @Id
     private long id;
     private String token;
-    private String email;
+    private String mail;
     private LocalDateTime expiryDate;
 
     public boolean isExpired() {
         return expiryDate.isBefore(LocalDateTime.now());
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getEmail() {
+        return mail;
+    }
+
+    public void setEmail(String email) {
+        this.mail = email;
+    }
+
+    public LocalDateTime getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(LocalDateTime expiryDate) {
+        this.expiryDate = expiryDate;
     }
 }
