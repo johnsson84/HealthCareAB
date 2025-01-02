@@ -39,7 +39,7 @@ public class PasswordResetService {
         resetToken.setExpiryDate(LocalDateTime.now().plusMinutes(30));
         tokenRepository.save(resetToken);
         // Skickar email
-        String resetLink = "http://localhost:5173/resetPassword";
+        String resetLink = "http://localhost:5173/resetPassword?token=" + token;
         sendEmail(mail, resetLink);
     }
 
@@ -73,7 +73,6 @@ public class PasswordResetService {
         String encodedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(encodedPassword);
         userRepository.save(user);
-
         // Raderar token efter att användaren har skapat sitt nya lösenord
         tokenRepository.delete(resetToken);
     }
