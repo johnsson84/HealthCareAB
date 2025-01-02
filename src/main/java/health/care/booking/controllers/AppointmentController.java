@@ -2,15 +2,18 @@ package health.care.booking.controllers;
 
 import health.care.booking.dto.AppointmentRequest;
 import health.care.booking.models.Appointment;
+import health.care.booking.models.Availability;
 import health.care.booking.models.Status;
 import health.care.booking.models.User;
 import health.care.booking.respository.AppointmentRepository;
+import health.care.booking.respository.AvailabilityRepository;
 import health.care.booking.respository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -18,6 +21,9 @@ import java.util.List;
 public class AppointmentController {
     @Autowired
     private AppointmentRepository appointmentRepository;
+
+    @Autowired
+    private AvailabilityRepository availabilityRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -30,6 +36,18 @@ public class AppointmentController {
                 .orElseThrow(() -> new RuntimeException("No user found with that username."));
         User caregiver = userRepository.findById(appointmentRequest.caregiverId)
                 .orElseThrow(() -> new RuntimeException("No user found with that Id."));
+        Availability removeAvailability = availabilityRepository.findById(appointmentRequest.availabilityId)
+                .orElseThrow(() -> new RuntimeException("Could not find availability object."));
+        LocalDateTime removeThis = appointmentRequest.availabilityDate;
+
+        for (int i = 0; i < removeAvailability.getAvailableSlots().size(); i++) {
+            if (removeAvailability.getAvailableSlots().get(i).equals(removeThis)){
+                removeAvailability.getAvailableSlots().remove(i);
+                System.out.println("removed: "  + removeThis);
+                availabilityRepository.save(removeAvailability);
+            }
+        }
+
         newAppointment.setPatientId(patient);
         newAppointment.setCaregiverId(caregiver);
         newAppointment.setDateTime(appointmentRequest.availabilityDate);

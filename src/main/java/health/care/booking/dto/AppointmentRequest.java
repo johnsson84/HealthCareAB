@@ -14,6 +14,9 @@ public class AppointmentRequest {
     @NotBlank
     public String caregiverId;
 
+    @NotBlank
+    public String availabilityId;
+
     @NotNull
     public LocalDateTime availabilityDate;
 }
