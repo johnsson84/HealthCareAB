@@ -9,11 +9,10 @@ http://localhost:8080/appointment/new
 body:
 {
 	"username": "tommy",
+	"availabilityId": "67767daf2dec1934c7ceea53",
 	"caregiverId": "677665437670f6332c4de97d",
-	"availabilityDate": "2025-01-02T08:00"
+	"availabilityDate": "2025-01-02T09:00:00"
 }
-
-if there are duplicates on the same caregiver it should throw error
 
 ####################################################
 ####################################################
