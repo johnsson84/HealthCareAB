@@ -12,15 +12,14 @@ public class PasswordResetService {
     @Autowired
     private JavaMailSender mailSender;
 
+
     public void sendPasswordResetLink(String email) {
         // Genererar en säker token (tex, UUID)
         String token = UUID.randomUUID().toString();
-
         // spara token (tex, i databasen )
         saveTokenToDatabase(email, token);
-
         // Skickar email
-        String resetLink = "http://localhost:3000/reset-password?token=" + token;
+        String resetLink = "http://localhost:8080/reset-password";
         sendEmail(email, resetLink);
     }
 

@@ -7,6 +7,7 @@ import health.care.booking.dto.RegisterResponse;
 import health.care.booking.models.Role;
 import health.care.booking.models.User;
 import health.care.booking.services.CustomUserDetailsService;
+import health.care.booking.services.PasswordResetService;
 import health.care.booking.services.UserService;
 import health.care.booking.util.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,6 +43,8 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private PasswordResetService passwordResetService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request,
@@ -175,6 +178,8 @@ public class AuthController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestBody Map<String, String> request) {
-        S
+        String email = request.get("email");
+        passwordResetService.sendPasswordResetLink(email);
+        return ResponseEntity.ok("Password reset link sent");
     }
 }
