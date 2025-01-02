@@ -28,18 +28,19 @@ public class PasswordResetService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void sendPasswordResetLink(String email) {
+    public void sendPasswordResetLink(String mail) {
+        tokenRepository.deleteAllByMail(mail);
         // Genererar en säker token genom UUID
         String token = UUID.randomUUID().toString();
         // spara token till DB
         TokenPasswordReset resetToken = new TokenPasswordReset();
         resetToken.setToken(token);
-        resetToken.setEmail(email);
+        resetToken.setEmail(mail);
         resetToken.setExpiryDate(LocalDateTime.now().plusMinutes(30));
         tokenRepository.save(resetToken);
         // Skickar email
-        String resetLink = "http://localhost:8080/reset-password";
-        sendEmail(email, resetLink);
+        String resetLink = "http://localhost:5173/resetPassword";
+        sendEmail(mail, resetLink);
     }
 
     private void sendEmail(String toEmail, String resetLink) {
