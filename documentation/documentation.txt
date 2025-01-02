@@ -1,0 +1,29 @@
+####################################################
+
+Get all availability
+http://localhost:8080/availability
+
+####################################################
+####################################################
+
+Create availability for all Caregivers
+http://localhost:8080/availability/set/all
+
+if there are duplicates it will throw an error
+
+####################################################
+####################################################
+
+Create availability for one Caregiver
+http://localhost:8080/availability/set/one
+
+body:
+{
+	"username": "pedro",
+	"careGiverId": "6772b87dff113f4e0fbbd7ae"
+}
+
+if there are duplicates on the same caregiver it should throw error
+
+####################################################
+####################################################
