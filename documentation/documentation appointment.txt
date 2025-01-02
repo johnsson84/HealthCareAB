@@ -1,0 +1,34 @@
+####################################################
+
+http://localhost:8080/appointment
+
+####################################################
+
+http://localhost:8080/appointment/new
+
+body:
+{
+	"username": "tommy",
+	"caregiverId": "677665437670f6332c4de97d",
+	"availabilityDate": "2025-01-02T08:00"
+}
+
+if there are duplicates on the same caregiver it should throw error
+
+####################################################
+####################################################
+
+Get all appointment for one user with username
+
+http://localhost:8080/appointment/get/{username}
+
+####################################################
+####################################################
+
+change status using appointmentId and status params
+http://localhost:8080/appointment/change-status/{status}/{appointmentId}
+
+####################################################
+####################################################
+
+
