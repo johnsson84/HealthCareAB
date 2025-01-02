@@ -15,9 +15,10 @@ public class Feedback {
     @DBRef
     private Appointment appointmentId;
 
-    // ev ta bort patient finns i appointment men kanske att det påverkar performance..
-    @DBRef
-    private User patientId;
+    // ev ta bort patient finns i appointment men kanske att det påverkar
+    // performance..
+    // @DBRef
+    // private User patientId;
 
     private String comment;
 
@@ -46,13 +47,13 @@ public class Feedback {
         this.appointmentId = appointmentId;
     }
 
-    public User getPatientId() {
-        return patientId;
-    }
+    // public User getPatientId() {
+    // return patientId;
+    // }
 
-    public void setPatientId(User patientId) {
-        this.patientId = patientId;
-    }
+    // public void setPatientId(User patientId) {
+    // this.patientId = patientId;
+    // }
 
     public String getComment() {
         return comment;
