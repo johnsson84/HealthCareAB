@@ -55,7 +55,7 @@ public class AvailabilityController {
 
     @PostMapping("/set/one")
     public ResponseEntity<?> setAvailabilityForOne(@Valid @RequestBody AvailabilityRequest availabilityRequest) {
-        User careGiver = userRepository.findByUsername(availabilityRequest.username)
+        User careGiver = userRepository.findById(availabilityRequest.careGiverId)
                 .orElseThrow(() -> new RuntimeException("Hitta inte"));
 
         Availability newAvailability = new Availability();
