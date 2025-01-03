@@ -1,0 +1,8 @@
+
+spring:
+  main:
+    allow-bean-definition-overriding: true  # Allows overriding bean definitions if needed
+
+jwt:
+  secret: hfaiehfisehfosndfejndfeswljrfeowfnjehwbewios4ngvhtrwglp4rkledf  # Example secret
+  expirationMs: 36000000  # Example expiration time in milliseconds
