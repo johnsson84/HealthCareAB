@@ -18,5 +18,5 @@ public class AppointmentRequest {
     public String availabilityId;
 
     @NotNull
-    public LocalDateTime availabilityDate;
+    public Date availabilityDate;
 }

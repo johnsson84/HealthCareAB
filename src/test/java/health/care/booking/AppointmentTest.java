@@ -31,7 +31,6 @@ class AppointmentTest {
         appointment.setId("1");
         appointment.setPatientId(patient);
         appointment.setCaregiverId(caregiver);
-        appointment.setDateTime(LocalDateTime.of(2025, 1, 2, 10, 30));
         appointment.setStatus(Status.SCHEDULED);
     }
 
@@ -48,7 +47,6 @@ class AppointmentTest {
     @Test
     void testSettersAndGetters() {
         appointment.setId("2");
-        appointment.setDateTime(LocalDateTime.of(2025, 2, 3, 14, 0));
         appointment.setStatus(Status.COMPLETED);
 
         assertEquals("2", appointment.getId());

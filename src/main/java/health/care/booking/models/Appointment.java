@@ -1,10 +1,11 @@
 package health.care.booking.models;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Document(collection = "appointment")
 public class Appointment {
@@ -19,7 +20,7 @@ public class Appointment {
 
     // datum och tid, vill ni så kan ni ändra till något annat
     // tex ett fält för datum ett för tid det är upp till er
-    private LocalDateTime dateTime;
+    private @NotNull Date dateTime;
 
     // använder Enum Status klassen
     private Status status;
@@ -51,11 +52,11 @@ public class Appointment {
         this.caregiverId = caregiverId;
     }
 
-    public LocalDateTime getDateTime() {
+    public @NotNull Date getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
+    public void setDateTime(@NotNull Date dateTime) {
         this.dateTime = dateTime;
     }
 

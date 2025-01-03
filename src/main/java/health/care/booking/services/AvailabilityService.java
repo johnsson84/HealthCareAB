@@ -3,14 +3,13 @@ package health.care.booking.services;
 import health.care.booking.models.Availability;
 import health.care.booking.respository.AvailabilityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -19,7 +18,7 @@ public class AvailabilityService {
     @Autowired
     AvailabilityRepository availabilityRepository;
 
-    public List<LocalDateTime> createWeeklyAvailability() {
+    public List<Date> createWeeklyAvailability() {
         List<LocalDateTime> availabilities = new ArrayList<>();
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = LocalDate.now().plusWeeks(2);
@@ -42,7 +41,7 @@ public class AvailabilityService {
         List<Availability> existingAvailabilities = availabilityRepository.findByCaregiverId(availability.getCaregiverId());
 
         // Check if any of the new slots already exist in the existing slots
-        for (LocalDateTime newAvailability : availability.getAvailableSlots()) {
+        for (Date newAvailability : availability.getAvailableSlots()) {
             for (Availability existingAvailability : existingAvailabilities) {
                 if (existingAvailability.getAvailableSlots().contains(newAvailability)) {
                     return true;

@@ -1,7 +1,6 @@
 package health.care.booking.services;
 
 import health.care.booking.models.Appointment;
-import health.care.booking.models.Availability;
 import health.care.booking.models.Status;
 import health.care.booking.models.User;
 import health.care.booking.respository.AvailabilityRepository;
@@ -10,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Service
 public class AppointmentService {
@@ -20,7 +19,7 @@ public class AppointmentService {
     @Autowired
     AvailabilityRepository availabilityRepository;
 
-    public Appointment createNewAppointment(String username, String caregiverId, @NotNull LocalDateTime availabilityDate){
+    public Appointment createNewAppointment(String username, String caregiverId, @NotNull Date availabilityDate){
         Appointment newAppointment = new Appointment();
         newAppointment.setPatientId(setPatient(username));
         newAppointment.setCaregiverId(setCaregiver(caregiverId));
@@ -40,19 +39,8 @@ public class AppointmentService {
         return caregiver;
     }
 
-    public void removeAvailabilitySlots(String availabilityId, @NotNull LocalDateTime availabilityDate){
-        Availability removeAvailability = availabilityRepository.findById(availabilityId)
-                .orElseThrow(() -> new RuntimeException("Could not find availability object."));
-        LocalDateTime removeThis = availabilityDate;
 
-        for (int i = 0; i < removeAvailability.getAvailableSlots().size(); i++) {
-            if (removeAvailability.getAvailableSlots().get(i).equals(removeThis)){
-                removeAvailability.getAvailableSlots().remove(i);
-                System.out.println("removed: "  + removeThis);
-                availabilityRepository.save(removeAvailability);
-            }
-        }
-    }
+
     public Status returnStatus(String status){
         if (status.toUpperCase().equals(Status.CANCELLED.name())){
            return Status.CANCELLED;
