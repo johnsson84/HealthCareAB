@@ -25,7 +25,8 @@ public class PasswordResetService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public PasswordResetService( TokenPasswordResetRepository tokenRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public PasswordResetService(JavaMailSender mailSender, TokenPasswordResetRepository tokenRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.mailSender = mailSender;
         this.tokenRepository = tokenRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
