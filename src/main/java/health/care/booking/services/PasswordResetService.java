@@ -20,11 +20,11 @@ public class PasswordResetService {
     private JavaMailSender mailSender;
 
     @Autowired
-    private final TokenPasswordResetRepository tokenRepository;
+    private  TokenPasswordResetRepository tokenRepository;
     @Autowired
-    private final UserRepository userRepository;
+    private  UserRepository userRepository;
     @Autowired
-    private final PasswordEncoder passwordEncoder;
+    private  PasswordEncoder passwordEncoder;
 
     public PasswordResetService(TokenPasswordResetRepository tokenRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.tokenRepository = tokenRepository;
