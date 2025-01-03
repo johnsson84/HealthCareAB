@@ -15,11 +15,14 @@ import java.util.UUID;
 
 @Service
 public class PasswordResetService {
-    @Autowired
+
     private JavaMailSender mailSender;
 
+    @Autowired
     private final TokenPasswordResetRepository tokenRepository;
+    @Autowired
     private final UserRepository userRepository;
+    @Autowired
     private final PasswordEncoder passwordEncoder;
 
     public PasswordResetService(TokenPasswordResetRepository tokenRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
