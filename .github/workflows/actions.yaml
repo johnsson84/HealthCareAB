@@ -41,7 +41,7 @@ jobs:
           echo "spring.mail.host=smtp.gmail.com"  >> ./src/main/resources/application.properties
           echo "spring.mail.port=587" >> ./src/main/resources/application.properties
           echo "spring.mail.username=johnmessoa@gmail.com" >> ./src/main/resources/application.properties
-          echo "spring.mail.password=${{MAIL_PASS}}" >> ./src/main/resources/application.properties
+          echo "spring.mail.password=${{secrets.MAIL_PASS}}" >> ./src/main/resources/application.properties
           echo "spring.mail.properties.mail.smtp.auth=true" >> ./src/main/resources/application.properties
           echo "spring.mail.properties.mail.smtp.starttls.enable=true" >> ./src/main/resources/application.properties
         shell: bash
