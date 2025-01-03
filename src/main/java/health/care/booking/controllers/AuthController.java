@@ -1,12 +1,11 @@
 package health.care.booking.controllers;
 
-import health.care.booking.dto.AuthRequest;
-import health.care.booking.dto.AuthResponse;
-import health.care.booking.dto.RegisterRequest;
-import health.care.booking.dto.RegisterResponse;
+import health.care.booking.dto.*;
 import health.care.booking.models.Role;
+import health.care.booking.models.TokenPasswordReset;
 import health.care.booking.models.User;
 import health.care.booking.services.CustomUserDetailsService;
+import health.care.booking.services.PasswordResetService;
 import health.care.booking.services.UserService;
 import health.care.booking.util.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Set;
 
 @RestController
@@ -41,6 +41,8 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private PasswordResetService passwordResetService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request,
@@ -172,4 +174,16 @@ public class AuthController {
         ));
     }
 
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        passwordResetService.sendPasswordResetLink(email);
+        return ResponseEntity.ok("Password reset link sent");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        passwordResetService.updatePassword(request.getToken(), request.getNewPassword());
+        return ResponseEntity.ok("Password successfully updated");
+    }
 }
