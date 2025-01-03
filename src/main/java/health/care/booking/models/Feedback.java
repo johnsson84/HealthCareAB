@@ -15,7 +15,7 @@ public class Feedback {
     @DBRef
     private Appointment appointmentId;
 
-    private User caregiverId;
+    private String caregiverId; // Lättare att filtrera ut vilka feedbacks som tillhör vilken doktor.
 
     private String comment;
 
@@ -44,11 +44,11 @@ public class Feedback {
         this.appointmentId = appointmentId;
     }
 
-    public User getCaregiverId() {
+    public String getCaregiverId() {
         return caregiverId;
     }
 
-    public void setCaregiverId(User caregiverId) {
+    public void setCaregiverId(String caregiverId) {
         this.caregiverId = caregiverId;
     }
 

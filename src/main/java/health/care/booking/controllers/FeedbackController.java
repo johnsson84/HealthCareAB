@@ -31,8 +31,8 @@ public class FeedbackController {
 
     // Get all feedbacks from a caregiver
     @GetMapping("/caregiver/{caregiverId}")
-    public ResponseEntity<?> getCaregiverFeedback(@PathVariable("caregiverId") String caregiverId) {
-        List<Feedback> allFeedback = feedbackRepository.findAllFeedbackByAppointmentId_CaregiverId(caregiverId);
+    public ResponseEntity<?> getCaregiverFeedback(@Valid @PathVariable String caregiverId) {
+        List<Feedback> allFeedback = feedbackRepository.findAllByCaregiverId(caregiverId);
         return ResponseEntity.ok(allFeedback);
     }
 
@@ -48,7 +48,12 @@ public class FeedbackController {
     }
 
     // Delete a feedback
-
-    // Delete all feedbacks - only for DEBUG:
-
+    @DeleteMapping("/delete/{feedbackId}")
+    public ResponseEntity<?> deleteAnFeedback(@PathVariable String feedbackId) {
+        try {
+            return feedbackService.deleteFeedback(feedbackId);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
+        }
+    }
 }

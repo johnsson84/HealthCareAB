@@ -1,0 +1,23 @@
+Feedback in Postman
+
+==============================================
+List all feedbacks from all
+GET http://localhost:8080/feedback/all
+
+==============================================
+Create a feedback
+POST http://localhost:8080/feedback/add
+{
+    "appointmentId": "6777de9e2bdea80cbcfb6a7c",
+    "caregiverId": "676e9b03107fea24d33cc70b",
+    "comment": "Trevlig filur.",
+    "rating": 4
+}
+
+==============================================
+List all feedbacks for one caregiver
+GET http://localhost:8080/feedback/caregiver/677665437670f6332c4de97d
+
+==============================================
+Remove one feedback
+DELETE http://localhost:8080/feedback/delete/6777e42d5363be09bab42259
