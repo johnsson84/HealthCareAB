@@ -11,30 +11,34 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+import java.time.*;
 @Service
 public class AvailabilityService {
 
     @Autowired
     AvailabilityRepository availabilityRepository;
 
-    public List<Date> createWeeklyAvailability() {
-        List<LocalDateTime> availabilities = new ArrayList<>();
-        LocalDate startDate = LocalDate.now();
-        LocalDate endDate = LocalDate.now().plusWeeks(2);
+        public List<Date> createWeeklyAvailability() {
+            List<Date> availabilities = new ArrayList<>();
+            LocalDate startDate = LocalDate.now();
+            LocalDate endDate = LocalDate.now().plusWeeks(2);
 
-        for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
-            if (date.getDayOfWeek().getValue() >= 1 && date.getDayOfWeek().getValue() <= 5) {
-                LocalTime startTime = LocalTime.of(8, 0);
-                LocalTime endTime = LocalTime.of(16, 0);
+            for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
+                // Check if the day is Monday (1) to Friday (5)
+                if (date.getDayOfWeek().getValue() >= 1 && date.getDayOfWeek().getValue() <= 5) {
+                    LocalTime startTime = LocalTime.of(8, 0);
+                    LocalTime endTime = LocalTime.of(16, 0);
 
-                for (LocalTime time = startTime; time.isBefore(endTime); time = time.plusMinutes(30)) {
-                    availabilities.add(LocalDateTime.of(date, time));
+                    for (LocalTime time = startTime; time.isBefore(endTime); time = time.plusMinutes(30)) {
+                        // Convert LocalDate and LocalTime to Date
+                        Date availabilityDate = Date.from(date.atTime(time).atZone(ZoneId.systemDefault()).toInstant());
+                        availabilities.add(availabilityDate);
+                    }
                 }
             }
+            return availabilities;
         }
-        return availabilities;
-    }
+
 
     public boolean checkDuplicateAvailability(Availability availability) {
         // Fetch existing availability slots for the given caregiver

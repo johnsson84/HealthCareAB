@@ -44,7 +44,7 @@ public class Availability {
         return availableSlots;
     }
 
-    public void setAvailableSlots(List<LocalDateTime> availableSlots) {
+    public void setAvailableSlots(List<Date> availableSlots) {
         this.availableSlots = availableSlots;
     }
 }
