@@ -45,4 +45,8 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public void deleteUser(String userId) {
+        userRepository.deleteById(userId);
+    }
+
 }

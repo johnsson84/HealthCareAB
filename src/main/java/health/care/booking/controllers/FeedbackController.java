@@ -7,6 +7,7 @@ import health.care.booking.services.FeedbackService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,12 +25,14 @@ public class FeedbackController {
     };
 
     // Get all feedback
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<?> getAllFeedback() {
         return ResponseEntity.ok(feedbackRepository.findAll());
     }
 
     // Get all feedbacks from a caregiver
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/caregiver/{caregiverId}")
     public ResponseEntity<?> getCaregiverFeedback(@Valid @PathVariable String caregiverId) {
         List<Feedback> allFeedback = feedbackRepository.findAllByCaregiverId(caregiverId);
@@ -37,6 +40,7 @@ public class FeedbackController {
     }
 
     // Add a feedback to a caregiver
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/add")
     public ResponseEntity<?> addFeedback(@Valid @RequestBody FeedbackDTO feedbackDTO) {
         try {
@@ -48,6 +52,7 @@ public class FeedbackController {
     }
 
     // Delete a feedback
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{feedbackId}")
     public ResponseEntity<?> deleteAnFeedback(@PathVariable String feedbackId) {
         try {
