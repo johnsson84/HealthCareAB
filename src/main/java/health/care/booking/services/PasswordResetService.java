@@ -18,11 +18,11 @@ public class PasswordResetService {
 
 
     private final JavaMailSender mailSender;
-    @Autowired
+
     private final TokenPasswordResetRepository tokenRepository;
-    @Autowired
+
     private final UserRepository userRepository;
-    @Autowired
+
     private final PasswordEncoder passwordEncoder;
 
     public PasswordResetService(JavaMailSender mailSender, TokenPasswordResetRepository tokenRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
