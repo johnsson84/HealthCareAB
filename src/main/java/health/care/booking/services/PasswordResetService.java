@@ -17,16 +17,16 @@ import java.util.UUID;
 public class PasswordResetService {
 
     @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
+    @Autowired
+    private final TokenPasswordResetRepository tokenRepository;
+    @Autowired
+    private final UserRepository userRepository;
+    @Autowired
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private  TokenPasswordResetRepository tokenRepository;
-    @Autowired
-    private  UserRepository userRepository;
-    @Autowired
-    private  PasswordEncoder passwordEncoder;
-
-    public PasswordResetService(TokenPasswordResetRepository tokenRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public PasswordResetService(JavaMailSender mailSender, TokenPasswordResetRepository tokenRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.mailSender = mailSender;
         this.tokenRepository = tokenRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
