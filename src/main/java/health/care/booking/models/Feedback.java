@@ -15,10 +15,7 @@ public class Feedback {
     @DBRef
     private Appointment appointmentId;
 
-    // ev ta bort patient finns i appointment men kanske att det påverkar
-    // performance..
-    // @DBRef
-    // private User patientId;
+    private User caregiverId;
 
     private String comment;
 
@@ -47,13 +44,13 @@ public class Feedback {
         this.appointmentId = appointmentId;
     }
 
-    // public User getPatientId() {
-    // return patientId;
-    // }
+    public User getCaregiverId() {
+        return caregiverId;
+    }
 
-    // public void setPatientId(User patientId) {
-    // this.patientId = patientId;
-    // }
+    public void setCaregiverId(User caregiverId) {
+        this.caregiverId = caregiverId;
+    }
 
     public String getComment() {
         return comment;
