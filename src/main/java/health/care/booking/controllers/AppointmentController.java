@@ -8,6 +8,7 @@ import health.care.booking.models.User;
 import health.care.booking.respository.AppointmentRepository;
 import health.care.booking.respository.AvailabilityRepository;
 import health.care.booking.respository.UserRepository;
+import health.care.booking.services.AppointmentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,36 +24,22 @@ public class AppointmentController {
     private AppointmentRepository appointmentRepository;
 
     @Autowired
-    private AvailabilityRepository availabilityRepository;
+    private AppointmentService appointmentService;
 
     @Autowired
     private UserRepository userRepository;
 
+
     @PostMapping("/new")
     public ResponseEntity<?> createNewAppointment(@Valid @RequestBody AppointmentRequest appointmentRequest){
         // should probably have a "this is a valid timeslot type deal"
+
+        appointmentService.removeAvailabilitySlots(appointmentRequest.availabilityId, appointmentRequest.availabilityDate);
         Appointment newAppointment = new Appointment();
-        User patient = userRepository.findByUsername(appointmentRequest.username)
-                .orElseThrow(() -> new RuntimeException("No user found with that username."));
-        User caregiver = userRepository.findById(appointmentRequest.caregiverId)
-                .orElseThrow(() -> new RuntimeException("No user found with that Id."));
-        Availability removeAvailability = availabilityRepository.findById(appointmentRequest.availabilityId)
-                .orElseThrow(() -> new RuntimeException("Could not find availability object."));
-        LocalDateTime removeThis = appointmentRequest.availabilityDate;
-
-        for (int i = 0; i < removeAvailability.getAvailableSlots().size(); i++) {
-            if (removeAvailability.getAvailableSlots().get(i).equals(removeThis)){
-                removeAvailability.getAvailableSlots().remove(i);
-                System.out.println("removed: "  + removeThis);
-                availabilityRepository.save(removeAvailability);
-            }
-        }
-
-        newAppointment.setPatientId(patient);
-        newAppointment.setCaregiverId(caregiver);
+        newAppointment.setPatientId(appointmentService.setPatient(appointmentRequest.username));
+        newAppointment.setCaregiverId(appointmentService.setPatient(appointmentRequest.caregiverId));
         newAppointment.setDateTime(appointmentRequest.availabilityDate);
         newAppointment.setStatus(Status.SCHEDULED);
-
         appointmentRepository.save(newAppointment);
 
         return ResponseEntity.ok("Appointment has been made.");
@@ -66,16 +53,18 @@ public class AppointmentController {
 
     @PostMapping("/change-status/{status}/{appointmentId}")
     public ResponseEntity<?> changeAppointmentStatus(@Valid @PathVariable String status, @PathVariable String appointmentId) {
+
         Appointment changingAppointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Could not find appointment."));
-        if (status.toUpperCase().equals(Status.CANCELLED.name())){
-            changingAppointment.setStatus(Status.CANCELLED);
-        } else if (status.toUpperCase().equals(Status.COMPLETED.name())) {
-            changingAppointment.setStatus(Status.COMPLETED);
-        }else {
-            return ResponseEntity.status(403).body("Wrong type of status: " + status);
+
+        changingAppointment.setStatus(appointmentService.returnStatus(status));
+
+        if (changingAppointment.getStatus().equals(Status.ERROR)) {
+            return ResponseEntity.status(401).body("Something went wrong with the status.");
         }
+
         appointmentRepository.save(changingAppointment);
+
         return ResponseEntity.ok("The appointment has been changed to " + changingAppointment.getStatus().name());
     }
 }
