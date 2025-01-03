@@ -16,21 +16,21 @@ import java.util.UUID;
 @Service
 public class PasswordResetService {
 
+    @Autowired
+    private  JavaMailSender mailSender;
+    @Autowired
+    private  TokenPasswordResetRepository tokenRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    private final JavaMailSender mailSender;
-    @Autowired
-    private final TokenPasswordResetRepository tokenRepository;
-    @Autowired
-    private final UserRepository userRepository;
-    @Autowired
-    private final PasswordEncoder passwordEncoder;
-
-    public PasswordResetService(JavaMailSender mailSender, TokenPasswordResetRepository tokenRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.mailSender = mailSender;
-        this.tokenRepository = tokenRepository;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+//    public PasswordResetService(JavaMailSender mailSender, TokenPasswordResetRepository tokenRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+//        this.mailSender = mailSender;
+//        this.tokenRepository = tokenRepository;
+//        this.userRepository = userRepository;
+//        this.passwordEncoder = passwordEncoder;
+//    }
 
     public void sendPasswordResetLink(String mail) {
         tokenRepository.deleteAllByMail(mail);
