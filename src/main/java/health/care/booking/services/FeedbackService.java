@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import health.care.booking.dto.FeedbackDTO;
 import health.care.booking.models.Appointment;
 import health.care.booking.models.Feedback;
-import health.care.booking.models.User;
 import health.care.booking.respository.AppointmentRepository;
 import health.care.booking.respository.FeedbackRepository;
 import health.care.booking.respository.UserRepository;

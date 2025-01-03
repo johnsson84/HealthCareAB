@@ -1,18 +1,15 @@
 package health.care.booking.controllers;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import health.care.booking.dto.FeedbackDTO;
 import health.care.booking.models.Feedback;
 import health.care.booking.respository.FeedbackRepository;
 import health.care.booking.services.FeedbackService;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/feedback")
@@ -32,7 +29,12 @@ public class FeedbackController {
         return ResponseEntity.ok(feedbackRepository.findAll());
     }
 
-    // Get one feedback from a caregiver
+    // Get all feedbacks from a caregiver
+    @GetMapping("/caregiver/{caregiverId}")
+    public ResponseEntity<?> getCaregiverFeedback(@PathVariable("caregiverId") String caregiverId) {
+        List<Feedback> allFeedback = feedbackRepository.findAllFeedbackByAppointmentId_CaregiverId(caregiverId);
+        return ResponseEntity.ok(allFeedback);
+    }
 
     // Add a feedback to a caregiver
     @PostMapping("/add")
