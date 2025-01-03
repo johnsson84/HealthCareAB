@@ -3,7 +3,6 @@ package health.care.booking.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class AppointmentRequest {
@@ -19,4 +18,11 @@ public class AppointmentRequest {
 
     @NotNull
     public Date availabilityDate;
+
+    public AppointmentRequest() {
+    }
+
+    public AppointmentRequest(String patient1, String caregiver1, String number, String s) {
+    }
+
 }
