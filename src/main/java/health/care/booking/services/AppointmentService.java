@@ -1,5 +1,6 @@
 package health.care.booking.services;
 
+import health.care.booking.models.Appointment;
 import health.care.booking.models.Availability;
 import health.care.booking.models.Status;
 import health.care.booking.models.User;
@@ -7,7 +8,6 @@ import health.care.booking.respository.AvailabilityRepository;
 import health.care.booking.respository.UserRepository;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,6 +19,15 @@ public class AppointmentService {
 
     @Autowired
     AvailabilityRepository availabilityRepository;
+
+    public Appointment createNewAppointment(String username, String caregiverId, @NotNull LocalDateTime availabilityDate){
+        Appointment newAppointment = new Appointment();
+        newAppointment.setPatientId(setPatient(username));
+        newAppointment.setCaregiverId(setCaregiver(caregiverId));
+        newAppointment.setDateTime(availabilityDate);
+        newAppointment.setStatus(Status.SCHEDULED);
+        return newAppointment;
+    }
 
     public User setPatient(String username){
         User patient = userRepository.findByUsername(username)

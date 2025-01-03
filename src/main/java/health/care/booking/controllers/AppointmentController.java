@@ -33,15 +33,9 @@ public class AppointmentController {
     @PostMapping("/new")
     public ResponseEntity<?> createNewAppointment(@Valid @RequestBody AppointmentRequest appointmentRequest){
         // should probably have a "this is a valid timeslot type deal"
-
         appointmentService.removeAvailabilitySlots(appointmentRequest.availabilityId, appointmentRequest.availabilityDate);
-        Appointment newAppointment = new Appointment();
-        newAppointment.setPatientId(appointmentService.setPatient(appointmentRequest.username));
-        newAppointment.setCaregiverId(appointmentService.setPatient(appointmentRequest.caregiverId));
-        newAppointment.setDateTime(appointmentRequest.availabilityDate);
-        newAppointment.setStatus(Status.SCHEDULED);
+        Appointment newAppointment = appointmentService.createNewAppointment(appointmentRequest.username, appointmentRequest.caregiverId, appointmentRequest.availabilityDate);
         appointmentRepository.save(newAppointment);
-
         return ResponseEntity.ok("Appointment has been made.");
     }
 
