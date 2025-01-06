@@ -1,0 +1,31 @@
+####################################################
+
+http://localhost:8080/appointment
+
+####################################################
+
+http://localhost:8080/appointment/new
+
+body:
+{
+	"username": "tommy",
+	"availabilityId": "67767daf2dec1934c7ceea53",
+	"caregiverId": "677665437670f6332c4de97d",
+	"availabilityDate": "2025-01-02T09:00:00"
+}
+
+####################################################
+####################################################
+
+Get all appointment for one user with username
+
+http://localhost:8080/appointment/get/{username}
+
+####################################################
+####################################################
+
+change status using appointmentId and status params
+http://localhost:8080/appointment/change-status/{status}/{appointmentId}
+
+####################################################
+####################################################
