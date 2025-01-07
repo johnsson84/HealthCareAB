@@ -42,7 +42,7 @@ public class AvailabilityController {
         for (int i = 0; i < caregiverList.size(); i++) {
             Availability availability = new Availability();
             availability.setAvailableSlots(availabilityService.createWeeklyAvailability());
-            availability.setCaregiverId(caregiverList.get(i));
+            availability.setCaregiverId(caregiverList.get(i).getId());
             if (!availabilityService.checkDuplicateAvailability(availability)) {
                 availabilityRepository.save(availability);
             } else {
@@ -60,7 +60,7 @@ public class AvailabilityController {
 
         Availability newAvailability = new Availability();
 
-        newAvailability.setCaregiverId(careGiver);
+        newAvailability.setCaregiverId(careGiver.getId());
         newAvailability.setAvailableSlots(availabilityService.createWeeklyAvailability());
         if (!availabilityService.checkDuplicateAvailability(newAvailability)) {
             availabilityRepository.save(newAvailability);

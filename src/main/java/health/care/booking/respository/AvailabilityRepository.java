@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface AvailabilityRepository extends MongoRepository<Availability, String> {
     List<Availability> findAll();
-    List<Availability> findByCaregiverId(User caregiverId);
+    List<Availability> findByCaregiverId(String caregiverId);
     Optional<Availability> findById(String id);
 }

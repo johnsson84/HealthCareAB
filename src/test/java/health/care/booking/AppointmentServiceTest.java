@@ -49,7 +49,7 @@ public class AppointmentServiceTest {
         // Sample availability data
         availability = new Availability();
         availability.setId("1");
-        availability.setCaregiverId(caregiver);
+        availability.setCaregiverId(caregiver.getId());
         availability.setAvailableSlots(List.of(new Date(), new Date(System.currentTimeMillis() + 3600000))); // two slots
     }
 
