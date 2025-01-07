@@ -34,20 +34,8 @@ public class AvailabilityController {
     @PostMapping("/set/all")
     public ResponseEntity<?> setAvailabilityAll() {
         List<User> caregiverList = userRepository.findUserByRolesIs(Collections.singleton(Role.ADMIN));
-
-        if (caregiverList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Couldn't find any caregivers");
-        }
-        for (int i = 0; i < caregiverList.size(); i++) {
-            Availability availability = new Availability();
-            availability.setAvailableSlots(availabilityService.createWeeklyAvailability());
-            availability.setCaregiverId(caregiverList.get(i));
-            if (availabilityService.checkDuplicateAvailability(availability)){
-                availabilityRepository.save(availability);
-            }else {
-                System.out.println("User " + availability.getCaregiverId().getUsername() + " has duplicate availability");
-            }
-
+        if (!availabilityService.loopCaregiverList(caregiverList)){
+            return ResponseEntity.status(402).body("something went horribly wrong");
         }
         return ResponseEntity.ok("All caregivers availability have been set.");
     }
@@ -55,15 +43,9 @@ public class AvailabilityController {
     @PostMapping("/set/one")
     public ResponseEntity<?> setAvailabilityForOne(@Valid @RequestBody AvailabilityRequest availabilityRequest) {
         User careGiver = userRepository.findById(availabilityRequest.careGiverId)
-                .orElseThrow(() -> new RuntimeException("Hitta inte"));
-        Availability newAvailability = new Availability();
-        newAvailability.setCaregiverId(careGiver);
-        newAvailability.setAvailableSlots(availabilityService.createWeeklyAvailability());
-        if (availabilityService.checkDuplicateAvailability(newAvailability)){
-            availabilityRepository.save(newAvailability);
-        }else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("There are duplicates");
-        }
+                .orElseThrow(() -> new RuntimeException("Couldn't find any Caregiver Users"));
+        Availability newAvailability = availabilityService.createNewAvailability(careGiver);
+        availabilityRepository.save(newAvailability);
         return ResponseEntity.ok("Added available times for user: " + careGiver.getUsername());
     }
 
