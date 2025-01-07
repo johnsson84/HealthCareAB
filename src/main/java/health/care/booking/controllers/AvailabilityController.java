@@ -75,7 +75,6 @@ public class AvailabilityController {
     @GetMapping("/find-by-username/{username}")
     public List<Availability> getAvailabilityByUsername(@PathVariable String username){
         User user = userRepository.findByUsername(username.toString()).orElseThrow(() -> new RuntimeException("could not find user: " + username));
-        System.out.println(username);
         return availabilityRepository.findByCaregiverId(user);
     }
 
