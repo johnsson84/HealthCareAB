@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,12 +47,19 @@ public class AvailabilityService {
         for (Date newAvailability : availability.getAvailableSlots()) {
             for (Availability existingAvailability : existingAvailabilities) {
                 if (existingAvailability.getAvailableSlots().contains(newAvailability)) {
-                    return true;
+                    return false;
                 }
             }
         }
 
         // If no duplicates are found
-        return false;
+        return true;
+    }
+
+    public void removeAvailabilityByArray(List<Date> changingDates, Availability changingDatesAvailability) {
+        if (changingDates != null && changingDatesAvailability != null) {
+            changingDatesAvailability.getAvailableSlots().removeAll(changingDates);
+        } else throw new RuntimeException("changingDates List is null or changingDatesAvailability");
+        availabilityRepository.save(changingDatesAvailability);
     }
 }

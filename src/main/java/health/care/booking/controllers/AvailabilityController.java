@@ -1,7 +1,7 @@
 package health.care.booking.controllers;
 
-import health.care.booking.dto.AuthRequest;
 import health.care.booking.dto.AvailabilityRequest;
+import health.care.booking.dto.ChangeAvailabilityRequest;
 import health.care.booking.models.Availability;
 import health.care.booking.models.Role;
 import health.care.booking.models.User;
@@ -11,14 +11,13 @@ import health.care.booking.services.AvailabilityService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/availability")
@@ -43,7 +42,7 @@ public class AvailabilityController {
             Availability availability = new Availability();
             availability.setAvailableSlots(availabilityService.createWeeklyAvailability());
             availability.setCaregiverId(caregiverList.get(i));
-            if (!availabilityService.checkDuplicateAvailability(availability)){
+            if (availabilityService.checkDuplicateAvailability(availability)){
                 availabilityRepository.save(availability);
             }else {
                 System.out.println("User " + availability.getCaregiverId().getUsername() + " has duplicate availability");
@@ -62,7 +61,7 @@ public class AvailabilityController {
 
         newAvailability.setCaregiverId(careGiver);
         newAvailability.setAvailableSlots(availabilityService.createWeeklyAvailability());
-        if (!availabilityService.checkDuplicateAvailability(newAvailability)){
+        if (availabilityService.checkDuplicateAvailability(newAvailability)){
             availabilityRepository.save(newAvailability);
         }else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("There are duplicates");
@@ -74,4 +73,12 @@ public class AvailabilityController {
     public List<Availability> getAllAvailability() {
         return availabilityRepository.findAll();
     }
+
+    @PutMapping("/change-availability")
+    public ResponseEntity<?> removeAvailabilityOneDay(@Valid @RequestBody ChangeAvailabilityRequest changeAvailabilityRequest) {
+        Availability changeDatesAvailability = availabilityRepository.findById(changeAvailabilityRequest.availabilityId).orElseThrow(() -> new RuntimeException("Could not find availability object"));
+        availabilityService.removeAvailabilityByArray(changeAvailabilityRequest.changingDates, changeDatesAvailability);
+        return ResponseEntity.ok("Availability changed");
+    }
+
 }
