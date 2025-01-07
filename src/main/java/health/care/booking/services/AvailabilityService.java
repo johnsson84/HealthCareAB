@@ -24,7 +24,9 @@ public class AvailabilityService {
         Availability newAvailability = new Availability();
         newAvailability.setCaregiverId(caregiver);
         newAvailability.setAvailableSlots(createWeeklyAvailabilitySlots());
-        checkDuplicateAvailability(newAvailability);
+        if (checkDuplicateAvailability(newAvailability)) {
+            throw new RuntimeException("Duplicate availability slots detected.");
+        }
         return newAvailability;
     }
 
