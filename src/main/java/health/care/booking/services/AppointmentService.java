@@ -19,7 +19,7 @@ public class AppointmentService {
     @Autowired
     AvailabilityRepository availabilityRepository;
 
-    public Appointment createNewAppointment(String username, String caregiverId, @NotNull Date availabilityDate){
+    public Appointment createNewAppointment(String username, String caregiverId, @NotNull Date availabilityDate) {
         Appointment newAppointment = new Appointment();
         newAppointment.setPatientId(setPatient(username));
         newAppointment.setCaregiverId(setCaregiver(caregiverId));
@@ -28,25 +28,24 @@ public class AppointmentService {
         return newAppointment;
     }
 
-    public User setPatient(String username){
+    public User setPatient(String username) {
         User patient = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("No user found with that username."));
         return patient;
     }
+
     public User setCaregiver(String caregiverId) {
         User caregiver = userRepository.findById(caregiverId)
                 .orElseThrow(() -> new RuntimeException("No user found with that Id."));
         return caregiver;
     }
 
-
-
-    public Status returnStatus(String status){
-        if (status.toUpperCase().equals(Status.CANCELLED.name())){
-           return Status.CANCELLED;
+    public Status returnStatus(String status) {
+        if (status.toUpperCase().equals(Status.CANCELLED.name())) {
+            return Status.CANCELLED;
         } else if (status.toUpperCase().equals(Status.COMPLETED.name())) {
             return Status.COMPLETED;
-        }else {
+        } else {
             return Status.ERROR;
         }
     }
