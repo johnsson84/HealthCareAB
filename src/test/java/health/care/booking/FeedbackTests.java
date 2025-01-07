@@ -62,8 +62,8 @@ public class FeedbackTests {
 
         // Setup a appointment
         appointment.setId("3");
-        appointment.setPatientId(patient);
-        appointment.setCaregiverId(doctor);
+        appointment.setPatientId(patient.getId());
+        appointment.setCaregiverId(doctor.getId());
         String appointmentTime = "2025-01-02T09:00:00";
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         LocalDateTime localDateTime = LocalDateTime.parse(appointmentTime, formatter);

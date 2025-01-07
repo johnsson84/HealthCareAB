@@ -3,7 +3,6 @@ package health.care.booking.models;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "feedback")
@@ -12,10 +11,12 @@ public class Feedback {
     private String id;
 
     // Feedback kan man endast göra på ett specifikt Appointment
-    @DBRef
+
     private String appointmentId;
 
-    private String caregiverId; // Lättare att filtrera ut vilka feedbacks som tillhör vilken doktor.
+    private String caregiverId;
+
+    private String patientUsername;
 
     private String comment;
 
@@ -68,5 +69,13 @@ public class Feedback {
 
     public void setRating(@Min(1) @Max(5) int rating) {
         this.rating = rating;
+    }
+
+    public String getPatientUsername() {
+        return patientUsername;
+    }
+
+    public void setPatientUsername(String patientUsername) {
+        this.patientUsername = patientUsername;
     }
 }

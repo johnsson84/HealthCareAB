@@ -8,6 +8,7 @@ public class FeedbackDTO {
     @NotBlank
     private String appointmentId;
     private String caregiverId;
+    private String patientUsername;
     private String comment; // This is optional
 
     @Min(1)
@@ -15,19 +16,6 @@ public class FeedbackDTO {
     private int rating;
 
     // Constructors
-    public FeedbackDTO(String appointmentId, String caregiverId, String comment, int rating) {
-        this.appointmentId = appointmentId;
-        this.caregiverId = caregiverId;
-        this.comment = comment;
-        this.rating = rating;
-    }
-
-    public FeedbackDTO(String appointmentId, String caregiverId, int rating) {
-        this.appointmentId = appointmentId;
-        this.caregiverId = caregiverId;
-        this.rating = rating;
-    }
-
     public FeedbackDTO() {
     }
 
@@ -44,6 +32,9 @@ public class FeedbackDTO {
     public void setRating(int rating) {
         this.rating = rating;
     }
+    public void setPatientUsername(String patientUsername) {
+        this.patientUsername = patientUsername;
+    }
 
     // Getters
     public String getAppointmentId() {
@@ -57,5 +48,8 @@ public class FeedbackDTO {
     }
     public int getRating() {
         return rating;
+    }
+    public String getPatientUsername() {
+        return patientUsername;
     }
 }

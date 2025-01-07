@@ -7,6 +7,7 @@ import health.care.booking.respository.FeedbackRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,13 +26,28 @@ public class FeedbackService {
         appointmentRepository.findById(feedbackDTO.getAppointmentId())
                 .orElseThrow(() -> new Exception("Appointment not found!"));
 
+        // Check if feedback already given
+        List<Feedback> all = getFeedbackForCaregiver(feedbackDTO.getCaregiverId());
+        for (Feedback feedback : all) {
+            if (feedback.getPatientUsername().equals(feedbackDTO.getPatientUsername())) {
+                throw new Exception("Feedback already given!");
+            }
+        }
+
+        // Create new feedback
         Feedback newFeedback = new Feedback();
         newFeedback.setAppointmentId(feedbackDTO.getAppointmentId());
         newFeedback.setCaregiverId(Optional.ofNullable(feedbackDTO.getCaregiverId()).orElse(""));
+        newFeedback.setPatientUsername(Optional.ofNullable(feedbackDTO.getPatientUsername()).orElse(""));
         newFeedback.setComment(Optional.ofNullable(feedbackDTO.getComment()).orElse(""));
         newFeedback.setRating(Optional.of(feedbackDTO.getRating()).orElse(3));
         feedbackRepository.save(newFeedback);
         return newFeedback;
+    }
+
+    // Get a list of all feedback fo a caregiver
+    public List<Feedback> getFeedbackForCaregiver(String caregiverId) {
+        return feedbackRepository.findAllByCaregiverId(caregiverId);
     }
 
     // Delete a feedback
