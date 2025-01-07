@@ -35,7 +35,7 @@ public class AvailabilityController {
     public ResponseEntity<?> setAvailabilityAll() {
         List<User> caregiverList = userRepository.findUserByRolesIs(Collections.singleton(Role.ADMIN));
         if (!availabilityService.loopCaregiverList(caregiverList)){
-            return ResponseEntity.status(402).body("something went horribly wrong");
+            return ResponseEntity.status(400).body("There are duplicate ");
         }
         return ResponseEntity.ok("All caregivers availability have been set.");
     }
