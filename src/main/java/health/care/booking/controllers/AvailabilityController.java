@@ -43,10 +43,10 @@ public class AvailabilityController {
             Availability availability = new Availability();
             availability.setAvailableSlots(availabilityService.createWeeklyAvailability());
             availability.setCaregiverId(caregiverList.get(i));
-            if (!availabilityService.checkDuplicateAvailability(availability)){
+            if (!availabilityService.checkDuplicateAvailability(availability)) {
                 availabilityRepository.save(availability);
-            }else {
-                System.out.println("User " + availability.getCaregiverId().getUsername() + " has duplicate availability");
+            } else {
+                System.out.println("User " + availability.getCaregiverId() + " has duplicate availability");
             }
 
         }
@@ -62,9 +62,9 @@ public class AvailabilityController {
 
         newAvailability.setCaregiverId(careGiver);
         newAvailability.setAvailableSlots(availabilityService.createWeeklyAvailability());
-        if (!availabilityService.checkDuplicateAvailability(newAvailability)){
+        if (!availabilityService.checkDuplicateAvailability(newAvailability)) {
             availabilityRepository.save(newAvailability);
-        }else {
+        } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("There are duplicates");
         }
         return ResponseEntity.ok("Added available times for user: " + careGiver.getUsername());
