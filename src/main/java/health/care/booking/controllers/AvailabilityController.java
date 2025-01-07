@@ -56,9 +56,7 @@ public class AvailabilityController {
     public ResponseEntity<?> setAvailabilityForOne(@Valid @RequestBody AvailabilityRequest availabilityRequest) {
         User careGiver = userRepository.findById(availabilityRequest.careGiverId)
                 .orElseThrow(() -> new RuntimeException("Hitta inte"));
-
         Availability newAvailability = new Availability();
-
         newAvailability.setCaregiverId(careGiver);
         newAvailability.setAvailableSlots(availabilityService.createWeeklyAvailability());
         if (availabilityService.checkDuplicateAvailability(newAvailability)){
@@ -72,6 +70,13 @@ public class AvailabilityController {
     @GetMapping
     public List<Availability> getAllAvailability() {
         return availabilityRepository.findAll();
+    }
+
+    @GetMapping("/find-by-username/{username}")
+    public List<Availability> getAvailabilityByUsername(@PathVariable String username){
+        User user = userRepository.findByUsername(username.toString()).orElseThrow(() -> new RuntimeException("could not find user: " + username));
+        System.out.println(username);
+        return availabilityRepository.findByCaregiverId(user);
     }
 
     @PutMapping("/change-availability")
