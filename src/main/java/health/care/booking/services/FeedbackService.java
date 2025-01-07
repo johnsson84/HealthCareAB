@@ -1,7 +1,9 @@
 package health.care.booking.services;
 
 import health.care.booking.dto.FeedbackDTO;
+import health.care.booking.models.Appointment;
 import health.care.booking.models.Feedback;
+import health.care.booking.models.Status;
 import health.care.booking.respository.AppointmentRepository;
 import health.care.booking.respository.FeedbackRepository;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +25,13 @@ public class FeedbackService {
 
     // Create a feedback
     public Feedback addFeedback(FeedbackDTO feedbackDTO) throws Exception {
-        appointmentRepository.findById(feedbackDTO.getAppointmentId())
+        Appointment appointment = appointmentRepository.findById(feedbackDTO.getAppointmentId())
                 .orElseThrow(() -> new Exception("Appointment not found!"));
+
+        // Check if appointment is completed
+        if (!appointment.getStatus().equals(Status.COMPLETED))  {
+            throw new Exception("Appointment status is not set to COMPLETED");
+        }
 
         // Check if feedback already given
         List<Feedback> all = getFeedbackForCaregiver(feedbackDTO.getCaregiverId());

@@ -18,10 +18,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -38,6 +38,8 @@ public class FeedbackTests {
     private User patient = new User();
     private User doctor = new User();
     private Appointment appointment = new Appointment();
+    private Feedback savedFeedback = new Feedback();
+    private FeedbackDTO feedbackDTO = new FeedbackDTO();
 
     @BeforeEach
     void setUp() {
@@ -69,26 +71,32 @@ public class FeedbackTests {
         LocalDateTime localDateTime = LocalDateTime.parse(appointmentTime, formatter);
         Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
         appointment.setDateTime(date);
-        appointment.setStatus(Status.SCHEDULED);
-
+        appointment.setStatus(Status.COMPLETED);
     }
 
-    @Test
-    public void shouldGiveAppointmentFeedback() throws Exception {
-
-        // Arrange
-        Feedback savedFeedback = new Feedback();
+    // Used in multiple tests
+    public void arrangeFeedback() {
+        savedFeedback = new Feedback();
         savedFeedback.setId("4");
         savedFeedback.setAppointmentId(appointment.getId());
         savedFeedback.setCaregiverId(doctor.getId());
+        savedFeedback.setPatientUsername("test");
         savedFeedback.setComment("comment");
         savedFeedback.setRating(4);
 
-        FeedbackDTO feedbackDTO = new FeedbackDTO();
+        feedbackDTO = new FeedbackDTO();
         feedbackDTO.setAppointmentId("3");
         feedbackDTO.setCaregiverId("2");
+        feedbackDTO.setPatientUsername("test");
         feedbackDTO.setComment(savedFeedback.getComment());
         feedbackDTO.setRating(savedFeedback.getRating());
+    }
+
+    @Test
+    public void addFeedbackToAnAppointment() throws Exception {
+
+        // Arrange
+        arrangeFeedback();
 
         when(feedbackRepository.save(any(Feedback.class))).thenReturn(savedFeedback);
         when(appointmentRepository.findById(any())).thenReturn(Optional.ofNullable(appointment));
@@ -101,6 +109,7 @@ public class FeedbackTests {
         assertEquals("2", feedback.getCaregiverId(), "caregiverId not saved");
         assertEquals("comment", feedback.getComment(), "comment not saved");
         assertEquals(4, feedback.getRating(), "rating not saved");
+        System.out.println("Success! Feedback added.");
     }
 
     @Test
@@ -119,6 +128,45 @@ public class FeedbackTests {
 
         // Assert
         assertEquals("Appointment not found!", exception.getMessage(), "Failed! Appointment exists...");
+        System.out.println("Success! Appointment not found.");
 
+    }
+
+    @Test
+    public void cantAddFeedbackTwice() throws Exception {
+        // Arrange
+        arrangeFeedback();
+
+        when(feedbackRepository.save(any(Feedback.class))).thenReturn(savedFeedback);
+        when(appointmentRepository.findById(any())).thenReturn(Optional.ofNullable(appointment));
+        when(feedbackRepository.findAllByCaregiverId(any())).thenReturn(List.of(savedFeedback));
+
+        // Act
+        Exception exception = assertThrows(Exception.class, () -> {
+            feedbackService.addFeedback(feedbackDTO);
+        });
+
+        // Assert
+        assertEquals("Feedback already given!", exception.getMessage(), "Failed! Feedback wasn't given twice...");
+        System.out.println("Success! Cant add feedback twice.");
+    }
+
+    @Test
+    public void failIfAppointmentIsNotCompleted() throws Exception {
+        // Arrange
+        arrangeFeedback();
+        appointment.setStatus(Status.SCHEDULED);
+
+        when(appointmentRepository.findById(any())).thenReturn(Optional.ofNullable(appointment));
+        when(feedbackRepository.findAllByCaregiverId(any())).thenReturn(List.of(savedFeedback));
+
+        // Act
+        Exception exception = assertThrows(Exception.class, () -> {
+            feedbackService.addFeedback(feedbackDTO);
+        });
+
+        // Assert
+        assertEquals("Appointment status is not set to COMPLETED", exception.getMessage(), "Failed! Appointment status is set to COMPLETED");
+        System.out.println("Success! Failed to create feedback because appointment status is not COMPLETED.");
     }
 }
