@@ -20,30 +20,28 @@ import java.util.List;
 @RestController
 @RequestMapping("/appointment")
 public class AppointmentController {
+    //a
     @Autowired
     private AppointmentRepository appointmentRepository;
-
     @Autowired
     private AppointmentService appointmentService;
     @Autowired
     private AvailabilityRepository availabilityRepository;
-
     @Autowired
     private UserRepository userRepository;
 
-
     @PostMapping("/new")
-    public ResponseEntity<?> createNewAppointment(@Valid @RequestBody AppointmentRequest appointmentRequest){
+    public ResponseEntity<?> createNewAppointment(@Valid @RequestBody AppointmentRequest appointmentRequest) {
         // should probably have a "this is a valid timeslot type deal"
         Appointment newAppointment = appointmentService.createNewAppointment(appointmentRequest.username, appointmentRequest.caregiverId, appointmentRequest.availabilityDate);
         Availability removeAvailability = availabilityRepository.findById(appointmentRequest.availabilityId)
                 .orElseThrow(() -> new RuntimeException("Could not find availability object."));
         System.out.println(appointmentRequest.availabilityDate);
         for (int i = 0; i < removeAvailability.getAvailableSlots().size(); i++) {
-            if (removeAvailability.getAvailableSlots().get(i).equals(appointmentRequest.availabilityDate)){
+            if (removeAvailability.getAvailableSlots().get(i).equals(appointmentRequest.availabilityDate)) {
                 System.out.println("Should remove: " + removeAvailability.getAvailableSlots().get(i).toString());
                 removeAvailability.getAvailableSlots().remove(i);
-                System.out.println("removed: "  + appointmentRequest.availabilityDate);
+                System.out.println("removed: " + appointmentRequest.availabilityDate);
                 availabilityRepository.save(removeAvailability);
             }
         }
