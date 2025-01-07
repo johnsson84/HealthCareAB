@@ -12,11 +12,9 @@ public class Appointment {
     @Id
     private String id;
 
-    @DBRef
-    private User patientId;
+    private String patientId;
 
-    @DBRef
-    private User caregiverId;
+    private String caregiverId;
 
     // datum och tid, vill ni så kan ni ändra till något annat
     // tex ett fält för datum ett för tid det är upp till er
@@ -36,21 +34,6 @@ public class Appointment {
         this.id = id;
     }
 
-    public User getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(User patientId) {
-        this.patientId = patientId;
-    }
-
-    public User getCaregiverId() {
-        return caregiverId;
-    }
-
-    public void setCaregiverId(User caregiverId) {
-        this.caregiverId = caregiverId;
-    }
 
     public @NotNull Date getDateTime() {
         return dateTime;
@@ -66,5 +49,21 @@ public class Appointment {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
+    }
+
+    public String getCaregiverId() {
+        return caregiverId;
+    }
+
+    public void setCaregiverId(String caregiverId) {
+        this.caregiverId = caregiverId;
     }
 }
