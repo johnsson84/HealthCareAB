@@ -14,7 +14,7 @@ public class Appointment {
 
     @DBRef
     private User patientId;
-    // comment
+    
     @DBRef
     private User caregiverId;
 
