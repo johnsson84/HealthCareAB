@@ -36,7 +36,11 @@ public class FeedbackController {
     @GetMapping("/caregiver/{caregiverId}")
     public ResponseEntity<?> getCaregiverFeedback(@Valid @PathVariable String caregiverId) {
         List<Feedback> allFeedback = feedbackRepository.findAllByCaregiverId(caregiverId);
-        return ResponseEntity.ok(allFeedback);
+        if (!allFeedback.isEmpty()) {
+            return ResponseEntity.ok(allFeedback);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No feedback found...");
+        }
     }
 
     // Add a feedback to a caregiver

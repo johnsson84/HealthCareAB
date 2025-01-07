@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -54,7 +54,7 @@ public class FeedbackTests {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
 
         // ARRANGE
         // Setup a user
@@ -114,5 +114,24 @@ public class FeedbackTests {
         assertEquals("2", feedback.getCaregiverId(), "caregiverId not saved");
         assertEquals("comment", feedback.getComment(), "comment not saved");
         assertEquals(4, feedback.getRating(), "rating not saved");
+    }
+
+    @Test
+    public void cantAddFeedbackToAppointmentThatDoesNotExist() throws Exception {
+
+        // Arrange
+        FeedbackDTO feedbackDTO = new FeedbackDTO();
+        feedbackDTO.setAppointmentId("56");
+
+        when(appointmentRepository.findById(any())).thenReturn(Optional.empty());
+
+        // Act
+        Exception exception = assertThrows(Exception.class, () -> {
+            feedbackService.addFeedback(feedbackDTO);
+        });
+
+        // Assert
+        assertEquals("Appointment not found!", exception.getMessage(), "Failed! Appointment exists...");
+
     }
 }
