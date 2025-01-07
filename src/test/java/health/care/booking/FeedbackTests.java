@@ -7,16 +7,12 @@ import health.care.booking.models.Status;
 import health.care.booking.models.User;
 import health.care.booking.respository.AppointmentRepository;
 import health.care.booking.respository.FeedbackRepository;
-import health.care.booking.respository.UserRepository;
-import health.care.booking.services.AppointmentService;
 import health.care.booking.services.FeedbackService;
-import health.care.booking.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -24,7 +20,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -33,20 +30,10 @@ public class FeedbackTests {
     private FeedbackRepository feedbackRepository;
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
     private AppointmentRepository appointmentRepository;
-
-    @Mock
-    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private FeedbackService feedbackService;
-    @InjectMocks
-    private UserService userService;
-    @InjectMocks
-    private AppointmentService appointmentService;
 
     private User patient = new User();
     private User doctor = new User();
@@ -92,14 +79,14 @@ public class FeedbackTests {
         // Arrange
         Feedback savedFeedback = new Feedback();
         savedFeedback.setId("4");
-        savedFeedback.setAppointmentId(appointment);
-        savedFeedback.setCaregiverId("2");
+        savedFeedback.setAppointmentId(appointment.getId());
+        savedFeedback.setCaregiverId(doctor.getId());
         savedFeedback.setComment("comment");
         savedFeedback.setRating(4);
 
         FeedbackDTO feedbackDTO = new FeedbackDTO();
-        feedbackDTO.setAppointmentId(appointment.getId());
-        feedbackDTO.setCaregiverId(doctor.getId());
+        feedbackDTO.setAppointmentId("3");
+        feedbackDTO.setCaregiverId("2");
         feedbackDTO.setComment(savedFeedback.getComment());
         feedbackDTO.setRating(savedFeedback.getRating());
 
@@ -110,7 +97,7 @@ public class FeedbackTests {
         Feedback feedback = feedbackService.addFeedback(feedbackDTO);
 
         // Assert
-        assertEquals(appointment, feedback.getAppointmentId(), "appointmentId not saved");
+        assertEquals("3", feedback.getAppointmentId(), "appointmentId not saved");
         assertEquals("2", feedback.getCaregiverId(), "caregiverId not saved");
         assertEquals("comment", feedback.getComment(), "comment not saved");
         assertEquals(4, feedback.getRating(), "rating not saved");

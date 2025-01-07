@@ -1,7 +1,6 @@
 package health.care.booking.services;
 
 import health.care.booking.dto.FeedbackDTO;
-import health.care.booking.models.Appointment;
 import health.care.booking.models.Feedback;
 import health.care.booking.respository.AppointmentRepository;
 import health.care.booking.respository.FeedbackRepository;
@@ -23,11 +22,11 @@ public class FeedbackService {
 
     // Create a feedback
     public Feedback addFeedback(FeedbackDTO feedbackDTO) throws Exception {
-        Appointment existingAppointment = appointmentRepository.findById(feedbackDTO.getAppointmentId())
+        appointmentRepository.findById(feedbackDTO.getAppointmentId())
                 .orElseThrow(() -> new Exception("Appointment not found!"));
 
         Feedback newFeedback = new Feedback();
-        newFeedback.setAppointmentId(existingAppointment);
+        newFeedback.setAppointmentId(feedbackDTO.getAppointmentId());
         newFeedback.setCaregiverId(Optional.ofNullable(feedbackDTO.getCaregiverId()).orElse(""));
         newFeedback.setComment(Optional.ofNullable(feedbackDTO.getComment()).orElse(""));
         newFeedback.setRating(Optional.of(feedbackDTO.getRating()).orElse(3));

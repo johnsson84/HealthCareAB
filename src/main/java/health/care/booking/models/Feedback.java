@@ -13,7 +13,7 @@ public class Feedback {
 
     // Feedback kan man endast göra på ett specifikt Appointment
     @DBRef
-    private Appointment appointmentId;
+    private String appointmentId;
 
     private String caregiverId; // Lättare att filtrera ut vilka feedbacks som tillhör vilken doktor.
 
@@ -36,11 +36,11 @@ public class Feedback {
         this.id = id;
     }
 
-    public Appointment getAppointmentId() {
+    public String getAppointmentId() {
         return appointmentId;
     }
 
-    public void setAppointmentId(Appointment appointmentId) {
+    public void setAppointmentId(String appointmentId) {
         this.appointmentId = appointmentId;
     }
 
