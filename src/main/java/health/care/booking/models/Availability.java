@@ -14,8 +14,7 @@ public class Availability {
     private String id;
 
     // en doktor/sjuksköterska sätter sig available
-    @DBRef
-    private User caregiverId;
+    private String caregiverId;
 
     // en lista med tider som är tillgängliga
     // ni kan ändra implementaionen om ni hittar ett enklare sätt
@@ -32,11 +31,11 @@ public class Availability {
         this.id = id;
     }
 
-    public User getCaregiverId() {
+    public String getCaregiverId() {
         return caregiverId;
     }
 
-    public void setCaregiverId(User caregiverId) {
+    public void setCaregiverId(String caregiverId) {
         this.caregiverId = caregiverId;
     }
 

@@ -20,9 +20,9 @@ public class AvailabilityService {
     @Autowired
     AvailabilityRepository availabilityRepository;
 
-    public Availability createNewAvailability(User caregiver) {
+    public Availability createNewAvailability(String caregiverId) {
         Availability newAvailability = new Availability();
-        newAvailability.setCaregiverId(caregiver);
+        newAvailability.setCaregiverId(caregiverId);
         newAvailability.setAvailableSlots(createWeeklyAvailabilitySlots());
         if (checkDuplicateAvailability(newAvailability)) {
             throw new RuntimeException("Duplicate availability slots detected.");
@@ -35,14 +35,13 @@ public class AvailabilityService {
         if (caregiverList.isEmpty()) {
             throw new RuntimeException("Couldn't find any caregivers");
         }
-
         for (User user : caregiverList) {
             Availability availability = new Availability();
             availability.setAvailableSlots(createWeeklyAvailabilitySlots());
-            availability.setCaregiverId(user);
+            availability.setCaregiverId(user.getId());
             if (!checkDuplicateAvailability(availability)) {
                 availabilities.add(availability);
-            }
+            } else throw new RuntimeException("Thera are duplicates on: " + availability.getCaregiverId());
             availabilityRepository.saveAll(availabilities);
         }
         return true;
@@ -81,7 +80,6 @@ public class AvailabilityService {
                 }
             }
         }
-
         // If no duplicates are found
         return false;
     }

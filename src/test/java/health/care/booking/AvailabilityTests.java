@@ -36,15 +36,15 @@ public class AvailabilityTests {
         User caregiver = new User();
         caregiver.setId(String.valueOf(1L)); // Mock a caregiver user
 
-        when(availabilityRepository.findByCaregiverId(any(User.class))).thenReturn(new ArrayList<>());
+        when(availabilityRepository.findByCaregiverId(any(String.class))).thenReturn(new ArrayList<>());
 
-        Availability availability = availabilityService.createNewAvailability(caregiver);
+        Availability availability = availabilityService.createNewAvailability(caregiver.getId());
 
         assertNotNull(availability);
-        assertEquals(caregiver, availability.getCaregiverId());
+        assertEquals(caregiver.getId(), availability.getCaregiverId());
         assertNotNull(availability.getAvailableSlots());
         assertTrue(!availability.getAvailableSlots().isEmpty());
-        verify(availabilityRepository, times(1)).findByCaregiverId(caregiver);
+        verify(availabilityRepository, times(1)).findByCaregiverId(caregiver.getId());
     }
 
     @Test
@@ -52,14 +52,14 @@ public class AvailabilityTests {
         User caregiver = new User();
         caregiver.setId(String.valueOf(1L));
 
-        Availability existingAvailability = availabilityService.createNewAvailability(caregiver);
+        Availability existingAvailability = availabilityService.createNewAvailability(caregiver.getId());
 
-        when(availabilityRepository.findByCaregiverId(any(User.class))).thenReturn(List.of(existingAvailability));
+        when(availabilityRepository.findByCaregiverId(any(String.class))).thenReturn(List.of(existingAvailability));
 
-        Exception exception = assertThrows(RuntimeException.class, () -> availabilityService.createNewAvailability(caregiver));
+        Exception exception = assertThrows(RuntimeException.class, () -> availabilityService.createNewAvailability(caregiver.getId()));
 
         assertNotNull(exception);
-        verify(availabilityRepository, times(2)).findByCaregiverId(caregiver);
+        verify(availabilityRepository, times(2)).findByCaregiverId(caregiver.getId());
     }
 
     @Test
@@ -70,7 +70,7 @@ public class AvailabilityTests {
         caregiverList.add(caregiver1);
 
 
-        when(availabilityRepository.findByCaregiverId(any(User.class))).thenReturn(new ArrayList<>());
+        when(availabilityRepository.findByCaregiverId(any(String.class))).thenReturn(new ArrayList<>());
 
         boolean result = availabilityService.loopCaregiverList(caregiverList);
 
@@ -113,15 +113,15 @@ public class AvailabilityTests {
         caregiver.setId(String.valueOf(1L));
 
         Availability newAvailability = new Availability();
-        newAvailability.setCaregiverId(caregiver);
+        newAvailability.setCaregiverId(caregiver.getId());
         newAvailability.setAvailableSlots(List.of(new Date()));
 
-        when(availabilityRepository.findByCaregiverId(caregiver)).thenReturn(new ArrayList<>());
+        when(availabilityRepository.findByCaregiverId(caregiver.getId())).thenReturn(new ArrayList<>());
 
         boolean result = availabilityService.checkDuplicateAvailability(newAvailability);
 
         assertFalse(result);
-        verify(availabilityRepository, times(1)).findByCaregiverId(caregiver);
+        verify(availabilityRepository, times(1)).findByCaregiverId(caregiver.getId());
     }
 
     @Test
@@ -132,19 +132,19 @@ public class AvailabilityTests {
         Date slot = new Date();
 
         Availability newAvailability = new Availability();
-        newAvailability.setCaregiverId(caregiver);
+        newAvailability.setCaregiverId(caregiver.getId());
         newAvailability.setAvailableSlots(List.of(slot));
 
         Availability existingAvailability = new Availability();
-        existingAvailability.setCaregiverId(caregiver);
+        existingAvailability.setCaregiverId(caregiver.getId());
         existingAvailability.setAvailableSlots(List.of(slot));
 
-        when(availabilityRepository.findByCaregiverId(caregiver)).thenReturn(List.of(existingAvailability));
+        when(availabilityRepository.findByCaregiverId(caregiver.getId())).thenReturn(List.of(existingAvailability));
 
         boolean result = availabilityService.checkDuplicateAvailability(newAvailability);
 
         assertTrue(result);
-        verify(availabilityRepository, times(1)).findByCaregiverId(caregiver);
+        verify(availabilityRepository, times(1)).findByCaregiverId(caregiver.getId());
     }
 
     @Test

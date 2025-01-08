@@ -31,6 +31,7 @@ public class AvailabilityController {
     @PostMapping("/set/all")
     public ResponseEntity<?> setAvailabilityAll() {
         List<User> caregiverList = userRepository.findUserByRolesIs(Collections.singleton(Role.ADMIN));
+
         if (!availabilityService.loopCaregiverList(caregiverList)){
             return ResponseEntity.status(400).body("There are duplicate ");
         }
@@ -41,7 +42,7 @@ public class AvailabilityController {
     public ResponseEntity<?> setAvailabilityForOne(@Valid @RequestBody AvailabilityRequest availabilityRequest) {
         User careGiver = userRepository.findById(availabilityRequest.careGiverId)
                 .orElseThrow(() -> new RuntimeException("Couldn't find any Caregiver Users"));
-        Availability newAvailability = availabilityService.createNewAvailability(careGiver);
+        Availability newAvailability = availabilityService.createNewAvailability(careGiver.getId());
         availabilityRepository.save(newAvailability);
         return ResponseEntity.ok("Added available times for user: " + careGiver.getUsername());
     }
@@ -54,7 +55,7 @@ public class AvailabilityController {
     @GetMapping("/find-by-username/{username}")
     public List<Availability> getAvailabilityByUsername(@PathVariable String username){
         User user = userRepository.findByUsername(username.toString()).orElseThrow(() -> new RuntimeException("could not find user: " + username));
-        return availabilityRepository.findByCaregiverId(user);
+        return availabilityRepository.findByCaregiverId(user.getId());
     }
 
     @PutMapping("/change-availability")

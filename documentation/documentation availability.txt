@@ -19,7 +19,6 @@ http://localhost:8080/availability/set/one
 
 body:
 {
-	"username": "pedro",
 	"careGiverId": "6772b87dff113f4e0fbbd7ae"
 }
 
