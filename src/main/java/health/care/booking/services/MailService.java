@@ -13,6 +13,16 @@ public class MailService {
         mailMessage.setTo(toEmail);
         mailMessage.setSubject(subject);
         mailMessage.setText(text);
+        System.out.println(mailMessage);
+        mailSender.send(mailMessage);
+    }
+
+    public void sendEmailRequest(String toEmail, String appointmentSummary) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(toEmail);
+        mailMessage.setSubject("Mail Request: " + appointmentSummary);
+        mailMessage.setText("You have requested an email, answer to this email!");
+        System.out.println(mailMessage);
         mailSender.send(mailMessage);
     }
 }

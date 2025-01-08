@@ -24,4 +24,13 @@ public class MailController {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @PostMapping("/request")
+    public void SendMailRequestFromClientSide(@Valid @RequestBody String toEmail, String appointmentSummary) {
+        try {
+            mailService.sendEmailRequest(toEmail, appointmentSummary);
+        } catch (Exception e) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }
