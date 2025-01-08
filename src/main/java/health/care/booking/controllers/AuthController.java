@@ -4,6 +4,7 @@ import health.care.booking.dto.*;
 import health.care.booking.models.Role;
 import health.care.booking.models.TokenPasswordReset;
 import health.care.booking.models.User;
+import health.care.booking.respository.UserRepository;
 import health.care.booking.services.CustomUserDetailsService;
 import health.care.booking.services.PasswordResetService;
 import health.care.booking.services.UserService;
@@ -43,6 +44,8 @@ public class AuthController {
     private UserService userService;
     @Autowired
     private PasswordResetService passwordResetService;
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request,
@@ -106,6 +109,12 @@ public class AuthController {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body("Username is already taken");
+        }
+        // check if the mail is already in use
+        if (userRepository.existsByMail(request.getMail())) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("Mail is already taken");
         }
 
         // map the registration request to a User entity
