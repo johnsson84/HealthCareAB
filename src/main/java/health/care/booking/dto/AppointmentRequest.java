@@ -11,6 +11,9 @@ public class AppointmentRequest {
     public String username;
 
     @NotBlank
+    public String summary;
+
+    @NotBlank
     public String caregiverId;
 
     @NotBlank
@@ -22,7 +25,5 @@ public class AppointmentRequest {
     public AppointmentRequest() {
     }
 
-    public AppointmentRequest(String patient1, String caregiver1, String number, String s) {
-    }
 
 }

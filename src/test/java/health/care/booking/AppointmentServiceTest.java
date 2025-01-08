@@ -13,8 +13,10 @@ import health.care.booking.services.AppointmentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Date;
 
@@ -57,6 +59,7 @@ public class AppointmentServiceTest {
     void testCreateNewAppointment() {
         String username = "john_doe";
         String caregiverId = "2";
+        String summary = "theSummary";
         Date availabilityDate = availability.getAvailableSlots().get(0);
 
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(patient));
@@ -64,7 +67,7 @@ public class AppointmentServiceTest {
         when(availabilityRepository.findById(availability.getId())).thenReturn(Optional.of(availability));
 
         // Call service method
-        Appointment appointment = appointmentService.createNewAppointment(username, caregiverId, availabilityDate);
+        Appointment appointment = appointmentService.createNewAppointment(username, summary, caregiverId, availabilityDate);
 
         // Validate that the appointment is created correctly
         assertNotNull(appointment);
@@ -72,6 +75,7 @@ public class AppointmentServiceTest {
         assertEquals(caregiver.getId(), appointment.getCaregiverId()); // Now comparing Strings
         assertEquals(availabilityDate, appointment.getDateTime());
         assertEquals(Status.SCHEDULED, appointment.getStatus());
+        assertEquals("theSummary", appointment.getSummary());
     }
 
     @Test
@@ -99,4 +103,79 @@ public class AppointmentServiceTest {
 
         assertEquals("No user found with that Id.", exception.getMessage());
     }
+
+
+    @Test
+    void testGetAppointmentWithNamesSuccess() {
+        // Setup mock data
+        Appointment appointment = new Appointment();
+        appointment.setPatientId(patient.getId());
+        appointment.setCaregiverId(caregiver.getId());
+        appointment.setSummary("theSummary");
+        appointment.setDateTime(new Date());
+        appointment.setStatus(Status.SCHEDULED);
+
+        patient.setFirstName("John");
+        patient.setLastName("Doe");
+        patient.setMail("john.doe@example.com");
+
+        caregiver.setUsername("caregiver_1");
+
+        when(userRepository.findById(patient.getId())).thenReturn(Optional.of(patient));
+        when(userRepository.findById(caregiver.getId())).thenReturn(Optional.of(caregiver));
+
+        // Call the method
+        ResponseEntity<?> response = appointmentService.getAppointmentWithNames(appointment);
+
+        // Validate response
+        assertNotNull(response);
+        assertEquals(200, response.getStatusCodeValue());
+
+        // Validate response body
+        Map<String, Object> responseBody = (Map<String, Object>) response.getBody();
+        assertNotNull(responseBody);
+        assertEquals("caregiver_1", responseBody.get("caregiverUsername"));
+        assertEquals("John", responseBody.get("patientFirstName"));
+        assertEquals("Doe", responseBody.get("patientLastName"));
+        assertEquals("john.doe@example.com", responseBody.get("userEmail"));
+        assertEquals("theSummary", responseBody.get("summary"));
+        assertEquals(appointment.getDateTime(), responseBody.get("dateTime"));
+        assertEquals(Status.SCHEDULED, responseBody.get("status"));
+    }
+
+    @Test
+    void testGetAppointmentWithNamesPatientNotFound() {
+        // Setup mock data
+        Appointment appointment = new Appointment();
+        appointment.setPatientId("non_existing_patient");
+        appointment.setCaregiverId(caregiver.getId());
+
+        when(userRepository.findById("non_existing_patient")).thenReturn(Optional.empty());
+
+        // Call the method and expect an exception
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            appointmentService.getAppointmentWithNames(appointment);
+        });
+
+        assertEquals("User not found", exception.getMessage());
+    }
+
+    @Test
+    void testGetAppointmentWithNamesCaregiverNotFound() {
+        // Setup mock data
+        Appointment appointment = new Appointment();
+        appointment.setPatientId(patient.getId());
+        appointment.setCaregiverId("non_existing_caregiver");
+
+        when(userRepository.findById(patient.getId())).thenReturn(Optional.of(patient));
+        when(userRepository.findById("non_existing_caregiver")).thenReturn(Optional.empty());
+
+        // Call the method and expect an exception
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            appointmentService.getAppointmentWithNames(appointment);
+        });
+
+        assertEquals("User not found", exception.getMessage());
+    }
+
 }

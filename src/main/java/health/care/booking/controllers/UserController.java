@@ -2,6 +2,7 @@ package health.care.booking.controllers;
 
 import health.care.booking.dto.AuthRequest;
 import health.care.booking.models.User;
+import health.care.booking.respository.UserRepository;
 import health.care.booking.services.CustomUserDetailsService;
 import health.care.booking.services.UserService;
 import health.care.booking.util.JwtUtil;
@@ -14,11 +15,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.*;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
 
     @GetMapping("/find/{username}")
