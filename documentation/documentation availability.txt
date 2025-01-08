@@ -27,3 +27,16 @@ if there are duplicates on the same caregiver it should throw error
 
 ####################################################
 ####################################################
+
+Change availability hours
+http://localhost:8080/availability/change-availability
+
+body:
+{
+	"changingDates":["2025-01-03T08:30:00", "2025-01-03T09:00:00"],
+	"availabilityId": "6777e7a5bfbc82442d235433"
+}
+
+####################################################
+####################################################
+

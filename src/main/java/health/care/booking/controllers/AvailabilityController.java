@@ -10,13 +10,10 @@ import health.care.booking.respository.UserRepository;
 import health.care.booking.services.AvailabilityService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -61,7 +58,7 @@ public class AvailabilityController {
     }
 
     @PutMapping("/change-availability")
-    public ResponseEntity<?> removeAvailabilityOneDay(@Valid @RequestBody ChangeAvailabilityRequest changeAvailabilityRequest) {
+    public ResponseEntity<?> changeAvailabilityHours(@Valid @RequestBody ChangeAvailabilityRequest changeAvailabilityRequest) {
         Availability changeDatesAvailability = availabilityRepository.findById(changeAvailabilityRequest.availabilityId).orElseThrow(() -> new RuntimeException("Could not find availability object"));
         availabilityService.removeAvailabilityByArray(changeAvailabilityRequest.changingDates, changeDatesAvailability);
         return ResponseEntity.ok("Availability changed");
