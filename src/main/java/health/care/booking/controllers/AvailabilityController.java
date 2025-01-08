@@ -37,7 +37,6 @@ public class AvailabilityController {
 
         if (!availabilityService.loopCaregiverList(caregiverList)){
             return ResponseEntity.status(400).body("There are duplicate ");
-
         }
         return ResponseEntity.ok("All caregivers availability have been set.");
     }

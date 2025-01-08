@@ -47,6 +47,7 @@ public class AvailabilityService {
         }
         return true;
     }
+
         public List<Date> createWeeklyAvailabilitySlots() {
             List<Date> availabilities = new ArrayList<>();
             LocalDate startDate = LocalDate.now();
