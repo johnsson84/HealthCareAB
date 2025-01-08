@@ -1,5 +1,7 @@
 package health.care.booking.controllers;
 
+import health.care.booking.dto.SendMail;
+import health.care.booking.models.TokenPasswordReset;
 import health.care.booking.services.MailService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,18 +19,19 @@ public class MailController {
     private MailService mailService;
 
     @PostMapping
-    public void SendMailFromClientSide(@Valid @RequestBody String toEmail, String subject, String text) {
+    public void SendMailFromClientSide(@Valid @RequestBody SendMail sendMail) {
         try {
-            mailService.sendEmail(toEmail, subject, text);
+            mailService.sendEmail(sendMail.getToEmail(), sendMail.getSubject(), sendMail.getText());
         } catch (Exception e) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
     @PostMapping("/request")
-    public void SendMailRequestFromClientSide(@Valid @RequestBody String toEmail, String appointmentSummary) {
+    public void SendMailRequestFromClientSide(@Valid @RequestBody SendMail sendMail) {
         try {
-            mailService.sendEmailRequest(toEmail, appointmentSummary);
+
+            mailService.sendEmailRequest(sendMail.getToEmail(), sendMail.getAppointmentSummary());
         } catch (Exception e) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
