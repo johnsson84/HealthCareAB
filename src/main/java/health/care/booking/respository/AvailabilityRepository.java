@@ -13,4 +13,6 @@ public interface AvailabilityRepository extends MongoRepository<Availability, St
     List<Availability> findAll();
     List<Availability> findByCaregiverId(String caregiverId);
     Optional<Availability> findById(String id);
+
+    Optional<Availability> findByCaregiverIdUsername(String username);
 }
