@@ -24,7 +24,7 @@ public class MailService {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(toEmail);
         mailMessage.setSubject(subject);
-        mailMessage.setText("Your appointment on: " + date + " at the time of: " + time + " concerning " + appointmentSummary + " has a pending message: " + text);
+        mailMessage.setText("Your appointment on: " + date + " at the time of: " + time + ". concerning: " + appointmentSummary + " has a pending message: " + text);
         mailSender.send(mailMessage);
     }
 
@@ -32,7 +32,7 @@ public class MailService {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(toEmail);
         mailMessage.setSubject("Mail request from: " + firstName);
-        mailMessage.setText("You have requested an email concerning: " + appointmentSummary + " your booked appointment is on " + date + " time: " + time);
+        mailMessage.setText("You have requested an email concerning: " + appointmentSummary + ". your booked appointment is on " + date + " time: " + time + ". Please write below why you requested this mail:");
         mailSender.send(mailMessage);
     }
 }
