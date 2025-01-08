@@ -45,7 +45,7 @@ public class AvailabilityController {
     public ResponseEntity<?> setAvailabilityForOne(@Valid @RequestBody AvailabilityRequest availabilityRequest) {
         User careGiver = userRepository.findById(availabilityRequest.careGiverId)
                 .orElseThrow(() -> new RuntimeException("Couldn't find any Caregiver Users"));
-        Availability newAvailability = availabilityService.createNewAvailability(careGiver);
+        Availability newAvailability = availabilityService.createNewAvailability(careGiver.getId());
         availabilityRepository.save(newAvailability);
         return ResponseEntity.ok("Added available times for user: " + careGiver.getUsername());
     }

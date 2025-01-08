@@ -20,9 +20,9 @@ public class AvailabilityService {
     @Autowired
     AvailabilityRepository availabilityRepository;
 
-    public Availability createNewAvailability(User caregiver) {
+    public Availability createNewAvailability(String caregiverId) {
         Availability newAvailability = new Availability();
-        newAvailability.setCaregiverId(caregiver.getId());
+        newAvailability.setCaregiverId(caregiverId);
         newAvailability.setAvailableSlots(createWeeklyAvailabilitySlots());
         if (checkDuplicateAvailability(newAvailability)) {
             throw new RuntimeException("Duplicate availability slots detected.");
