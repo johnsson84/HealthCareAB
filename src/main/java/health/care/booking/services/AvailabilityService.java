@@ -35,14 +35,13 @@ public class AvailabilityService {
         if (caregiverList.isEmpty()) {
             throw new RuntimeException("Couldn't find any caregivers");
         }
-
         for (User user : caregiverList) {
             Availability availability = new Availability();
             availability.setAvailableSlots(createWeeklyAvailabilitySlots());
             availability.setCaregiverId(user.getId());
             if (!checkDuplicateAvailability(availability)) {
                 availabilities.add(availability);
-            }
+            } else throw new RuntimeException("Thera are duplicates on: " + availability.getCaregiverId());
             availabilityRepository.saveAll(availabilities);
         }
         return true;
