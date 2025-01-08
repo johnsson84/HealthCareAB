@@ -14,7 +14,7 @@ public class Feedback {
 
     private String appointmentId;
 
-    private String caregiverId;
+    private String caregiverUsername;
 
     private String patientUsername;
 
@@ -45,12 +45,12 @@ public class Feedback {
         this.appointmentId = appointmentId;
     }
 
-    public String getCaregiverId() {
-        return caregiverId;
+    public String getCaregiverUsername() {
+        return caregiverUsername;
     }
 
-    public void setCaregiverId(String caregiverId) {
-        this.caregiverId = caregiverId;
+    public void setCaregiverUsername(String caregiverUsername) {
+        this.caregiverUsername = caregiverUsername;
     }
 
     public String getComment() {

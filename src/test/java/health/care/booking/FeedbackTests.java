@@ -7,6 +7,7 @@ import health.care.booking.models.Status;
 import health.care.booking.models.User;
 import health.care.booking.respository.AppointmentRepository;
 import health.care.booking.respository.FeedbackRepository;
+import health.care.booking.respository.UserRepository;
 import health.care.booking.services.FeedbackService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -31,6 +33,9 @@ public class FeedbackTests {
 
     @Mock
     private AppointmentRepository appointmentRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private FeedbackService feedbackService;
@@ -79,15 +84,13 @@ public class FeedbackTests {
         savedFeedback = new Feedback();
         savedFeedback.setId("4");
         savedFeedback.setAppointmentId(appointment.getId());
-        savedFeedback.setCaregiverId(doctor.getId());
-        savedFeedback.setPatientUsername("test");
+        savedFeedback.setCaregiverUsername(doctor.getUsername());
+        savedFeedback.setPatientUsername(patient.getUsername());
         savedFeedback.setComment("comment");
         savedFeedback.setRating(4);
 
         feedbackDTO = new FeedbackDTO();
         feedbackDTO.setAppointmentId("3");
-        feedbackDTO.setCaregiverId("2");
-        feedbackDTO.setPatientUsername("test");
         feedbackDTO.setComment(savedFeedback.getComment());
         feedbackDTO.setRating(savedFeedback.getRating());
     }
@@ -100,13 +103,16 @@ public class FeedbackTests {
 
         when(feedbackRepository.save(any(Feedback.class))).thenReturn(savedFeedback);
         when(appointmentRepository.findById(any())).thenReturn(Optional.ofNullable(appointment));
+        when(userRepository.findById(appointment.getPatientId())).thenReturn(Optional.ofNullable(patient));
+        when(userRepository.findById(appointment.getCaregiverId())).thenReturn(Optional.ofNullable(doctor));
 
         // Act
         Feedback feedback = feedbackService.addFeedback(feedbackDTO);
 
         // Assert
         assertEquals("3", feedback.getAppointmentId(), "appointmentId not saved");
-        assertEquals("2", feedback.getCaregiverId(), "caregiverId not saved");
+        assertEquals("doctorUser", feedback.getCaregiverUsername(), "caregiverUsername not saved");
+        assertEquals("feedbackUser", feedback.getPatientUsername(), "patientUsername not saved");
         assertEquals("comment", feedback.getComment(), "comment not saved");
         assertEquals(4, feedback.getRating(), "rating not saved");
         System.out.println("Success! Feedback added.");
@@ -139,7 +145,9 @@ public class FeedbackTests {
 
         when(feedbackRepository.save(any(Feedback.class))).thenReturn(savedFeedback);
         when(appointmentRepository.findById(any())).thenReturn(Optional.ofNullable(appointment));
-        when(feedbackRepository.findAllByCaregiverId(any())).thenReturn(List.of(savedFeedback));
+        when(feedbackRepository.findAllByCaregiverUsername(any())).thenReturn(List.of(savedFeedback));
+        when(userRepository.findById(appointment.getPatientId())).thenReturn(Optional.ofNullable(patient));
+        when(userRepository.findById(appointment.getCaregiverId())).thenReturn(Optional.ofNullable(doctor));
 
         // Act
         Exception exception = assertThrows(Exception.class, () -> {
@@ -158,7 +166,7 @@ public class FeedbackTests {
         appointment.setStatus(Status.SCHEDULED);
 
         when(appointmentRepository.findById(any())).thenReturn(Optional.ofNullable(appointment));
-        when(feedbackRepository.findAllByCaregiverId(any())).thenReturn(List.of(savedFeedback));
+        when(feedbackRepository.findAllByCaregiverUsername(any())).thenReturn(List.of(savedFeedback));
 
         // Act
         Exception exception = assertThrows(Exception.class, () -> {

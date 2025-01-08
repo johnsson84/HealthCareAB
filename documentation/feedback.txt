@@ -12,15 +12,13 @@ Create a feedback
 POST http://localhost:8080/feedback/add
 {
     "appointmentId": "677d3590c04f713b7cd04235",
-    "caregiverId": "676ec624d29cdb168b12346f",
-    "patientUsername": "johan",
     "comment": "Trevlig filur.",
     "rating": 5
 }
 
 ==============================================
 List all feedbacks for one caregiver
-GET http://localhost:8080/feedback/caregiver/677665437670f6332c4de97d
+GET http://localhost:8080/feedback/caregiver/pedro
 
 ==============================================
 Remove one feedback
