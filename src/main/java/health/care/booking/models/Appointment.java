@@ -16,6 +16,8 @@ public class Appointment {
 
     private String caregiverId;
 
+    private  String patientUsername;
+
     // datum och tid, vill ni så kan ni ändra till något annat
     // tex ett fält för datum ett för tid det är upp till er
     private @NotNull Date dateTime;
@@ -65,5 +67,13 @@ public class Appointment {
 
     public void setCaregiverId(String caregiverId) {
         this.caregiverId = caregiverId;
+    }
+
+    public String getPatientUsername() {
+        return patientUsername;
+    }
+
+    public void setPatientUsername(String patientUsername) {
+        this.patientUsername = patientUsername;
     }
 }

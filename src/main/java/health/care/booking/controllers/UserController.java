@@ -2,6 +2,7 @@ package health.care.booking.controllers;
 
 import health.care.booking.dto.AuthRequest;
 import health.care.booking.models.User;
+import health.care.booking.respository.UserRepository;
 import health.care.booking.services.CustomUserDetailsService;
 import health.care.booking.services.UserService;
 import health.care.booking.util.JwtUtil;
@@ -20,6 +21,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserRepository userRepository;
+
 
     @GetMapping("/find/{username}")
     public ResponseEntity<?> findUserByUsername(@Valid @PathVariable String username) {
@@ -27,6 +31,15 @@ public class UserController {
             return ResponseEntity.ok(userService.findByUsername(username));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/find/{userId}")
+    public ResponseEntity<?> findUserByid(@Valid @PathVariable String userId) {
+        try {
+            return ResponseEntity.ok(userRepository.findById(userId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
