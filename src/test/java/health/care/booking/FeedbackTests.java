@@ -169,4 +169,9 @@ public class FeedbackTests {
         assertEquals("Appointment status is not set to COMPLETED", exception.getMessage(), "Failed! Appointment status is set to COMPLETED");
         System.out.println("Success! Failed to create feedback because appointment status is not COMPLETED.");
     }
+
+    // Notering
+    // Test for rating. Tänkte jag skulle gjort et test som kollar att man ger en rating mellan 1 och 5 men i och med
+    // att vi använder @min @max på rating i modellen så kastar den fel innan den hinner köra någon kod.
+
 }
