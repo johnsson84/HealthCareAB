@@ -16,13 +16,16 @@ import java.util.UUID;
 @Service
 public class PasswordResetService {
 
-    private final JavaMailSender mailSender;
+    JavaMailSender mailSender;
     @Autowired
-    private  TokenPasswordResetRepository tokenRepository;
+    private TokenPasswordResetRepository tokenRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private MailService mailService;
 
     public PasswordResetService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
@@ -40,16 +43,9 @@ public class PasswordResetService {
         tokenRepository.save(resetToken);
         // Skickar email
         String resetLink = "http://localhost:5173/resetPassword?token=" + token;
-        sendEmail(mail, resetLink);
+        mailService.sendEmail(mail, "Password Reset Request", "Click the link to reset your password: " + resetLink);
     }
 
-    private void sendEmail(String toEmail, String resetLink) {
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(toEmail);
-        mailMessage.setSubject("Password Reset Request");
-        mailMessage.setText("Click the link to reset your password: " + resetLink);
-        mailSender.send(mailMessage);
-    }
 
     public boolean validateToken(String token) {
         // Hämtar token från DB och kollar om den är giltig eller inte

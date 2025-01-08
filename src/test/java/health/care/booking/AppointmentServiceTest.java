@@ -57,6 +57,7 @@ public class AppointmentServiceTest {
     void testCreateNewAppointment() {
         String username = "john_doe";
         String caregiverId = "2";
+        String summary = "theSummary";
         Date availabilityDate = availability.getAvailableSlots().get(0);
 
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(patient));
@@ -64,7 +65,7 @@ public class AppointmentServiceTest {
         when(availabilityRepository.findById(availability.getId())).thenReturn(Optional.of(availability));
 
         // Call service method
-        Appointment appointment = appointmentService.createNewAppointment(username, caregiverId, availabilityDate);
+        Appointment appointment = appointmentService.createNewAppointment(username, summary, caregiverId, availabilityDate);
 
         // Validate that the appointment is created correctly
         assertNotNull(appointment);
@@ -72,6 +73,7 @@ public class AppointmentServiceTest {
         assertEquals(caregiver.getId(), appointment.getCaregiverId()); // Now comparing Strings
         assertEquals(availabilityDate, appointment.getDateTime());
         assertEquals(Status.SCHEDULED, appointment.getStatus());
+        assertEquals("theSummary", appointment.getSummary());
     }
 
     @Test
