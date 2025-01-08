@@ -68,8 +68,8 @@ public class AppointmentServiceTest {
 
         // Validate that the appointment is created correctly
         assertNotNull(appointment);
-        assertEquals(patient, appointment.getPatientId());
-        assertEquals(caregiver, appointment.getCaregiverId());
+        assertEquals(patient.getId(), appointment.getPatientId()); // Now comparing Strings
+        assertEquals(caregiver.getId(), appointment.getCaregiverId()); // Now comparing Strings
         assertEquals(availabilityDate, appointment.getDateTime());
         assertEquals(Status.SCHEDULED, appointment.getStatus());
     }
@@ -84,7 +84,7 @@ public class AppointmentServiceTest {
             appointmentService.setPatient(username);
         });
 
-        assertEquals("No user found with that username.", exception.getMessage());
+        assertEquals("No user found with that Id.", exception.getMessage());
     }
 
     @Test

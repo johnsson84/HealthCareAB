@@ -19,34 +19,34 @@ public class AppointmentService {
     @Autowired
     AvailabilityRepository availabilityRepository;
 
-    public Appointment createNewAppointment(String username, String caregiverId, @NotNull Date availabilityDate){
+    public Appointment createNewAppointment(String patientId, String caregiverId, @NotNull Date availabilityDate) {
         Appointment newAppointment = new Appointment();
-        newAppointment.setPatientId(setPatient(username));
+        newAppointment.setPatientId(setPatient(patientId));
         newAppointment.setCaregiverId(setCaregiver(caregiverId));
         newAppointment.setDateTime(availabilityDate);
         newAppointment.setStatus(Status.SCHEDULED);
         return newAppointment;
     }
 
-    public User setPatient(String username){
-        User patient = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("No user found with that username."));
-        return patient;
+    public String setPatient(String patientId) {
+        User patient = userRepository.findByUsername(patientId)
+                .orElseThrow(() -> new RuntimeException("No user found with that Id."));
+        return patient.getId();
     }
-    public User setCaregiver(String caregiverId) {
+
+    public String setCaregiver(String caregiverId) {
         User caregiver = userRepository.findById(caregiverId)
                 .orElseThrow(() -> new RuntimeException("No user found with that Id."));
-        return caregiver;
+        return caregiver.getId();
     }
 
 
-
-    public Status returnStatus(String status){
-        if (status.toUpperCase().equals(Status.CANCELLED.name())){
-           return Status.CANCELLED;
+    public Status returnStatus(String status) {
+        if (status.toUpperCase().equals(Status.CANCELLED.name())) {
+            return Status.CANCELLED;
         } else if (status.toUpperCase().equals(Status.COMPLETED.name())) {
             return Status.COMPLETED;
-        }else {
+        } else {
             return Status.ERROR;
         }
     }
