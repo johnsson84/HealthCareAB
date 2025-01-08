@@ -21,7 +21,7 @@ public class MailController {
     @PostMapping
     public void SendMailFromClientSide(@Valid @RequestBody SendMail sendMail) {
         try {
-            mailService.sendEmail(sendMail.getToEmail(), sendMail.getSubject(), sendMail.getText());
+            mailService.sendEmailAppointment(sendMail.getToEmail(), sendMail.getSubject(), sendMail.getText(), sendMail.getTime(), sendMail.getDate(), sendMail.getFirstName());
         } catch (Exception e) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -31,7 +31,7 @@ public class MailController {
     public void SendMailRequestFromClientSide(@Valid @RequestBody SendMail sendMail) {
         try {
 
-            mailService.sendEmailRequest(sendMail.getToEmail(), sendMail.getAppointmentSummary());
+            mailService.sendEmailRequest(sendMail.getToEmail(), sendMail.getAppointmentSummary(), sendMail.getDate(), sendMail.getTime(), sendMail.getFirstName());
         } catch (Exception e) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
