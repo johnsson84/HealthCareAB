@@ -1,10 +1,7 @@
 package health.care.booking;
 
 import health.care.booking.dto.FeedbackDTO;
-import health.care.booking.models.Appointment;
-import health.care.booking.models.Feedback;
-import health.care.booking.models.Status;
-import health.care.booking.models.User;
+import health.care.booking.models.*;
 import health.care.booking.respository.AppointmentRepository;
 import health.care.booking.respository.FeedbackRepository;
 import health.care.booking.respository.UserRepository;
@@ -21,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -66,6 +64,7 @@ public class FeedbackTests {
         doctor.setFirstName("Doctor");
         doctor.setLastName("Doctorsson");
         doctor.setMail("doctor@feedback.com");
+        doctor.setRoles(Set.of(Role.ADMIN));
 
         // Setup a appointment
         appointment.setId("3");
@@ -105,6 +104,7 @@ public class FeedbackTests {
         when(appointmentRepository.findById(any())).thenReturn(Optional.ofNullable(appointment));
         when(userRepository.findById(appointment.getPatientId())).thenReturn(Optional.ofNullable(patient));
         when(userRepository.findById(appointment.getCaregiverId())).thenReturn(Optional.ofNullable(doctor));
+        when(userRepository.findByUsername(doctor.getUsername())).thenReturn(Optional.ofNullable(doctor));
 
         // Act
         Feedback feedback = feedbackService.addFeedback(feedbackDTO);
@@ -148,6 +148,7 @@ public class FeedbackTests {
         when(feedbackRepository.findAllByCaregiverUsername(any())).thenReturn(List.of(savedFeedback));
         when(userRepository.findById(appointment.getPatientId())).thenReturn(Optional.ofNullable(patient));
         when(userRepository.findById(appointment.getCaregiverId())).thenReturn(Optional.ofNullable(doctor));
+        when(userRepository.findByUsername(doctor.getUsername())).thenReturn(Optional.ofNullable(doctor));
 
         // Act
         Exception exception = assertThrows(Exception.class, () -> {
