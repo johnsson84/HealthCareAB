@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class TokenPasswordReset {
 
     @Id
-    private long id;
+    private String id;
     private String token;
     private String mail;
     private LocalDateTime expiryDate;

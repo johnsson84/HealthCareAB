@@ -29,7 +29,8 @@ public class PasswordResetService {
     }
 
     public void sendPasswordResetLink(String mail) {
-        tokenRepository.deleteAllByMail(mail);
+        // Tar bort token kopplad till mejl från databasen
+        tokenRepository.deleteByMail(mail);
         // Genererar en säker token genom UUID
         String token = UUID.randomUUID().toString();
         // spara token till DB
