@@ -81,7 +81,6 @@ public class AvailabilityService {
                 }
             }
         }
-
         // If no duplicates are found
         return false;
     }
