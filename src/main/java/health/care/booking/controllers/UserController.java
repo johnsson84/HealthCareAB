@@ -45,6 +45,5 @@ public class UserController {
         }
         List<AvailabilityUserIdResponse> idResponses = userService.makeAndSendBackUserResponse(userIdList.getUserIds());
         return idResponses;
-
     }
 }
