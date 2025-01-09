@@ -14,10 +14,11 @@ import org.mockito.invocation.InvocationOnMock;
 import org.springframework.security.core.token.TokenService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -47,7 +48,7 @@ public class PasswordResetServiceTest {
 
 
     @Test
-    public void testSendPasswordResetLink_success() {
+    public void testSendPasswordResetLink_Success() {
 
         // Arrange
         String token = UUID.randomUUID().toString(); // Skapar en unik token
@@ -72,9 +73,10 @@ public class PasswordResetServiceTest {
     }
 
     @Test
-    public void testSendPasswordResetLink_failure() {
+    public void testSendPasswordResetLink_Failure() {
 
         // Arrange
+        String token = UUID.randomUUID().toString();
         String email = "emailfinnsinte@gmail.com"; // här kör jag istället en E-post som inte finns i systemet
 
         // Mockar beteende för att kasta fel/undantag när en token ska raderas
@@ -94,6 +96,26 @@ public class PasswordResetServiceTest {
         verify(tokenPasswordResetRepository, times(1)).save(any(TokenPasswordReset.class)); // kollar att save INTE anropas.
         verify(mailService, never()).sendEmail(any(), any(), any()); // Kollar så att inget mejl har skickas
     }
+
+    @Test
+    public void testValidateToken_Success() {
+        // Arrange
+        String token = UUID.randomUUID().toString(); // unik token
+        TokenPasswordReset mockToken = new TokenPasswordReset(); // genererar en mock-token
+        mockToken.setToken(token); // Här sätter jag token värdet
+        mockToken.setExpiryDate(LocalDateTime.now().plusMinutes(10)); // Här sätter jag utgångsdatumet till 10 minuter in i framtiden
+
+        // Mockar beteendet för att hitta token i mongoDb
+        when(tokenPasswordResetRepository.findByToken(token)).thenReturn(Optional.of(mockToken));
+
+        // Act
+        boolean result = passwordResetService.validateToken(token); // Här validerar jag token
+
+        // Assert
+        assertTrue(result, "Token should be valid"); // Kollar så att token är giltig.
+    }
+
+
 
 
 
