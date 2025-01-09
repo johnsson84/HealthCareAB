@@ -14,6 +14,7 @@ import health.care.booking.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -96,5 +97,25 @@ public class AppointmentController {
                 .orElseThrow(() -> new RuntimeException("Could not find appointment."));
 
         return ResponseEntity.ok(appointmentService.getAppointmentWithNames(foundAppointment));
+    }
+
+    @GetMapping("/history/1/{username}")
+    public ResponseEntity<?> getAppointmentHistoryFromUsernamePatient(@Valid @PathVariable String username) {
+        try {
+            User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("No user found with that username: " + username));
+            return appointmentService.getAppointmentHistoryFromUsernamePatient(user.getId());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not get any appointment history from username: " + username + " " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/history/2/{username}")
+    public ResponseEntity<?> getAppointmentHistoryFromUsernameCaregiver(@Valid @PathVariable String username) {
+        try {
+            User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("No user found with that username: " + username));
+            return appointmentService.getAppointmentHistoryFromUsernameCaregiver(user.getId());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not get any appointment history from username: " + username + " " + e.getMessage());
+        }
     }
 }
