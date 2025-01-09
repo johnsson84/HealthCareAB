@@ -9,9 +9,11 @@ import health.care.booking.respository.AppointmentRepository;
 import health.care.booking.respository.AvailabilityRepository;
 import health.care.booking.respository.UserRepository;
 import health.care.booking.services.AppointmentService;
+import health.care.booking.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -29,11 +31,13 @@ public class AppointmentController {
     private AvailabilityRepository availabilityRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/new")
     public ResponseEntity<?> createNewAppointment(@Valid @RequestBody AppointmentRequest appointmentRequest) {
         // should probably have a "this is a valid timeslot type deal"
-        Appointment newAppointment = appointmentService.createNewAppointment(appointmentRequest.username, appointmentRequest.caregiverId, appointmentRequest.availabilityDate);
+        Appointment newAppointment = appointmentService.createNewAppointment(appointmentRequest.username, appointmentRequest.summary, appointmentRequest.caregiverId, appointmentRequest.availabilityDate);
         Availability removeAvailability = availabilityRepository.findById(appointmentRequest.availabilityId)
                 .orElseThrow(() -> new RuntimeException("Could not find availability object."));
         System.out.println(appointmentRequest.availabilityDate);
@@ -70,5 +74,22 @@ public class AppointmentController {
         appointmentRepository.save(changingAppointment);
 
         return ResponseEntity.ok("The appointment has been changed to " + changingAppointment.getStatus().name());
+    }
+
+
+    @GetMapping("/info/{appointmentId}")
+    public Appointment getAppointmentInfo(@Valid @PathVariable String appointmentId) {
+        Appointment foundAppointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Could not find appointment."));
+
+        return foundAppointment;
+    }
+
+    @GetMapping("/info/no-id/{appointmentId}")
+    public ResponseEntity<?> getAppointmentInfoWithNames(@Valid @PathVariable String appointmentId) {
+        Appointment foundAppointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Could not find appointment."));
+
+        return ResponseEntity.ok(appointmentService.getAppointmentWithNames(foundAppointment));
     }
 }
