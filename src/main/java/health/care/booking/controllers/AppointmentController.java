@@ -53,6 +53,14 @@ public class AppointmentController {
     public List<Appointment> getUsersAppointments(@Valid @PathVariable String username) {
         String userId = userRepository.findByUsername(username).get().getId();
         return appointmentRepository.findAppointmentByPatientId(userId);
+
+    }
+
+
+    @GetMapping("/all/{username}")
+    public List<Appointment> getDoctorAppointments(@Valid @PathVariable String username) {
+        String caregiverId = userRepository.findByUsername(username).get().getId();
+        return appointmentRepository.findByCaregiverId(caregiverId);
     }
 
     @PostMapping("/change-status/{status}/{appointmentId}")

@@ -34,7 +34,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/find/{userId}")
+    @GetMapping("/get/{userId}")
     public ResponseEntity<?> findUserByid(@Valid @PathVariable String userId) {
         try {
             return ResponseEntity.ok(userRepository.findById(userId));
