@@ -33,9 +33,9 @@ public class FeedbackController {
 
     // Get all feedbacks from a caregiver
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/caregiver/{caregiverId}")
-    public ResponseEntity<?> getCaregiverFeedback(@Valid @PathVariable String caregiverId) throws Exception {
-        List<Feedback> allFeedback = feedbackService.getFeedbackForCaregiver(caregiverId);
+    @GetMapping("/caregiver/{caregiverUsername}")
+    public ResponseEntity<?> getCaregiverFeedback(@Valid @PathVariable String caregiverUsername) throws Exception {
+        List<Feedback> allFeedback = feedbackService.getFeedbackForCaregiver(caregiverUsername);
         if (!allFeedback.isEmpty()) {
             return ResponseEntity.ok(allFeedback);
         } else {
