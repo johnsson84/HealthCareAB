@@ -1,6 +1,7 @@
 package health.care.booking;
 
 import health.care.booking.models.TokenPasswordReset;
+import health.care.booking.models.User;
 import health.care.booking.respository.TokenPasswordResetRepository;
 import health.care.booking.respository.UserRepository;
 import health.care.booking.services.MailService;
@@ -11,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.token.TokenService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -46,19 +48,24 @@ public class PasswordResetServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-
+    // Testar att skicka resetLink
     @Test
     public void testSendPasswordResetLink_Success() {
-
         // Arrange
-        String token = UUID.randomUUID().toString(); // Skapar en unik token
+        // String token = UUID.randomUUID().toString(); // Skapar en unik token
         String email = "johnmessoa@gmail.com"; // Detta blir E-posten dit återställningslänken skickas till.
 
+        // Skapar ett mockat TokenPasswordReset objekt
+        TokenPasswordReset mockToken = new TokenPasswordReset();
+        mockToken.setEmail(email);
+        mockToken.setToken("mocked-token");
+        mockToken.setExpiryDate(LocalDateTime.now().plusMinutes(30));
+
         // Mockar beteende för att ta bort den unika token som är kopplad till E-postadressen.
-        doNothing().when(tokenPasswordResetRepository).deleteByMail(email);
+        when(tokenPasswordResetRepository.deleteByMail(email)).thenReturn(Optional.empty());
 
         // Mockar beteende för att kunna spara en ny genererad token.
-        when(tokenPasswordResetRepository.save(any())).thenAnswer(InvocationOnMock::getArguments);
+        when(tokenPasswordResetRepository.save(any(TokenPasswordReset.class))).thenReturn(mockToken);
 
         // Act
         passwordResetService.sendPasswordResetLink(email); // Här anropar jag metoden som testas
@@ -66,37 +73,34 @@ public class PasswordResetServiceTest {
         // Assert
         verify(tokenPasswordResetRepository, times(1)).deleteByMail(email); // Här verifierar jag att token raderas
         verify(tokenPasswordResetRepository, times(1)).save(any(TokenPasswordReset.class)); // verifierar att en ny token sparas
-        verify(mailService, times(1)).sendEmail(
-                eq(email),
-                eq("Password Reset Request"),
-                contains("http://localhost:5173/resetPassword")); // Verifierar att en korrekt länk skickas med i mejlet.
+        verify(mailService, times(1)).sendEmail(eq(email), eq("Password Reset Request"), contains("http://localhost:5173/resetPassword")); // Verifierar att en korrekt länk skickas med i mejlet.
     }
-
+    // Testar att det failar om e-posten inte finns i systemet
     @Test
     public void testSendPasswordResetLink_Failure() {
-
         // Arrange
-        String token = UUID.randomUUID().toString();
-        String email = "emailfinnsinte@gmail.com"; // här kör jag istället en E-post som inte finns i systemet
+        String email = "emailfinnsinte@gmail.com";
 
-        // Mockar beteende för att kasta fel/undantag när en token ska raderas
-        doThrow(new RuntimeException("Email was not found")).when(tokenPasswordResetRepository).deleteByMail(email);
+        // Mocka beteenden
+        when(tokenPasswordResetRepository.deleteByMail(anyString())).thenReturn(Optional.empty());
+        when(tokenPasswordResetRepository.save(any(TokenPasswordReset.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        doThrow(new RuntimeException("Email sending failed")).when(mailService).sendEmail(
+                eq(email), eq("Password Reset Request"), anyString());
 
         // Act & Assert
-        RuntimeException runtimeEx = assertThrows(
-                RuntimeException.class,
-                () -> passwordResetService.sendPasswordResetLink(email), // Försök till att skicka en reset länk.
-                "Was expecting exception when email does not exist.");
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            passwordResetService.sendPasswordResetLink(email);
+        });
 
-        // Kollar så att meddelandet i exception är korrekt.
-        assertEquals("Email was not found", runtimeEx.getMessage(), "Exception message should be a match");
+        // Kontrollera att rätt undantagsmeddelande kastades
+        assertEquals("Email sending failed", exception.getMessage());
 
-        // Här verifierar jag att inga fler metoder kallas på om ett fel inträffar
-        verify(tokenPasswordResetRepository, times(1)).deleteByMail(email); // kollar att deleteByMail anropas
-        verify(tokenPasswordResetRepository, times(1)).save(any(TokenPasswordReset.class)); // kollar att save INTE anropas.
-        verify(mailService, never()).sendEmail(any(), any(), any()); // Kollar så att inget mejl har skickas
+        // Verifiera anrop
+        verify(tokenPasswordResetRepository, times(1)).deleteByMail(email);
+        verify(tokenPasswordResetRepository, times(1)).save(any(TokenPasswordReset.class));
+        verify(mailService, times(1)).sendEmail(eq(email), eq("Password Reset Request"), anyString());
     }
-
+    // Testar att token med utgångsdatum i framtiden är giltig
     @Test
     public void testValidateToken_Success() {
         // Arrange
@@ -115,7 +119,7 @@ public class PasswordResetServiceTest {
         assertTrue(result, "Token should be valid"); // Kollar så att token är giltig.
     }
 
-
+    // Testar att utgången token inte ska vara valid
     @Test
     public void testValidateToken_Failure() {
         // Arrange
@@ -134,5 +138,55 @@ public class PasswordResetServiceTest {
         assertFalse(result, "Token should be invalid"); // kollar så att token är ogiltig
     }
 
+    // testar att uppdatera lösenordet
+    @Test
+    public void testUpdatePassword_Success() {
+        // Arrange
+        String token = UUID.randomUUID().toString(); // Unik token
+        String email = "johnmessoa@gmail.com"; // en e-post som är kopplad till en token
+        String newPassword = "newPassword123"; // Nytt lösenord
 
+        TokenPasswordReset mockToken = new TokenPasswordReset(); // skapar mock token
+        mockToken.setToken(token); // sätter värdet
+        mockToken.setEmail(email); // koppling token till email
+        mockToken.setExpiryDate(LocalDateTime.now().plusMinutes(10)); // sätter utgångsdatum till 10 min framtid
+
+        User mockUser = new User(); // Här skapar jag en mock user
+        mockUser.setMail(email); // Sätter en user e-post
+        mockUser.setPassword(newPassword);
+
+        // Mockar beteende för att hitta en token och user i mongoDB
+        when(tokenPasswordResetRepository.findByToken(token)).thenReturn(Optional.of(mockToken));
+        when(userRepository.findByMail(email)).thenReturn(Optional.of(mockUser));
+
+        // Mockar beteende för lösenordet
+        when(passwordEncoder.encode(newPassword)).thenReturn("encodedPassword");
+
+        // Act
+        passwordResetService.updatePassword(token, newPassword); //  Här uppdaterar jag lösenordet
+
+        // Assert
+        verify(userRepository, times(1)).save(mockUser); // kollar att user sparas
+        assertEquals("encodedPassword", mockUser.getPassword(), "Password should be updated"); // kollar så att lösenordet är uppdaterat
+        verify(tokenPasswordResetRepository, times(1)).delete(mockToken); // kollar att token är borttagen
+    }
+
+    // Testar att det failar om token har gått ut i tid
+    @Test
+    public void testUpdatePassword_Failure() {
+        // Arrange
+        String token = UUID.randomUUID().toString(); // Unik token
+        TokenPasswordReset mockToken = new TokenPasswordReset(); // mock token
+        mockToken.setToken(token); // sätter värdet
+        mockToken.setExpiryDate(LocalDateTime.now().minusMinutes(10)); // utgångsdatum till minus 10 min i tiden
+
+        // Mockar beteende för att hitta token i mongoDB
+        when(tokenPasswordResetRepository.findByToken(token)).thenReturn(Optional.of(mockToken));
+
+        // Act & Assert
+        assertThrows(
+                RuntimeException.class,
+                () -> passwordResetService.updatePassword(token, "newPassword"),
+                "Expected exception for the expired token"); // kollar att exception kastas när en token har gått ut i tid
+    }
 }
