@@ -116,7 +116,23 @@ public class PasswordResetServiceTest {
     }
 
 
+    @Test
+    public void testValidateToken_Failure() {
+        // Arrange
+        String token = UUID.randomUUID().toString(); // Unik token
+        TokenPasswordReset mockToken = new TokenPasswordReset(); // En mock token
+        mockToken.setToken(token); // Sätter token värde
+        mockToken.setExpiryDate(LocalDateTime.now().minusMinutes(10)); // Sätter utgångsdatumet 10 minuter bakåt i tiden.
 
+        // Mockar beteende för att hitta token i mongoDB
+        when(tokenPasswordResetRepository.findByToken(token)).thenReturn(Optional.of(mockToken));
+
+        // Act
+        boolean result = passwordResetService.validateToken(token); // validering av token
+
+        // Assert
+        assertFalse(result, "Token should be invalid"); // kollar så att token är ogiltig
+    }
 
 
 }
