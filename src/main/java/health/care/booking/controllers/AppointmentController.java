@@ -9,9 +9,11 @@ import health.care.booking.respository.AppointmentRepository;
 import health.care.booking.respository.AvailabilityRepository;
 import health.care.booking.respository.UserRepository;
 import health.care.booking.services.AppointmentService;
+import health.care.booking.services.MailService;
 import health.care.booking.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,8 @@ public class AppointmentController {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    MailService mailService;
 
     @PostMapping("/new")
     public ResponseEntity<?> createNewAppointment(@Valid @RequestBody AppointmentRequest appointmentRequest) {
@@ -49,6 +53,7 @@ public class AppointmentController {
                 availabilityRepository.save(removeAvailability);
             }
         }
+        mailService.sendEmail(userRepository.findByUsername(appointmentRequest.username).get().getMail(), "Appointment", "Appointment has been booked for: " + appointmentRequest.availabilityDate + "\n" + "Summary for booking: " + appointmentRequest.summary);
         appointmentRepository.save(newAppointment);
         return ResponseEntity.ok("Appointment has been made.");
     }
