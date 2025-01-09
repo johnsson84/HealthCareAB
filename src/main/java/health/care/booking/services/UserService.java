@@ -1,6 +1,7 @@
 package health.care.booking.services;
 
 
+import health.care.booking.dto.AvailabilityUserIdResponse;
 import health.care.booking.models.Role;
 import health.care.booking.models.User;
 import health.care.booking.respository.UserRepository;
@@ -10,6 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -38,6 +41,7 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
+
 
     public boolean existsByUsername(String username) {
         return userRepository.findByUsername(username).isPresent();
