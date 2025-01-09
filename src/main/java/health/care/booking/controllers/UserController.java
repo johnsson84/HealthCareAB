@@ -43,19 +43,7 @@ public class UserController {
         if (userIdList.getUserIds() == null || userIdList.getUserIds().isEmpty()) {
             throw new IllegalArgumentException("User ID list cannot be null or empty");
         }
-        List<AvailabilityUserIdResponse> idResponses = new ArrayList<>();
-        for (String id : userIdList.getUserIds()) {
-            User user = userRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Could not find user with id: " + id));
-            AvailabilityUserIdResponse idResponse = new AvailabilityUserIdResponse(
-                    user.getId(),
-                    user.getFirstName(),
-                    user.getLastName(),
-                    user.getUsername()
-            );
-            idResponses.add(idResponse);
-        }
-
+        List<AvailabilityUserIdResponse> idResponses = userService.makeAndSendBackUserResponse(userIdList.getUserIds());
         return idResponses;
 
     }

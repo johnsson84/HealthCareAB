@@ -51,5 +51,20 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public List<AvailabilityUserIdResponse> makeAndSendBackUserResponse(List<String> userIds) {
+        List<AvailabilityUserIdResponse> idResponses = new ArrayList<>();
+        for (String id : userIds) {
+            User user = userRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Could not find user with id: " + id));
+            AvailabilityUserIdResponse idResponse = new AvailabilityUserIdResponse(
+                    user.getId(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getUsername()
+            );
+            idResponses.add(idResponse);
+        }
+        return idResponses;
+    }
     
 }
