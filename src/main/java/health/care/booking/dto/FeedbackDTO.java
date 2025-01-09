@@ -7,6 +7,7 @@ public class FeedbackDTO {
     // Variables
     @NotBlank
     private String appointmentId;
+    @Size(min = 0, max = 200)
     private String comment; // This is optional
 
     @Min(1)
