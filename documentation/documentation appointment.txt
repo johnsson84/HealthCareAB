@@ -39,3 +39,13 @@ http://localhost:8080/info/{appointmentId} (GET)
 
 ####################################################
 ####################################################
+
+getAppointmentHistoryFromUsernamePatient
+http://localhost:8080/appointment/history/1/{username}
+####################################################
+####################################################
+
+getAppointmentHistoryFromUsernameCaregiver
+http://localhost:8080/appointment/history/2/{username}
+####################################################
+####################################################
