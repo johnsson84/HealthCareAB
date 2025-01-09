@@ -29,7 +29,7 @@ public class UserController {
   @GetMapping("/find-userId/{userId}")
   public ResponseEntity<?> findUserById(@Valid @PathVariable String userId) {
     try {
-      return ResponseEntity.ok(userService.findByUsername(userId));
+      return ResponseEntity.ok(userService.findById(userId));
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
