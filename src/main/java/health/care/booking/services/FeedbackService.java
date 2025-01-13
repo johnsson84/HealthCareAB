@@ -45,7 +45,7 @@ public class FeedbackService {
         // Check if feedback already given
         List<Feedback> all = getFeedbackForCaregiver(caregiverUsername);
         for (Feedback feedback : all) {
-            if (feedback.getPatientUsername().equals(patientUsername)) {
+            if (feedback.getAppointmentId().equals(feedbackDTO.getAppointmentId())) {
                 throw new Exception("Feedback already given!");
             }
         }
