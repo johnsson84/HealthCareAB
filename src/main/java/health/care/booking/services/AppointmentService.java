@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -125,8 +127,16 @@ public class AppointmentService {
         // Filter to keep only completed appointments and sort by date (newest first)
         List<Appointment> historyAppointments = userAppointments.stream()
                 .filter(appointment -> Status.COMPLETED.equals(appointment.getStatus()))
-                .sorted((appointment1, appointment2) -> appointment2.getDateTime().compareTo(appointment1.getDateTime()))
+                .filter(appointment -> {
+                    LocalDateTime appointmentDateTime = appointment.getDateTime().toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDateTime();
+
+                    return appointmentDateTime.isAfter(LocalDateTime.now());
+                })
                 .collect(Collectors.toList());
+
+
 
         return ResponseEntity.ok(historyAppointments);
     }
