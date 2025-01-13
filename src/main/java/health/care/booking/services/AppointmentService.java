@@ -84,6 +84,7 @@ public class AppointmentService {
         return ResponseEntity.ok(appointmentInfo);
     }
 
+
     public List<Appointment> getCompletedUserAppointments(String userId){
         List<Appointment> userAppointments = appointmentRepository.findAppointmentByPatientId(userId);
 
@@ -94,7 +95,7 @@ public class AppointmentService {
 
         return historyAppointments;
     }
-    public List<Appointment> getCompletedDoctorAppointments(String caregiverId){
+    public List<Appointment> getCompletedDoctorAppointments(String caregiverId) {
         List<Appointment> userAppointments = appointmentRepository.findByCaregiverId(caregiverId);
 
         // Filter to keep only scheduled appointments
@@ -103,5 +104,30 @@ public class AppointmentService {
                 .collect(Collectors.toList());
 
         return historyAppointments;
+    }
+    public ResponseEntity<?> getAppointmentHistoryFromUsernamePatient(String userId) {
+
+        List<Appointment> userAppointments = appointmentRepository.findAppointmentByPatientId(userId);
+
+        // Filter to keep only completed appointments and sort by date (newest first)
+        List<Appointment> historyAppointments = userAppointments.stream()
+                .filter(appointment -> Status.COMPLETED.equals(appointment.getStatus()))
+                .sorted((appointment1, appointment2) -> appointment2.getDateTime().compareTo(appointment1.getDateTime()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(historyAppointments);
+    }
+
+    public ResponseEntity<?> getAppointmentHistoryFromUsernameCaregiver(String userId) {
+
+        List<Appointment> userAppointments = appointmentRepository.findAppointmentByCaregiverId(userId);
+
+        // Filter to keep only completed appointments and sort by date (newest first)
+        List<Appointment> historyAppointments = userAppointments.stream()
+                .filter(appointment -> Status.COMPLETED.equals(appointment.getStatus()))
+                .sorted((appointment1, appointment2) -> appointment2.getDateTime().compareTo(appointment1.getDateTime()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(historyAppointments);
     }
 }

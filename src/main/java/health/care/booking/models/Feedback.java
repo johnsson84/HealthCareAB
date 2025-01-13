@@ -3,7 +3,6 @@ package health.care.booking.models;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "feedback")
@@ -12,12 +11,12 @@ public class Feedback {
     private String id;
 
     // Feedback kan man endast göra på ett specifikt Appointment
-    @DBRef
-    private Appointment appointmentId;
 
-    // ev ta bort patient finns i appointment men kanske att det påverkar performance..
-    @DBRef
-    private User patientId;
+    private String appointmentId;
+
+    private String caregiverUsername;
+
+    private String patientUsername;
 
     private String comment;
 
@@ -38,20 +37,20 @@ public class Feedback {
         this.id = id;
     }
 
-    public Appointment getAppointmentId() {
+    public String getAppointmentId() {
         return appointmentId;
     }
 
-    public void setAppointmentId(Appointment appointmentId) {
+    public void setAppointmentId(String appointmentId) {
         this.appointmentId = appointmentId;
     }
 
-    public User getPatientId() {
-        return patientId;
+    public String getCaregiverUsername() {
+        return caregiverUsername;
     }
 
-    public void setPatientId(User patientId) {
-        this.patientId = patientId;
+    public void setCaregiverUsername(String caregiverUsername) {
+        this.caregiverUsername = caregiverUsername;
     }
 
     public String getComment() {
@@ -70,5 +69,13 @@ public class Feedback {
 
     public void setRating(@Min(1) @Max(5) int rating) {
         this.rating = rating;
+    }
+
+    public String getPatientUsername() {
+        return patientUsername;
+    }
+
+    public void setPatientUsername(String patientUsername) {
+        this.patientUsername = patientUsername;
     }
 }
