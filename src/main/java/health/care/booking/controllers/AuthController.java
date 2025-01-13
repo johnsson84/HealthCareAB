@@ -1,12 +1,10 @@
 package health.care.booking.controllers;
 
 import health.care.booking.dto.*;
-import health.care.booking.models.Doctor;
 import health.care.booking.models.Role;
 import health.care.booking.models.User;
 import health.care.booking.respository.UserRepository;
 import health.care.booking.services.CustomUserDetailsService;
-import health.care.booking.services.DoctorService;
 import health.care.booking.services.PasswordResetService;
 import health.care.booking.services.UserService;
 import health.care.booking.util.JwtUtil;
@@ -44,8 +42,7 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private DoctorService doctorService;
+
     @Autowired
     private PasswordResetService passwordResetService;
     @Autowired
@@ -85,36 +82,17 @@ public class AuthController {
             // add cookie to response
             response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
 
-            Set<Role> roles;
-            try {
-                roles = userService.findByUsername(userDetails.getUsername()).getRoles();
-                System.out.println("user");
-            } catch (Exception e) {
-                roles = doctorService.findByUsername(userDetails.getUsername()).getRoles();
-                System.out.println("doctor");
-            }
-            System.out.println("role: " + roles);
+            // return response without JWT in body
+            AuthResponse authResponse = new AuthResponse(
+                    "Login successful",
+                    userDetails.getUsername(),
+                    userService.findByUsername(userDetails.getUsername()).getRoles()
+            );
 
-            if (roles.equals(Role.USER) || roles.equals(Role.ADMIN)) {
-                AuthResponse authResponse = new AuthResponse(
-                        "Login successful",
-                        userDetails.getUsername(),
-                        userService.findByUsername(userDetails.getUsername()).getRoles()
-                );
-                return ResponseEntity.ok()
-                        .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                        .body(authResponse);
-            }
-            if (roles.equals(Role.DOCTOR)) {
-                AuthResponse authResponse = new AuthResponse(
-                        "Login successful",
-                        userDetails.getUsername(),
-                        doctorService.findByUsername(userDetails.getUsername()).getRoles()
-                );
-                return ResponseEntity.ok()
-                        .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                        .body(authResponse);
-            }
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                    .body(authResponse);
 
 
         } catch (AuthenticationException e) {
@@ -123,7 +101,7 @@ public class AuthController {
                     .status(HttpStatus.UNAUTHORIZED)
                     .body("Incorrect username or password");
         }
-        return null;
+
     }
 
 
@@ -202,7 +180,7 @@ public class AuthController {
                 user.getRoles()
         );
         // register the user using UserService
-        userService.registerUser(user);
+        userService.registerAdmin(user);
         return ResponseEntity.ok(regResponse);
     }
 
@@ -224,25 +202,25 @@ public class AuthController {
         }
 
         // map the registration request to a User entity
-        Doctor doctor = new Doctor();
-        doctor.setUsername(request.getUsername());
-        doctor.setPassword(request.getPassword());
-        doctor.setMail(request.getMail());
-        doctor.setFirstName(request.getFirstName());
-        doctor.setLastName(request.getLastName());
-        doctor.setSpecialities(request.getSpecialities());
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(request.getPassword());
+        user.setMail(request.getMail());
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setSpecialities(request.getSpecialities());
 
         // assign roles
-        doctor.setRoles(Set.of(Role.DOCTOR));
+        user.setRoles(Set.of(Role.DOCTOR));
 
         RegisterResponse regResponse = new RegisterResponse(
                 "User registered successfully",
-                doctor.getUsername(),
-                doctor.getRoles()
+                user.getUsername(),
+                user.getRoles()
         );
 
         // register the user using UserService
-        doctorService.registerDoctor(doctor);
+        userService.registerCaregiver(user);
         return ResponseEntity.ok(regResponse);
     }
 
