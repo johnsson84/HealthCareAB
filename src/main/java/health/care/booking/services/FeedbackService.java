@@ -72,6 +72,16 @@ public class FeedbackService {
         }
 
     }
+    // Get a list of all feedback a patient has given
+    public List<Feedback> getGivenFeedbackFromPatient(String patientUsername) throws Exception {
+        User patient = userRepository.findByUsername(patientUsername)
+                .orElseThrow(() -> new RuntimeException("Patient not found!"));
+        if (patient.getRoles().contains(Role.USER)) {
+            return feedbackRepository.findAllByPatientUsername(patientUsername);
+        } else {
+            throw new Exception("Username is not a patient!");
+        }
+    }
 
     // Delete a feedback
     public ResponseEntity<?> deleteFeedback(String feedbackId) throws Exception {

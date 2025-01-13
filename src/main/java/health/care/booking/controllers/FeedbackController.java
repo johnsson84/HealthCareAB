@@ -43,6 +43,18 @@ public class FeedbackController {
         }
     }
 
+    // Get all feedbacks a patient have given
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/patient/{patientUsername}")
+    public ResponseEntity<?> getGivenFeedbackFromPatient(@Valid @PathVariable String patientUsername) throws Exception {
+        List<Feedback> allFeedback = feedbackService.getGivenFeedbackFromPatient(patientUsername);
+        if (!allFeedback.isEmpty()) {
+            return ResponseEntity.ok(allFeedback);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No feedback found...");
+        }
+    }
+
     // Add a feedback to a caregiver
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/add")

@@ -21,5 +21,9 @@ List all feedbacks for one caregiver
 GET http://localhost:8080/feedback/caregiver/pedro
 
 ==============================================
+List all feedbacks a patient has given
+GET http://localhost:8080/feedback/patient/pepsi
+
+==============================================
 Remove one feedback
 DELETE http://localhost:8080/feedback/delete/6777e42d5363be09bab42259
