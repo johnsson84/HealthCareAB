@@ -45,8 +45,6 @@ public class UserController {
     }
   }
 
-
-
   @GetMapping("/find-userId/{userId}")
   public ResponseEntity<?> findUserById(@Valid @PathVariable String userId) {
     try {
