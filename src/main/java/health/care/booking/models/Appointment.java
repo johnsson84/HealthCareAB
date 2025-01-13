@@ -2,7 +2,6 @@ package health.care.booking.models;
 
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -15,9 +14,6 @@ public class Appointment {
     private String patientId;
 
     private String caregiverId;
-
-
-    private  String patientUsername;
 
 
     private String summary;
@@ -73,14 +69,6 @@ public class Appointment {
         this.caregiverId = caregiverId;
     }
 
-
-    public String getPatientUsername() {
-        return patientUsername;
-    }
-
-    public void setPatientUsername(String patientUsername) {
-        this.patientUsername = patientUsername;
-    }
 
     public String getSummary() {
         return summary;

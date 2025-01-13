@@ -93,6 +93,13 @@ public class AppointmentService {
         // Filter to keep only scheduled appointments
         List<Appointment> historyAppointments = userAppointments.stream()
                 .filter(appointment -> Status.SCHEDULED.equals(appointment.getStatus()))
+                .filter(appointment -> {
+                    LocalDateTime appointmentDateTime = appointment.getDateTime().toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDateTime();
+
+                    return appointmentDateTime.isAfter(LocalDateTime.now());
+                })
                 .collect(Collectors.toList());
 
         return historyAppointments;
@@ -103,6 +110,13 @@ public class AppointmentService {
         // Filter to keep only scheduled appointments
         List<Appointment> historyAppointments = userAppointments.stream()
                 .filter(appointment -> Status.SCHEDULED.equals(appointment.getStatus()))
+                .filter(appointment -> {
+                    LocalDateTime appointmentDateTime = appointment.getDateTime().toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDateTime();
+
+                    return appointmentDateTime.isAfter(LocalDateTime.now());
+                })
                 .collect(Collectors.toList());
 
         return historyAppointments;
@@ -127,16 +141,8 @@ public class AppointmentService {
         // Filter to keep only completed appointments and sort by date (newest first)
         List<Appointment> historyAppointments = userAppointments.stream()
                 .filter(appointment -> Status.COMPLETED.equals(appointment.getStatus()))
-                .filter(appointment -> {
-                    LocalDateTime appointmentDateTime = appointment.getDateTime().toInstant()
-                            .atZone(ZoneId.systemDefault())
-                            .toLocalDateTime();
-
-                    return appointmentDateTime.isAfter(LocalDateTime.now());
-                })
+                .sorted((appointment1, appointment2) -> appointment2.getDateTime().compareTo(appointment1.getDateTime()))
                 .collect(Collectors.toList());
-
-
 
         return ResponseEntity.ok(historyAppointments);
     }
