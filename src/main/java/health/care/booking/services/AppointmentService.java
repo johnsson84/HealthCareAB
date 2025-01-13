@@ -13,8 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
@@ -81,5 +82,26 @@ public class AppointmentService {
         appointmentInfo.put("status", appointment.getStatus());
 
         return ResponseEntity.ok(appointmentInfo);
+    }
+
+    public List<Appointment> getCompletedUserAppointments(String userId){
+        List<Appointment> userAppointments = appointmentRepository.findAppointmentByPatientId(userId);
+
+        // Filter to keep only scheduled appointments
+        List<Appointment> historyAppointments = userAppointments.stream()
+                .filter(appointment -> Status.SCHEDULED.equals(appointment.getStatus()))
+                .collect(Collectors.toList());
+
+        return historyAppointments;
+    }
+    public List<Appointment> getCompletedDoctorAppointments(String caregiverId){
+        List<Appointment> userAppointments = appointmentRepository.findByCaregiverId(caregiverId);
+
+        // Filter to keep only scheduled appointments
+        List<Appointment> historyAppointments = userAppointments.stream()
+                .filter(appointment -> Status.SCHEDULED.equals(appointment.getStatus()))
+                .collect(Collectors.toList());
+
+        return historyAppointments;
     }
 }

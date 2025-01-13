@@ -4,7 +4,6 @@ import health.care.booking.dto.AppointmentRequest;
 import health.care.booking.models.Appointment;
 import health.care.booking.models.Availability;
 import health.care.booking.models.Status;
-import health.care.booking.models.User;
 import health.care.booking.respository.AppointmentRepository;
 import health.care.booking.respository.AvailabilityRepository;
 import health.care.booking.respository.UserRepository;
@@ -13,12 +12,9 @@ import health.care.booking.services.MailService;
 import health.care.booking.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -64,12 +60,17 @@ public class AppointmentController {
         return appointmentRepository.findAppointmentByPatientId(userId);
 
     }
+    @GetMapping("/get/scheduled/user/{username}")
+    public List<Appointment> getCompletedUsersAppointments(@Valid @PathVariable String username) {
+        String userId = userRepository.findByUsername(username).get().getId();
+        return appointmentService.getCompletedUserAppointments(userId);
 
+    }
 
-    @GetMapping("/all/{username}")
-    public List<Appointment> getDoctorAppointments(@Valid @PathVariable String username) {
+    @GetMapping("/get/scheduled/caregiver/{username}")
+    public List<Appointment> getCompletedDoctorAppointments(@Valid @PathVariable String username) {
         String caregiverId = userRepository.findByUsername(username).get().getId();
-        return appointmentRepository.findByCaregiverId(caregiverId);
+        return appointmentService.getCompletedDoctorAppointments(caregiverId);
     }
 
     @PostMapping("/change-status/{status}/{appointmentId}")
