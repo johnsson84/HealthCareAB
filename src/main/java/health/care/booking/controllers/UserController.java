@@ -32,7 +32,8 @@ public class UserController {
 
   @Autowired
   private UserService userService;
-
+  @Autowired
+  private UserRepository userRepository;
 
   @GetMapping("/find/{username}")
   public ResponseEntity<?> findUserByUsername(@Valid @PathVariable String username) {
