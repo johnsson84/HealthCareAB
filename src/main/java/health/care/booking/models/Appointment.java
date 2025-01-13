@@ -2,7 +2,6 @@ package health.care.booking.models;
 
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -16,7 +15,9 @@ public class Appointment {
 
     private String caregiverId;
 
+
     private String summary;
+
     // datum och tid, vill ni så kan ni ändra till något annat
     // tex ett fält för datum ett för tid det är upp till er
     private @NotNull Date dateTime;
@@ -68,11 +69,13 @@ public class Appointment {
         this.caregiverId = caregiverId;
     }
 
+
     public String getSummary() {
         return summary;
     }
 
     public void setSummary(String summary) {
         this.summary = summary;
+
     }
 }

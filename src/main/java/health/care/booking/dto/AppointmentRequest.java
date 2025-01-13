@@ -10,6 +10,7 @@ public class AppointmentRequest {
     @NotBlank
     public String username;
 
+
     @NotBlank
     public String summary;
 

@@ -13,13 +13,10 @@ import health.care.booking.services.MailService;
 import health.care.booking.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -63,6 +60,19 @@ public class AppointmentController {
     public List<Appointment> getUsersAppointments(@Valid @PathVariable String username) {
         String userId = userRepository.findByUsername(username).get().getId();
         return appointmentRepository.findAppointmentByPatientId(userId);
+
+    }
+    @GetMapping("/get/scheduled/user/{username}")
+    public List<Appointment> getCompletedUsersAppointments(@Valid @PathVariable String username) {
+        String userId = userRepository.findByUsername(username).get().getId();
+        return appointmentService.getCompletedUserAppointments(userId);
+
+    }
+
+    @GetMapping("/get/scheduled/caregiver/{username}")
+    public List<Appointment> getCompletedDoctorAppointments(@Valid @PathVariable String username) {
+        String caregiverId = userRepository.findByUsername(username).get().getId();
+        return appointmentService.getCompletedDoctorAppointments(caregiverId);
     }
 
     @PostMapping("/change-status/{status}/{appointmentId}")
