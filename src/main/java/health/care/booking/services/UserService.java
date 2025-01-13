@@ -37,6 +37,34 @@ public class UserService {
         return user;
     }
 
+    public User registerCaregiver(User user) {
+        // hash the password
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+
+        // ensure the user has at least the default role
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            user.setRoles(Set.of(Role.DOCTOR));
+        }
+
+        userRepository.save(user);
+        return user;
+    }
+
+    public User registerAdmin(User user) {
+        // hash the password
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+
+        // ensure the user has at least the default role
+        if (user.getRoles() == null || user.getRoles().isEmpty()) {
+            user.setRoles(Set.of(Role.ADMIN));
+        }
+
+        userRepository.save(user);
+        return user;
+    }
+
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
