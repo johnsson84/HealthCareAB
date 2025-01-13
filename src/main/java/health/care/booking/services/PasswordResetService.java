@@ -16,25 +16,20 @@ import java.util.UUID;
 @Service
 public class PasswordResetService {
 
-    JavaMailSender mailSender;
     @Autowired
     private TokenPasswordResetRepository tokenRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     @Autowired
     private MailService mailService;
 
-    public PasswordResetService(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
-    }
 
     public void sendPasswordResetLink(String mail) {
         // Tar bort token kopplad till mejl från databasen
         tokenRepository.deleteByMail(mail);
-        // Genererar en säker token genom UUID
+        // Genererar en unik token
         String token = UUID.randomUUID().toString();
         // spara token till DB
         TokenPasswordReset resetToken = new TokenPasswordReset();
@@ -46,7 +41,6 @@ public class PasswordResetService {
         String resetLink = "http://localhost:5173/resetPassword?token=" + token;
         mailService.sendEmail(mail, "Password Reset Request", "Click the link to reset your password: " + resetLink);
     }
-
 
     public boolean validateToken(String token) {
         // Hämtar token från DB och kollar om den är giltig eller inte
