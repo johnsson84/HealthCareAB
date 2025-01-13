@@ -43,7 +43,18 @@ public class UserController {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
   }
-
+  @GetMapping("/find/userURL/{username}")
+  public ResponseEntity<?> findUserPictureURL(@Valid @PathVariable String username) {
+      String url = userService.findByUsername(username).getUserPictureURL();
+      if (url == null || url.isEmpty()) {
+          url = "placeholder";
+      }
+      try {
+          return ResponseEntity.ok(url);
+      } catch (Exception e) {
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+      }
+  }
 
   @GetMapping("/find-userId/{userId}")
   public ResponseEntity<?> findUserById(@Valid @PathVariable String userId) {
