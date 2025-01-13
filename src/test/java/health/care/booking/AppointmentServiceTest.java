@@ -7,6 +7,7 @@ import health.care.booking.models.Appointment;
 import health.care.booking.models.Availability;
 import health.care.booking.models.Status;
 import health.care.booking.models.User;
+import health.care.booking.respository.AppointmentRepository;
 import health.care.booking.respository.AvailabilityRepository;
 import health.care.booking.respository.UserRepository;
 import health.care.booking.services.AppointmentService;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,8 +30,12 @@ public class AppointmentServiceTest {
     @Mock
     private AvailabilityRepository availabilityRepository;
 
+    @Mock
+    private AppointmentRepository appointmentRepository;
+
     @InjectMocks
     private AppointmentService appointmentService;
+
 
     private User patient;
     private User caregiver;
@@ -177,5 +183,59 @@ public class AppointmentServiceTest {
 
         assertEquals("User not found", exception.getMessage());
     }
+
+
+    @Test
+    void testGetAppointmentHistoryFromUsernamePatient() {
+        // Arrange
+        String userId = "patient123";
+        Appointment appointment1 = new Appointment();
+        appointment1.setStatus(Status.COMPLETED);
+        appointment1.setDateTime(new Date(System.currentTimeMillis() - 2 * 24 * 60 * 60 * 1000));
+
+        Appointment appointment2 = new Appointment();
+        appointment2.setStatus(Status.COMPLETED);
+        appointment2.setDateTime(new Date(System.currentTimeMillis() - 1 * 24 * 60 * 60 * 1000));
+
+        Appointment appointment3 = new Appointment();
+        appointment3.setStatus(Status.ERROR);
+
+        List<Appointment> appointments = List.of(appointment1, appointment2, appointment3);
+        when(appointmentRepository.findAppointmentByPatientId(userId)).thenReturn(appointments);
+
+        // Act
+        ResponseEntity<?> response = appointmentService.getAppointmentHistoryFromUsernamePatient(userId);
+
+        // Assert
+        assertEquals(ResponseEntity.ok(List.of(appointment2, appointment1)), response);
+        verify(appointmentRepository, times(1)).findAppointmentByPatientId(userId);
+    }
+
+    @Test
+    void testGetAppointmentHistoryFromUsernameCaregiver() {
+        // Arrange
+        String userId = "caregiver123";
+        Appointment appointment1 = new Appointment();
+        appointment1.setStatus(Status.COMPLETED);
+        appointment1.setDateTime(new Date(System.currentTimeMillis() - 3 * 24 * 60 * 60 * 1000));
+
+        Appointment appointment2 = new Appointment();
+        appointment2.setStatus(Status.COMPLETED);
+        appointment2.setDateTime(new Date(System.currentTimeMillis() - 1 * 24 * 60 * 60 * 1000));
+
+        Appointment appointment3 = new Appointment();
+        appointment3.setStatus(Status.ERROR);
+
+        List<Appointment> appointments = List.of(appointment1, appointment2, appointment3);
+        when(appointmentRepository.findAppointmentByCaregiverId(userId)).thenReturn(appointments);
+
+        // Act
+        ResponseEntity<?> response = appointmentService.getAppointmentHistoryFromUsernameCaregiver(userId);
+
+        // Assert
+        assertEquals(ResponseEntity.ok(List.of(appointment2, appointment1)), response);
+        verify(appointmentRepository, times(1)).findAppointmentByCaregiverId(userId);
+    }
+
 
 }

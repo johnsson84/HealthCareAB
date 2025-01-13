@@ -11,10 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
@@ -81,5 +79,31 @@ public class AppointmentService {
         appointmentInfo.put("status", appointment.getStatus());
 
         return ResponseEntity.ok(appointmentInfo);
+    }
+
+    public ResponseEntity<?> getAppointmentHistoryFromUsernamePatient(String userId) {
+
+        List<Appointment> userAppointments = appointmentRepository.findAppointmentByPatientId(userId);
+
+        // Filter to keep only completed appointments and sort by date (newest first)
+        List<Appointment> historyAppointments = userAppointments.stream()
+                .filter(appointment -> Status.COMPLETED.equals(appointment.getStatus()))
+                .sorted((appointment1, appointment2) -> appointment2.getDateTime().compareTo(appointment1.getDateTime()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(historyAppointments);
+    }
+
+    public ResponseEntity<?> getAppointmentHistoryFromUsernameCaregiver(String userId) {
+
+        List<Appointment> userAppointments = appointmentRepository.findAppointmentByCaregiverId(userId);
+
+        // Filter to keep only completed appointments and sort by date (newest first)
+        List<Appointment> historyAppointments = userAppointments.stream()
+                .filter(appointment -> Status.COMPLETED.equals(appointment.getStatus()))
+                .sorted((appointment1, appointment2) -> appointment2.getDateTime().compareTo(appointment1.getDateTime()))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(historyAppointments);
     }
 }
