@@ -1,9 +1,7 @@
 package health.care.booking.dto;
 
 import health.care.booking.models.Role;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 import java.util.Set;
 
@@ -23,9 +21,11 @@ public class RegisterRequest {
 
     private Set<Role> roles;
 
-    public RegisterRequest() {}
+    public RegisterRequest() {
+    }
 
-    public RegisterRequest(String username, String password, Set<Role> roles, String mail, String firstName, String lastName) {
+    public RegisterRequest(String username, String password, Set<Role> roles, String mail, String firstName,
+            String lastName) {
         this.username = username;
         this.password = password;
         this.roles = roles;
@@ -42,9 +42,17 @@ public class RegisterRequest {
         return password;
     }
 
-    public @NotBlank String getMail() {return mail;}
-    public @NotBlank String getFirstName() {return firstName;}
-    public @NotBlank String getLastName() {return lastName;}
+    public @NotBlank String getMail() {
+        return mail;
+    }
+
+    public @NotBlank String getFirstName() {
+        return firstName;
+    }
+
+    public @NotBlank String getLastName() {
+        return lastName;
+    }
 
     public Set<Role> getRoles() {
         return roles;
