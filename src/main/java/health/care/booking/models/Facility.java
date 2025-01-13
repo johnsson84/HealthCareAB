@@ -15,13 +15,13 @@ public class Facility {
 
   private List<Address> addresses;
 
-  private double location;
-
   private int phoneNumber;
 
   private String email;
 
   private String hoursOpen;
+
+  private List<User> coworkers;
 
   public String getFacilityName() {
     return facilityName;
@@ -37,14 +37,6 @@ public class Facility {
 
   public void setAddresses(List<Address> addresses) {
     this.addresses = addresses;
-  }
-
-  public double getLocation() {
-    return location;
-  }
-
-  public void setLocation(double location) {
-    this.location = location;
   }
 
   public int getPhoneNumber() {
@@ -71,4 +63,17 @@ public class Facility {
     this.hoursOpen = hoursOpen;
   }
 
+
+
+  public int getId() {
+    return id;
+  }
+
+  public List<User> getCoworkers() {
+    return coworkers;
+  }
+
+  public void setCoworkers(List<User> coworkers) {
+    this.coworkers = coworkers;
+  }
 }
