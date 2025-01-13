@@ -81,4 +81,18 @@ public class FeedbackService {
         return ResponseEntity.ok("Feedback deleted successfully");
     }
 
+    public double getAverageFeedbackGrade(String username) throws Exception {
+        List<Feedback> feedbackList = getFeedbackForCaregiver(username);
+        int feedbackGradeSum = 0;
+
+        for (Feedback feedback : feedbackList) {
+            feedbackGradeSum = feedbackGradeSum + feedback.getRating();
+        }
+        double feedbackGradeAverage = 0;
+        if (feedbackGradeSum == 0){
+            return feedbackGradeAverage;
+        }else {
+            return feedbackGradeAverage = (double) feedbackGradeSum /feedbackList.size();
+        }
+    }
 }

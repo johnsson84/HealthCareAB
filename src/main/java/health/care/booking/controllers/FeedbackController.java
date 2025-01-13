@@ -65,4 +65,11 @@ public class FeedbackController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
         }
     }
+
+    @GetMapping("/find/average-grade/{username}")
+    public double feedbackAverageResponseMethod(@Valid @PathVariable String username) throws Exception {
+        double feedbackGradeAverage = feedbackService.getAverageFeedbackGrade(username);
+
+        return feedbackGradeAverage;
+    }
 }

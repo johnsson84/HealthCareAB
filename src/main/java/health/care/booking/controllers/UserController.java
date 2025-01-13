@@ -35,6 +35,7 @@ public class UserController {
   @Autowired
   private UserRepository userRepository;
 
+
   @GetMapping("/find/{username}")
   public ResponseEntity<?> findUserByUsername(@Valid @PathVariable String username) {
     try {
@@ -81,5 +82,6 @@ public class UserController {
         List<AvailabilityUserIdResponse> idResponses = userService.makeAndSendBackUserResponse(userIdList.getUserIds());
         return idResponses;
     }
+
 
 }
