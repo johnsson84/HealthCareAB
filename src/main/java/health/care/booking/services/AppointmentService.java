@@ -83,6 +83,17 @@ public class AppointmentService {
     }
 
 
+    public ResponseEntity<?> getDoctorAppointments(String username){
+        String caregiverId = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"))
+                .getId();
 
+        List<Appointment> userAppointments = appointmentRepository.findByCaregiverId(caregiverId);
+        return (ResponseEntity<?>) userAppointments.stream()
+                .filter(appointment -> Status.SCHEDULED.equals(appointment.getStatus()))
+                .collect(Collectors.toList());
+
+
+    }
 
 }
