@@ -1,11 +1,12 @@
 package health.care.booking.controllers;
 
 import health.care.booking.dto.*;
+import health.care.booking.models.Doctor;
 import health.care.booking.models.Role;
-import health.care.booking.models.TokenPasswordReset;
 import health.care.booking.models.User;
 import health.care.booking.respository.UserRepository;
 import health.care.booking.services.CustomUserDetailsService;
+import health.care.booking.services.DoctorService;
 import health.care.booking.services.PasswordResetService;
 import health.care.booking.services.UserService;
 import health.care.booking.util.JwtUtil;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,7 +35,7 @@ import java.util.Set;
 public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
-// comment
+    // comment
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -42,6 +44,8 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private DoctorService doctorService;
     @Autowired
     private PasswordResetService passwordResetService;
     @Autowired
@@ -81,16 +85,37 @@ public class AuthController {
             // add cookie to response
             response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
 
-            // return response without JWT in body
-            AuthResponse authResponse = new AuthResponse(
-                    "Login successful",
-                    userDetails.getUsername(),
-                    userService.findByUsername(userDetails.getUsername()).getRoles()
-            );
+            Set<Role> roles;
+            try {
+                roles = userService.findByUsername(userDetails.getUsername()).getRoles();
+                System.out.println("user");
+            } catch (Exception e) {
+                roles = doctorService.findByUsername(userDetails.getUsername()).getRoles();
+                System.out.println("doctor");
+            }
+            System.out.println("role: " + roles);
 
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                    .body(authResponse);
+            if (roles.equals(Role.USER) || roles.equals(Role.ADMIN)) {
+                AuthResponse authResponse = new AuthResponse(
+                        "Login successful",
+                        userDetails.getUsername(),
+                        userService.findByUsername(userDetails.getUsername()).getRoles()
+                );
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                        .body(authResponse);
+            }
+            if (roles.equals(Role.DOCTOR)) {
+                AuthResponse authResponse = new AuthResponse(
+                        "Login successful",
+                        userDetails.getUsername(),
+                        doctorService.findByUsername(userDetails.getUsername()).getRoles()
+                );
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                        .body(authResponse);
+            }
+
 
         } catch (AuthenticationException e) {
             // Aauthentication failed
@@ -98,6 +123,7 @@ public class AuthController {
                     .status(HttpStatus.UNAUTHORIZED)
                     .body("Incorrect username or password");
         }
+        return null;
     }
 
 
@@ -126,11 +152,7 @@ public class AuthController {
         user.setLastName(request.getLastName());
 
         // assign roles
-        if (request.getRoles() == null || request.getRoles().isEmpty()) {
-            user.setRoles(Set.of(Role.USER));
-        } else {
-            user.setRoles(request.getRoles());
-        }
+        user.setRoles(Set.of(Role.USER));
 
         // register the user using UserService
         userService.registerUser(user);
@@ -142,6 +164,85 @@ public class AuthController {
                 user.getRoles()
         );
 
+        return ResponseEntity.ok(regResponse);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/register/admin")
+    public ResponseEntity<?> registerAdmin(@Valid @RequestBody RegisterRequest request) {
+
+        // check if the username already exists
+        if (userService.existsByUsername(request.getUsername())) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("Username is already taken");
+        }
+        // check if the mail is already in use
+        if (userRepository.existsByMail(request.getMail())) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("Mail is already taken");
+        }
+
+        // map the registration request to a User entity
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(request.getPassword());
+        user.setMail(request.getMail());
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+
+        // assign roles
+        user.setRoles(Set.of(Role.ADMIN));
+
+
+        RegisterResponse regResponse = new RegisterResponse(
+                "User registered successfully",
+                user.getUsername(),
+                user.getRoles()
+        );
+        // register the user using UserService
+        userService.registerUser(user);
+        return ResponseEntity.ok(regResponse);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/register/caregiver")
+    public ResponseEntity<?> registerCaregiver(@Valid @RequestBody RegisterDoctorRequest request) {
+
+        // check if the username already exists
+        if (userService.existsByUsername(request.getUsername())) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("Username is already taken");
+        }
+        // check if the mail is already in use
+        if (userRepository.existsByMail(request.getMail())) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("Mail is already taken");
+        }
+
+        // map the registration request to a User entity
+        Doctor doctor = new Doctor();
+        doctor.setUsername(request.getUsername());
+        doctor.setPassword(request.getPassword());
+        doctor.setMail(request.getMail());
+        doctor.setFirstName(request.getFirstName());
+        doctor.setLastName(request.getLastName());
+        doctor.setSpecialities(request.getSpecialities());
+
+        // assign roles
+        doctor.setRoles(Set.of(Role.DOCTOR));
+
+        RegisterResponse regResponse = new RegisterResponse(
+                "User registered successfully",
+                doctor.getUsername(),
+                doctor.getRoles()
+        );
+
+        // register the user using UserService
+        doctorService.registerDoctor(doctor);
         return ResponseEntity.ok(regResponse);
     }
 
