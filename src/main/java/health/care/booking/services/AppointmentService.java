@@ -9,12 +9,11 @@ import health.care.booking.respository.UserRepository;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
@@ -82,4 +81,22 @@ public class AppointmentService {
 
         return ResponseEntity.ok(appointmentInfo);
     }
+
+    public ResponseEntity<?> getDoctorAppointments(String username){
+        String caregiverId = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"))
+                .getId();
+
+        List<Appointment> userAppointments = appointmentRepository.findByCaregiverId(caregiverId);
+        return (ResponseEntity<?>) userAppointments.stream()
+                .filter(appointment -> Status.SCHEDULED.equals(appointment.getStatus()))
+                .collect(Collectors.toList());
+
+
+    }
+
+
+
+
+
 }
