@@ -4,24 +4,27 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 
-@Document(collection = "address")
-public class Address {
+@Document(collection = "facilityAddress")
+public class FacilityAddress {
 
   @Id
   private String id;
 
   private String street;
-
   private String city;
-
   private int postCode;
-
   private String region;
-
   private String country;
 
+  public FacilityAddress() {
+  }
 
-  public Address() {
+  public FacilityAddress(String street, String city, int postCode, String region, String country) {
+    this.street = street;
+    this.city = city;
+    this.postCode = postCode;
+    this.region = region;
+    this.country = country;
   }
 
 

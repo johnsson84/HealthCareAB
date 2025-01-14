@@ -1,23 +1,26 @@
 package health.care.booking.dto;
 
-import health.care.booking.models.Address;
-import health.care.booking.models.User;
+import health.care.booking.models.FacilityAddress;
 
 import java.util.List;
 
-public class createFacility {
+public class FacilityRequest {
 
     private String facilityName;
-
-    private List<Address> addresses;
-
     private int phoneNumber;
-
     private String email;
-
     private String hoursOpen;
 
-    private List<User> coworkers;
+    private List<CoworkerRequest> coworkers; // this is now my object list of coworkers (this is not full User Objects)
+    private final FacilityAddress facilityAddress; // this is not from a DTO so it is the full FacilityAdress object.
+
+    public FacilityRequest(String facilityName, String hoursOpen, String email, FacilityAddress facilityAddress, int phoneNumber) {
+        this.facilityName = facilityName;
+        this.hoursOpen = hoursOpen;
+        this.email = email;
+        this.facilityAddress = facilityAddress;
+        this.phoneNumber = phoneNumber;
+    }
 
     public String getFacilityName() {
         return facilityName;
@@ -27,12 +30,8 @@ public class createFacility {
         this.facilityName = facilityName;
     }
 
-    public List<Address> getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
+    public FacilityAddress getFacilityAddress() {
+        return (FacilityAddress) facilityAddress;
     }
 
     public int getPhoneNumber() {
@@ -59,11 +58,11 @@ public class createFacility {
         this.hoursOpen = hoursOpen;
     }
 
-    public List<User> getCoworkers() {
+    public List<CoworkerRequest> getCoworkers() {
         return coworkers;
     }
 
-    public void setCoworkers(List<User> coworkers) {
+    public void setCoworkers(List<CoworkerRequest> coworkers) {
         this.coworkers = coworkers;
     }
 }
