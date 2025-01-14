@@ -31,11 +31,11 @@ public class FeedbackController {
         return ResponseEntity.ok(feedbackRepository.findAll());
     }
 
-    // Get all feedbacks from a caregiver
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/caregiver/{caregiverUsername}")
-    public ResponseEntity<?> getCaregiverFeedback(@Valid @PathVariable String caregiverUsername) throws Exception {
-        List<Feedback> allFeedback = feedbackService.getFeedbackForCaregiver(caregiverUsername);
+    // Get all feedbacks for a doctor
+    @PreAuthorize("hasRole('DOCTOR')")
+    @GetMapping("/doctor/{username}")
+    public ResponseEntity<?> getDoctorFeedback(@Valid @PathVariable String username) throws Exception {
+        List<Feedback> allFeedback = feedbackService.getFeedbackForDoctor(username);
         if (!allFeedback.isEmpty()) {
             return ResponseEntity.ok(allFeedback);
         } else {
@@ -43,15 +43,15 @@ public class FeedbackController {
         }
     }
 
-    // Get all feedbacks a patient have given
+    // Get all feedbacks given from a patient
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("/patient/{patientUsername}")
-    public ResponseEntity<?> getGivenFeedbackFromPatient(@Valid @PathVariable String patientUsername) throws Exception {
-        List<Feedback> allFeedback = feedbackService.getGivenFeedbackFromPatient(patientUsername);
+    @GetMapping("/patient/{username}")
+    public ResponseEntity<?> getPatientFeedbackGiven(@Valid @PathVariable String username) throws Exception {
+        List<Feedback> allFeedback = feedbackService.getPatientFeedbackGiven(username);
         if (!allFeedback.isEmpty()) {
             return ResponseEntity.ok(allFeedback);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No feedback found...");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No feedback given...");
         }
     }
 
