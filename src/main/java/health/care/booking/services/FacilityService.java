@@ -30,14 +30,6 @@ public class FacilityService {
         newFacility.setEmail(facilityRequest.getEmail());
         newFacility.setHoursOpen(facilityRequest.getHoursOpen());
 
-//        // Fetch coworkers based on username
-//        List<User> coworkers = facilityRequest.getCoworkers().stream()
-//                .map(coworker -> userRepository.findByUsername(coworker.getUsername())
-//                        .orElseThrow(() -> new IllegalArgumentException(
-//                                "User not found with username: " + coworker.getUsername())))
-//
-//                .collect(Collectors.toList());
-
         List<CoworkerRequest> coworkers = facilityRequest.getCoworkers().stream()
                 .map(coworkerRequest -> {
                     User user = userRepository.findByUsername(coworkerRequest.getUsername())
@@ -47,7 +39,7 @@ public class FacilityService {
                             user.getMail(),
                             user.getFirstName(),
                             user.getLastName(),
-                            user.getRoles().stream().findFirst().orElse(null) // Assuming a single role
+                            user.getRoles().stream().findFirst().orElse(null)
                     );
                 })
                 .collect(Collectors.toList());
