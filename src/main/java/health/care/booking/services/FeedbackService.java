@@ -100,7 +100,7 @@ public class FeedbackService {
     }
 
     public List<FeedbackAverageGradeAllResponse> getAverageFeedbackGradeAll() throws Exception {
-        List<User> careGiverList = userRepository.findUserByRolesIs(Collections.singleton(Role.ADMIN));
+        List<User> careGiverList = userRepository.findUserByRolesIs(Collections.singleton(Role.DOCTOR));
         List<FeedbackAverageGradeAllResponse> usernameAndAverageGrade = new ArrayList<>();
 
         for (User user : careGiverList) {
