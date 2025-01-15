@@ -55,4 +55,10 @@ public class FacilityService {
     public Facility GetFacilityById(String id) {
         return facilityRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("Facility not found"));
     }
+
+    public Facility DeleteFacilityById(String id) {
+        Facility facility = facilityRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("Facility not found"));
+        facilityRepository.delete(facility);
+        return facility;
+    }
 }

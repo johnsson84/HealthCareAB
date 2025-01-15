@@ -51,4 +51,15 @@ public class FacilityController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteFacility(@Valid @PathVariable String id) {
+        try {
+            facilityService.DeleteFacilityById(id);
+            return ResponseEntity.ok("Facility deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 }
