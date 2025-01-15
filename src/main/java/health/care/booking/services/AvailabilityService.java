@@ -4,8 +4,6 @@ import health.care.booking.models.Availability;
 import health.care.booking.models.User;
 import health.care.booking.respository.AvailabilityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -90,4 +88,52 @@ public class AvailabilityService {
         } else throw new RuntimeException("changingDates List is null or changingDatesAvailability");
         availabilityRepository.save(changingDatesAvailability);
     }
+
+    public List<Date> addAvailabilityByArray(List<Date> changingDates, String availabilityId) {
+        // Fetch the availability object
+        Availability changeDatesAvailability = availabilityRepository.findById(availabilityId)
+                .orElseThrow(() -> new RuntimeException("Could not find availability object"));
+
+        Date now = new Date();
+        List<Date> checkBeforeNowList = new ArrayList<>();
+        List<String> datesBeforeNow = new ArrayList<>();
+        List<Date> validDates = new ArrayList<>();
+
+        // Separate dates into valid and invalid lists
+        for (Date date : changingDates) {
+            if (!date.before(now)) {
+                checkBeforeNowList.add(date);
+            } else {
+                datesBeforeNow.add(String.valueOf(date));
+            }
+        }
+
+        // Throw exception if there are dates before 'now'
+        if (!datesBeforeNow.isEmpty()) {
+            datesBeforeNow.add("dates.");
+            throw new RuntimeException("Invalid dates before now found: " + String.join(", ", datesBeforeNow));
+        }
+
+        if (changeDatesAvailability != null) {
+            // Filter out dates already in availableSlots
+            List<Date> availableSlots = changeDatesAvailability.getAvailableSlots();
+
+            for (Date date : checkBeforeNowList) {
+                if (!availableSlots.contains(date)) {
+                    validDates.add(date);
+                }
+            }
+
+            // Add the filtered dates to availableSlots
+            changeDatesAvailability.getAvailableSlots().addAll(validDates);
+        } else {
+            throw new RuntimeException("changingDates List is null or changingDatesAvailability");
+        }
+
+        // Save the updated availability object
+        availabilityRepository.save(changeDatesAvailability);
+        // Return the list of valid dates that were added
+        return validDates;
+    }
+
 }

@@ -11,9 +11,11 @@ import health.care.booking.services.AvailabilityService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -58,11 +60,21 @@ public class AvailabilityController {
         return availabilityRepository.findByCaregiverId(user.getId());
     }
 
-    @PutMapping("/change-availability")
-    public ResponseEntity<?> changeAvailabilityHours(@Valid @RequestBody ChangeAvailabilityRequest changeAvailabilityRequest) {
+    @PreAuthorize("hasRole('DOCTOR')")
+    @PutMapping("/remove-availability")
+    public ResponseEntity<?> removeAvailabilityHours(@Valid @RequestBody ChangeAvailabilityRequest changeAvailabilityRequest) {
         Availability changeDatesAvailability = availabilityRepository.findById(changeAvailabilityRequest.availabilityId).orElseThrow(() -> new RuntimeException("Could not find availability object"));
         availabilityService.removeAvailabilityByArray(changeAvailabilityRequest.changingDates, changeDatesAvailability);
         return ResponseEntity.ok("Availability changed");
     }
 
+    @PreAuthorize("hasRole('DOCTOR')")
+    @PutMapping("/add-availability")
+    public ResponseEntity<?> addAvailabilityHours(@Valid @RequestBody ChangeAvailabilityRequest changeAvailabilityRequest) {
+        List<Date> changedDates = availabilityService.addAvailabilityByArray(changeAvailabilityRequest.changingDates, changeAvailabilityRequest.availabilityId);
+        if (changedDates.isEmpty()){
+            return ResponseEntity.ok("No dates have been added, most likely duplicates.");
+        }
+        return ResponseEntity.ok("Selected times were added: " + String.join(", ", changedDates.toString()));
+    }
 }
