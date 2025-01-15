@@ -13,9 +13,7 @@ import org.mockito.MockitoAnnotations;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -171,4 +169,51 @@ public class AvailabilityTests {
 
         assertEquals("changingDates List is null or changingDatesAvailability", exception.getMessage());
     }
+
+    @Test
+    void addAvailabilityByArray_Positive() {
+        // Mock inputs
+        String availabilityId = "test-availability-id";
+        List<Date> changingDates = Arrays.asList(new Date(System.currentTimeMillis() + 86400000), // Tomorrow
+                new Date(System.currentTimeMillis() + 172800000)); // Day after tomorrow
+
+        // Mock the Availability object and repository
+        Availability mockAvailability = new Availability();
+        mockAvailability.setAvailableSlots(new ArrayList<>());
+
+        when(availabilityRepository.findById(availabilityId)).thenReturn(Optional.of(mockAvailability));
+
+        // Invoke the method
+        List<Date> validDates = availabilityService.addAvailabilityByArray(changingDates, availabilityId);
+
+        // Assertions
+        assertNotNull(validDates);
+        assertEquals(changingDates.size(), validDates.size());
+        assertTrue(mockAvailability.getAvailableSlots().containsAll(validDates));
+        verify(availabilityRepository, times(1)).save(mockAvailability);
+    }
+
+    @Test
+    void addAvailabilityByArray_Negative_InvalidDatesBeforeNow() {
+        // Mock inputs
+        String availabilityId = "test-availability-id";
+        List<Date> changingDates = Arrays.asList(new Date(System.currentTimeMillis() - 86400000), // Yesterday
+                new Date(System.currentTimeMillis() + 86400000)); // Tomorrow
+
+        // Mock the Availability object and repository
+        Availability mockAvailability = new Availability();
+        mockAvailability.setAvailableSlots(new ArrayList<>());
+
+        when(availabilityRepository.findById(availabilityId)).thenReturn(Optional.of(mockAvailability));
+
+        // Assertions
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            availabilityService.addAvailabilityByArray(changingDates, availabilityId);
+        });
+
+        assertTrue(exception.getMessage().contains("Invalid dates before now found"));
+        verify(availabilityRepository, never()).save(any(Availability.class));
+    }
+
+
 }
