@@ -73,7 +73,7 @@ public class AvailabilityController {
     public ResponseEntity<?> addAvailabilityHours(@Valid @RequestBody ChangeAvailabilityRequest changeAvailabilityRequest) {
         List<Date> changedDates = availabilityService.addAvailabilityByArray(changeAvailabilityRequest.changingDates, changeAvailabilityRequest.availabilityId);
         if (changedDates.isEmpty()){
-            return ResponseEntity.ok("No dates have been added");
+            return ResponseEntity.ok("No dates have been added, most likely duplicates.");
         }
         return ResponseEntity.ok("Selected times were added: " + String.join(", ", changedDates.toString()));
     }
