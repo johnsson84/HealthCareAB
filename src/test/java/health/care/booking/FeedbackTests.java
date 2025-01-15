@@ -104,7 +104,7 @@ public class FeedbackTests {
         doctor.setFirstName("Doctor");
         doctor.setLastName("Doctorsson");
         doctor.setMail("doctor@feedback.com");
-        doctor.setRoles(Set.of(Role.ADMIN));
+        doctor.setRoles(Set.of(Role.DOCTOR));
 
         arrangeFeedback();
         Feedback feedback1 = new Feedback();
