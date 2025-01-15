@@ -2,6 +2,7 @@ package health.care.booking.models;
 
 import health.care.booking.dto.CoworkerRequest;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 
@@ -12,21 +13,12 @@ public class Facility {
   private String id;
 
   private String facilityName;
-  private FacilityAddress facilityAddress;
   private int phoneNumber;
   private String email;
   private String hoursOpen;
 
   private List<CoworkerRequest> coworkers;
-
-  public Facility(String facilityName, FacilityAddress facilityAddress, String email, int phoneNumber, String hoursOpen, List<CoworkerRequest> coworkers) {
-    this.facilityName = facilityName;
-    this.facilityAddress = facilityAddress;
-    this.email = email;
-    this.phoneNumber = phoneNumber;
-    this.hoursOpen = hoursOpen;
-    this.coworkers = coworkers;
-  }
+  private FacilityAddress facilityAddress;
 
   public Facility() {
 

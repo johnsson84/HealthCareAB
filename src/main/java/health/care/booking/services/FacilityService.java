@@ -17,19 +17,20 @@ public class FacilityService {
 
     @Autowired
     private FacilityRepository facilityRepository;
-
     @Autowired
     private UserRepository userRepository;
 
-    public Facility createFacility(FacilityRequest facilityRequest) {
 
+
+    public Facility createFacility(FacilityRequest facilityRequest) {
         Facility newFacility = new Facility();
         newFacility.setFacilityName(facilityRequest.getFacilityName());
         newFacility.setAddress(facilityRequest.getFacilityAddress());
         newFacility.setPhoneNumber(facilityRequest.getPhoneNumber());
         newFacility.setEmail(facilityRequest.getEmail());
         newFacility.setHoursOpen(facilityRequest.getHoursOpen());
-
+        // Mappar ut ett användar objekt genom CoworkerRequest DTO klassen,
+        // detta för att minska data ja skickar och för att viss data är känslig
         List<CoworkerRequest> coworkers = facilityRequest.getCoworkers().stream()
                 .map(coworkerRequest -> {
                     User user = userRepository.findByUsername(coworkerRequest.getUsername())
@@ -43,7 +44,6 @@ public class FacilityService {
                     );
                 })
                 .collect(Collectors.toList());
-
         newFacility.setCoworkers(coworkers);
         return facilityRepository.save(newFacility);
     }
@@ -52,7 +52,7 @@ public class FacilityService {
         return facilityRepository.findAll();
     }
 
-    public Facility getFacilityById(String id) {
+    public Facility GetFacilityById(String id) {
         return facilityRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("Facility not found"));
     }
 }

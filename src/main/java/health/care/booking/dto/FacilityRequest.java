@@ -1,18 +1,22 @@
 package health.care.booking.dto;
 
 import health.care.booking.models.FacilityAddress;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.List;
 
 public class FacilityRequest {
-
+    @DBRef
+    private String facilityId;
     private String facilityName;
+    private final FacilityAddress facilityAddress; // this is not from a DTO so it is the full FacilityAdress object.
+    private String hoursOpen;
     private int phoneNumber;
     private String email;
-    private String hoursOpen;
+
 
     private List<CoworkerRequest> coworkers; // this is now my object list of coworkers (this is not full User Objects)
-    private final FacilityAddress facilityAddress; // this is not from a DTO so it is the full FacilityAdress object.
+
 
     public FacilityRequest(String facilityName, String hoursOpen, String email, FacilityAddress facilityAddress, int phoneNumber) {
         this.facilityName = facilityName;
@@ -64,5 +68,13 @@ public class FacilityRequest {
 
     public void setCoworkers(List<CoworkerRequest> coworkers) {
         this.coworkers = coworkers;
+    }
+
+    public String getFacilityId() {
+        return facilityId;
+    }
+
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
     }
 }

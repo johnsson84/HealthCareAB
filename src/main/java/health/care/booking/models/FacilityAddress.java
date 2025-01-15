@@ -7,9 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "facilityAddress")
 public class FacilityAddress {
 
-  @Id
-  private String id;
-
   private String street;
   private String city;
   private int postCode;
@@ -66,9 +63,5 @@ public class FacilityAddress {
 
   public void setCountry(String country) {
     this.country = country;
-  }
-
-  public String getId() {
-    return id;
   }
 }
