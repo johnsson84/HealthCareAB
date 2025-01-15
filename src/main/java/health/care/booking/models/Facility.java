@@ -12,11 +12,12 @@ public class Facility {
   @Id
   private String id;
 
+  //Most of these should probably have @notNull
   private String facilityName;
+  // Should probably either be a Long or a string
   private int phoneNumber;
   private String email;
   private String hoursOpen;
-
   private List<CoworkerRequest> coworkers;
   private FacilityAddress facilityAddress;
 

@@ -21,7 +21,7 @@ public class FacilityService {
     private UserRepository userRepository;
 
 
-
+    // Det är nog bättre att bryta ut CoworkerRequest till senare imo, det är jävligt mycket data som skickas med annars
     public Facility createFacility(FacilityRequest facilityRequest) {
         Facility newFacility = new Facility();
         newFacility.setFacilityName(facilityRequest.getFacilityName());

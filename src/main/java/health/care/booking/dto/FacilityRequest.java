@@ -14,7 +14,8 @@ public class FacilityRequest {
     private int phoneNumber;
     private String email;
 
-
+    // why is this a list of CoworkerRequests? could either just be Id's To coworkers or could be DbRefs
+    // You don't have to have it here if you have it in the Model
     private List<CoworkerRequest> coworkers; // this is now my object list of coworkers (this is not full User Objects)
 
 
