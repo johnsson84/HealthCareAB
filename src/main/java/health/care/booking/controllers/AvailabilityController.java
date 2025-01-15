@@ -30,9 +30,10 @@ public class AvailabilityController {
     @Autowired
     private UserRepository userRepository;
 
+    @PreAuthorize("hasAnyRole('DOCTOR', 'ADMIN')")
     @PostMapping("/set/all")
     public ResponseEntity<?> setAvailabilityAll() {
-        List<User> caregiverList = userRepository.findUserByRolesIs(Collections.singleton(Role.ADMIN));
+        List<User> caregiverList = userRepository.findUserByRolesIs(Collections.singleton(Role.DOCTOR));
 
         if (!availabilityService.loopCaregiverList(caregiverList)){
             return ResponseEntity.status(400).body("There are duplicate ");
@@ -59,7 +60,7 @@ public class AvailabilityController {
         User user = userRepository.findByUsername(username.toString()).orElseThrow(() -> new RuntimeException("could not find user: " + username));
         return availabilityRepository.findByCaregiverId(user.getId());
     }
-
+  
     @PreAuthorize("hasRole('DOCTOR')")
     @PutMapping("/remove-availability")
     public ResponseEntity<?> removeAvailabilityHours(@Valid @RequestBody ChangeAvailabilityRequest changeAvailabilityRequest) {
