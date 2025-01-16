@@ -40,7 +40,7 @@ public class AvailabilityController {
         }
         return ResponseEntity.ok("All caregivers availability have been set.");
     }
-
+    @PreAuthorize("hasAnyRole('DOCTOR', 'ADMIN')")
     @PostMapping("/set/one")
     public ResponseEntity<?> setAvailabilityForOne(@Valid @RequestBody AvailabilityRequest availabilityRequest) {
         User careGiver = userRepository.findById(availabilityRequest.careGiverId)
@@ -49,6 +49,7 @@ public class AvailabilityController {
         availabilityRepository.save(newAvailability);
         return ResponseEntity.ok("Added available times for user: " + careGiver.getUsername());
     }
+    @PreAuthorize("hasAnyRole('USER','DOCTOR', 'ADMIN')")
 
     @GetMapping
     public List<Availability> getAllAvailability() {

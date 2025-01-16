@@ -29,8 +29,6 @@ public class SecurityConfig {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
-    private final String adminDoctorUser = "\"USER\",\"DOCTOR\", \"ADMIN\"";
-
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -48,10 +46,10 @@ public class SecurityConfig {
                         // chaina på hasRole eller hasAnyRole
                         
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/availability/**").hasAnyRole(adminDoctorUser)
-                        .requestMatchers("/appointment/**").hasAnyRole(adminDoctorUser)
-                        .requestMatchers("/feedback/**").hasAnyRole(adminDoctorUser)
-                        .requestMatchers("/user/**").hasAnyRole(adminDoctorUser)
+                        .requestMatchers("/availability/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
+                        .requestMatchers("/appointment/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
+                        .requestMatchers("/feedback/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
+                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
                         .requestMatchers("/mail/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/error").permitAll() // ONLY FOR DEBUGGING

@@ -75,6 +75,7 @@ public class AppointmentController {
         String caregiverId = userRepository.findByUsername(username).get().getId();
         return appointmentService.getCompletedDoctorAppointments(caregiverId);
     }
+
     @PreAuthorize("hasRole('DOCTOR')")
     @PostMapping("/change-status/{status}/{appointmentId}")
     public ResponseEntity<?> changeAppointmentStatus(@Valid @PathVariable String status, @PathVariable String appointmentId) {
