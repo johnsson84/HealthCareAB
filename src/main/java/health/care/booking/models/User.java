@@ -16,6 +16,7 @@ public class User {
     private String mail;
     private String firstName;
     private String lastName;
+    private String userPictureURL;
 
     private String specialities;
 
@@ -34,6 +35,13 @@ public class User {
         this.specialities = specialities;
     }
 
+    public String getUserPictureURL() {
+        return userPictureURL;
+    }
+
+    public void setUserPictureURL(String userPictureURL) {
+        this.userPictureURL = userPictureURL;
+    }
 
     public String getId() {
         return id;
