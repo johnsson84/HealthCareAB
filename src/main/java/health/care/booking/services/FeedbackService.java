@@ -7,6 +7,7 @@ import health.care.booking.respository.AppointmentRepository;
 import health.care.booking.respository.FeedbackRepository;
 import health.care.booking.respository.UserRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -46,9 +47,9 @@ public class FeedbackService {
                 .orElseThrow(() -> new Exception("Caregiver not found!"));
 
         // Check if feedback already given
-        List<Feedback> all = getFeedbackForCaregiver(caregiverUsername);
+        List<Feedback> all = getFeedbackForDoctor(caregiverUsername);
         for (Feedback feedback : all) {
-            if (feedback.getPatientUsername().equals(patientUsername)) {
+            if (feedback.getAppointmentId().equals(feedbackDTO.getAppointmentId())) {
                 throw new Exception("Feedback already given!");
             }
         }
@@ -64,16 +65,26 @@ public class FeedbackService {
         return newFeedback;
     }
 
-    // Get a list of all feedback fo a caregiver
-    public List<Feedback> getFeedbackForCaregiver(String caregiverUsername) throws Exception {
-        User caregiver = userRepository.findByUsername(caregiverUsername)
-                .orElseThrow(() -> new RuntimeException("Caregiver not found!"));
-        if (caregiver.getRoles().contains(Role.DOCTOR)) {
-            return feedbackRepository.findAllByCaregiverUsername(caregiverUsername);
+    // Get a list of all feedback for a doctor
+    public List<Feedback> getFeedbackForDoctor(String username) throws Exception {
+        User doctor = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Doctor not found!"));
+        if (doctor.getRoles().contains(Role.DOCTOR)) {
+            return feedbackRepository.findAllByCaregiverUsername(username);
         } else {
-            throw new Exception("Username is not a caregiver!");
+            throw new Exception("User not a doctor!");
         }
+    }
 
+    // Get a list of all feedbacks given from a patient
+    public List<Feedback> getPatientFeedbackGiven(String username) throws Exception {
+        User patient = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Patient not found!"));
+        if (patient.getRoles().contains(Role.USER)) {
+            return feedbackRepository.findAllByPatientUsername(username);
+        } else {
+            throw new Exception("User not a patient!");
+        }
     }
 
     // Delete a feedback
@@ -85,7 +96,7 @@ public class FeedbackService {
     }
 
     public double getAverageFeedbackGrade(String username) throws Exception {
-        List<Feedback> feedbackList = getFeedbackForCaregiver(username);
+        List<Feedback> feedbackList = getFeedbackForDoctor(username);
         int feedbackGradeSum = 0;
 
         for (Feedback feedback : feedbackList) {
