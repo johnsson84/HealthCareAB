@@ -76,7 +76,7 @@ public class AppointmentController {
         return appointmentService.getCompletedDoctorAppointments(caregiverId);
     }
     @PreAuthorize("hasAnyRole('DOCTOR', 'USER')")
-    @PostMapping("/change-status/{status}/{appointmentId}")
+    @PutMapping("/change-status/{status}/{appointmentId}")
     public ResponseEntity<?> changeAppointmentStatus(@Valid @PathVariable String status, @PathVariable String appointmentId) {
        String appointmentStatus =  appointmentService.changeAppointmentStatusService(status, appointmentId);
         return ResponseEntity.ok("The status has been changed to: " + appointmentStatus);
