@@ -17,8 +17,12 @@ POST http://localhost:8080/feedback/add
 }
 
 ==============================================
-List all feedbacks for one caregiver
-GET http://localhost:8080/feedback/caregiver/pedro
+List all feedbacks for one doctor
+GET http://localhost:8080/feedback/doctor/pedro
+
+==============================================
+List all feedback given by a patient
+GET http://localhost:8080/feedback/patient/pepsi
 
 ==============================================
 Remove one feedback
