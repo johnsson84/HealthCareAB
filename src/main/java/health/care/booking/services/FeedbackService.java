@@ -1,5 +1,6 @@
 package health.care.booking.services;
 
+import health.care.booking.dto.FeedbackAverageGradeAllResponse;
 import health.care.booking.dto.FeedbackDTO;
 import health.care.booking.models.*;
 import health.care.booking.respository.AppointmentRepository;
@@ -8,6 +9,8 @@ import health.care.booking.respository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,7 +68,7 @@ public class FeedbackService {
     public List<Feedback> getFeedbackForCaregiver(String caregiverUsername) throws Exception {
         User caregiver = userRepository.findByUsername(caregiverUsername)
                 .orElseThrow(() -> new RuntimeException("Caregiver not found!"));
-        if (caregiver.getRoles().contains(Role.ADMIN)) {
+        if (caregiver.getRoles().contains(Role.DOCTOR)) {
             return feedbackRepository.findAllByCaregiverUsername(caregiverUsername);
         } else {
             throw new Exception("Username is not a caregiver!");
@@ -81,4 +84,32 @@ public class FeedbackService {
         return ResponseEntity.ok("Feedback deleted successfully");
     }
 
+    public double getAverageFeedbackGrade(String username) throws Exception {
+        List<Feedback> feedbackList = getFeedbackForCaregiver(username);
+        int feedbackGradeSum = 0;
+
+        for (Feedback feedback : feedbackList) {
+            feedbackGradeSum = feedbackGradeSum + feedback.getRating();
+        }
+        double feedbackGradeAverage = 0;
+        if (feedbackGradeSum == 0){
+            return feedbackGradeAverage;
+        }else {
+            return (double) feedbackGradeSum /feedbackList.size();
+        }
+    }
+
+    public List<FeedbackAverageGradeAllResponse> getAverageFeedbackGradeAll() throws Exception {
+        List<User> careGiverList = userRepository.findUserByRolesIs(Collections.singleton(Role.DOCTOR));
+        List<FeedbackAverageGradeAllResponse> usernameAndAverageGrade = new ArrayList<>();
+
+        for (User user : careGiverList) {
+            FeedbackAverageGradeAllResponse response = new FeedbackAverageGradeAllResponse();
+            response.setUsername(user.getUsername());
+            response.setAverageGrade(getAverageFeedbackGrade(user.getUsername()));
+            usernameAndAverageGrade.add(response);
+        }
+
+        return usernameAndAverageGrade;
+    }
 }

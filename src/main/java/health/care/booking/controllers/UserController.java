@@ -37,6 +37,7 @@ public class UserController {
   @Autowired
   private UserRepository userRepository;
 
+
   @GetMapping("/find/{username}")
   public ResponseEntity<?> findUserByUsername(@Valid @PathVariable String username) {
     try {
@@ -45,6 +46,7 @@ public class UserController {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
   }
+
   @GetMapping("/find/userURL/{username}")
   public ResponseEntity<?> findUserPictureURL(@Valid @PathVariable String username) {
       String url = userService.findByUsername(username).getUserPictureURL();
@@ -58,6 +60,7 @@ public class UserController {
       }
   }
 
+
   @GetMapping("/find-userId/{userId}")
   public ResponseEntity<?> findUserById(@Valid @PathVariable String userId) {
     try {
@@ -69,6 +72,7 @@ public class UserController {
 
     @GetMapping("/full-name/{userId}")
     public ResponseEntity<?> findFullNameByUserId(@Valid @PathVariable String userId) {
+
         try {
             return ResponseEntity.ok(userRepository.findById(userId).get().getFirstName() + " " + userRepository.findById(userId).get().getLastName());
         } catch (Exception e) {
@@ -76,6 +80,14 @@ public class UserController {
         }
     }
 
+    @GetMapping("/get/{userId}")
+    public ResponseEntity<?> findUserByid(@Valid @PathVariable String userId) {
+        try {
+            return ResponseEntity.ok(userRepository.findById(userId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
     @PostMapping("/find/caregivers-by-availability")
     public List<AvailabilityUserIdResponse> findUserByAvailabilityUserId(@Valid @RequestBody AvailabilityUserIdRequest userIdList) {
         if (userIdList.getUserIds() == null || userIdList.getUserIds().isEmpty()) {
@@ -93,5 +105,6 @@ public class UserController {
       }
       return ResponseEntity.ok("Picture was changed!");
     }
+
 
 }
