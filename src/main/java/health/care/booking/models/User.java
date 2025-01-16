@@ -17,18 +17,21 @@ public class User {
     private String firstName;
     private String lastName;
 
+    private String specialities;
+
     private Set<Role> roles;
 
     public User() {
     }
 
-    public User(String username, String password, Set<Role> roles, String mail, String firstName, String lastName) {
+    public User(String username, String password, Set<Role> roles, String mail, String firstName, String lastName, String specialities) {
         this.username = username;
         this.password = password;
         this.roles = roles;
         this.mail = mail;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.specialities = specialities;
     }
 
 
@@ -89,4 +92,11 @@ public class User {
         this.id = id;
     }
 
+    public String getSpecialities() {
+        return specialities;
+    }
+
+    public void setSpecialities(String specialities) {
+        this.specialities = specialities;
+    }
 }

@@ -11,7 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,6 +86,41 @@ public class AppointmentService {
         return ResponseEntity.ok(appointmentInfo);
     }
 
+
+    public List<Appointment> getCompletedUserAppointments(String userId){
+        List<Appointment> userAppointments = appointmentRepository.findAppointmentByPatientId(userId);
+
+        // Filter to keep only scheduled appointments
+        List<Appointment> historyAppointments = userAppointments.stream()
+                .filter(appointment -> Status.SCHEDULED.equals(appointment.getStatus()))
+                .filter(appointment -> {
+                    LocalDateTime appointmentDateTime = appointment.getDateTime().toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDateTime();
+
+                    return appointmentDateTime.isAfter(LocalDateTime.now());
+                })
+                .collect(Collectors.toList());
+
+        return historyAppointments;
+    }
+    public List<Appointment> getCompletedDoctorAppointments(String caregiverId) {
+        List<Appointment> userAppointments = appointmentRepository.findByCaregiverId(caregiverId);
+
+        // Filter to keep only scheduled appointments
+        List<Appointment> historyAppointments = userAppointments.stream()
+                .filter(appointment -> Status.SCHEDULED.equals(appointment.getStatus()))
+                .filter(appointment -> {
+                    LocalDateTime appointmentDateTime = appointment.getDateTime().toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDateTime();
+
+                    return appointmentDateTime.isAfter(LocalDateTime.now());
+                })
+                .collect(Collectors.toList());
+
+        return historyAppointments;
+    }
     public ResponseEntity<?> getAppointmentHistoryFromUsernamePatient(String userId) {
 
         List<Appointment> userAppointments = appointmentRepository.findAppointmentByPatientId(userId);
