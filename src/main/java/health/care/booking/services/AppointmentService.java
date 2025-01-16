@@ -1,6 +1,7 @@
 package health.care.booking.services;
 
 import health.care.booking.models.Appointment;
+import health.care.booking.models.Availability;
 import health.care.booking.models.Status;
 import health.care.booking.models.User;
 import health.care.booking.respository.AppointmentRepository;
@@ -11,12 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +28,9 @@ public class AppointmentService {
 
     @Autowired
     AvailabilityRepository availabilityRepository;
+
+    @Autowired
+    AvailabilityService availabilityService;
 
     public Appointment createNewAppointment(String patientId, String summary, String caregiverId, @NotNull Date availabilityDate) {
         Appointment newAppointment = new Appointment();
@@ -146,4 +148,54 @@ public class AppointmentService {
 
         return ResponseEntity.ok(historyAppointments);
     }
+
+    public String changeAppointmentStatusService(String status, String appointmentId) {
+
+        Appointment changingAppointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Could not find appointment."));
+
+        changingAppointment.setStatus(returnStatus(status));
+        switch (status.toUpperCase()) {
+            case "CANCELLED": {
+                changingAppointment.setStatus(Status.CANCELLED);
+                handleCancelledAppointment(changingAppointment);
+                break;
+            }
+            case "COMPLETED": {
+                changingAppointment.setStatus(Status.COMPLETED);
+                break;
+            }
+            default: {
+                changingAppointment.setStatus(Status.ERROR);
+                break;
+            }
+        }
+        if (changingAppointment.getStatus().equals(Status.ERROR)) {
+            return "Something went wrong with the status." ;
+        }
+        appointmentRepository.save(changingAppointment);
+        return changingAppointment.getStatus().name();
+    }
+
+    public void handleCancelledAppointment(Appointment cancelledAppointment) {
+
+        // Fetch availability where the time slot does NOT exist
+        Availability updatedAvailability = availabilityRepository
+                .findByCaregiverIdAndAvailableSlotsNotContaining(
+                        cancelledAppointment.getCaregiverId(),
+                        cancelledAppointment.getDateTime()
+                )
+                .orElseThrow(() -> new RuntimeException(
+                        String.format("Could not find availability for caregiverId: %s at time: %s",
+                                cancelledAppointment.getCaregiverId(),
+                                cancelledAppointment.getDateTime())));
+
+        // Add the cancelled appointment time back to availableSlots
+        List<Date> cancelledAppointmentDates = new ArrayList<>();
+        cancelledAppointmentDates.add(cancelledAppointment.getDateTime());
+        availabilityService.addAvailabilityByArray(cancelledAppointmentDates, updatedAvailability.getId());
+    }
+
+
+
 }

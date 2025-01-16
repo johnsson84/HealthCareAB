@@ -76,22 +76,11 @@ public class AppointmentController {
         return appointmentService.getCompletedDoctorAppointments(caregiverId);
     }
 
-    @PreAuthorize("hasRole('DOCTOR')")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'USER')")
     @PostMapping("/change-status/{status}/{appointmentId}")
     public ResponseEntity<?> changeAppointmentStatus(@Valid @PathVariable String status, @PathVariable String appointmentId) {
-
-        Appointment changingAppointment = appointmentRepository.findById(appointmentId)
-                .orElseThrow(() -> new RuntimeException("Could not find appointment."));
-
-        changingAppointment.setStatus(appointmentService.returnStatus(status));
-
-        if (changingAppointment.getStatus().equals(Status.ERROR)) {
-            return ResponseEntity.status(401).body("Something went wrong with the status.");
-        }
-
-        appointmentRepository.save(changingAppointment);
-
-        return ResponseEntity.ok("The appointment has been changed to " + changingAppointment.getStatus().name());
+       String appointmentStatus =  appointmentService.changeAppointmentStatusService(status, appointmentId);
+        return ResponseEntity.ok("The status has been changed to: " + appointmentStatus);
     }
 
 
