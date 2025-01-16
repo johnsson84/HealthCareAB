@@ -46,7 +46,7 @@ public class SecurityConfig {
                         // chaina på hasRole eller hasAnyRole
                         
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN", "DOCTOR")
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/error").permitAll() // ONLY FOR DEBUGGING
                         .anyRequest().authenticated())
