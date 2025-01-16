@@ -1,5 +1,6 @@
 package health.care.booking.models;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -7,10 +8,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "facilityAddress")
 public class FacilityAddress {
 
+  @NotNull
   private String street;
+  @NotNull
   private String city;
+
   private int postCode;
+  @NotNull
   private String region;
+  @NotNull
   private String country;
 
   public FacilityAddress() {

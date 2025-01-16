@@ -1,8 +1,7 @@
 package health.care.booking.models;
-
-import health.care.booking.dto.CoworkerRequest;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 
@@ -12,67 +11,61 @@ public class Facility {
   @Id
   private String id;
 
-  //Most of these should probably have @notNull
+  @NotNull
   private String facilityName;
-  // Should probably either be a Long or a string
-  private int phoneNumber;
+  @NotNull
+  private String phoneNumber;
+  @Email
+  @NotNull
   private String email;
+  @NotNull
   private String hoursOpen;
-  private List<CoworkerRequest> coworkers;
+  private List<String> coworkersId;
+  @NotNull
   private FacilityAddress facilityAddress;
 
-  public Facility() {
+  // CONSTRUCTOR
+  public Facility() {}
 
-  }
-
+  // GETTERS
   public String getFacilityName() {
     return facilityName;
   }
-
-  public void setFacilityName(String facilityName) {
-    this.facilityName = facilityName;
-  }
-
-  public int getPhoneNumber() {
+  public String getPhoneNumber() {
     return phoneNumber;
   }
-
-  public void setPhoneNumber(int phoneNumber) {
-    this.phoneNumber = phoneNumber;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
   public String getHoursOpen() {
     return hoursOpen;
   }
-
-  public void setHoursOpen(String hoursOpen) {
-    this.hoursOpen = hoursOpen;
-  }
-
   public String getId() {
     return id;
   }
-
-  public List<CoworkerRequest> getCoworkers() {
-    return coworkers;
+  public List<String> getCoworkersId() {
+    return coworkersId;
   }
-
-  public void setCoworkers(List<CoworkerRequest> coworkers) {
-    this.coworkers = coworkers;
-  }
-
   public FacilityAddress getAddress() {
     return facilityAddress;
   }
 
+  // SETTERS
+  public void setFacilityName(String facilityName) {
+    this.facilityName = facilityName;
+  }
+  public void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
+  }
+  public String getEmail() {
+    return email;
+  }
+  public void setEmail(String email) {
+    this.email = email;
+  }
+  public void setHoursOpen(String hoursOpen) {
+    this.hoursOpen = hoursOpen;
+  }
+  public void setCoworkers(List<String> coworkersId) {
+    this.coworkersId = coworkersId;
+  }
   public void setAddress(FacilityAddress facilityAddress) {
     this.facilityAddress = facilityAddress;
   }

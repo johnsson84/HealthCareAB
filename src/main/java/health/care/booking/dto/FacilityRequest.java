@@ -11,15 +11,16 @@ public class FacilityRequest {
     private String facilityName;
     private final FacilityAddress facilityAddress; // this is not from a DTO so it is the full FacilityAdress object.
     private String hoursOpen;
-    private int phoneNumber;
+    private String phoneNumber;
     private String email;
 
-    // why is this a list of CoworkerRequests? could either just be Id's To coworkers or could be DbRefs
+    // Reviewer: why is this a list of CoworkerRequests? could either just be Id's To coworkers or could be DbRefs
+    // John: Håller inte med dig i detta tyvärr.
     // You don't have to have it here if you have it in the Model
-    private List<CoworkerRequest> coworkers; // this is now my object list of coworkers (this is not full User Objects)
+    private List<String> coworkersId; // this is now my object list of coworkers (this is not full User Objects)
 
 
-    public FacilityRequest(String facilityName, String hoursOpen, String email, FacilityAddress facilityAddress, int phoneNumber) {
+    public FacilityRequest(String facilityName, String hoursOpen, String email, FacilityAddress facilityAddress, String phoneNumber) {
         this.facilityName = facilityName;
         this.hoursOpen = hoursOpen;
         this.email = email;
@@ -39,11 +40,11 @@ public class FacilityRequest {
         return (FacilityAddress) facilityAddress;
     }
 
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -63,12 +64,12 @@ public class FacilityRequest {
         this.hoursOpen = hoursOpen;
     }
 
-    public List<CoworkerRequest> getCoworkers() {
-        return coworkers;
+    public List<String> getCoworkersId() {
+        return coworkersId;
     }
 
-    public void setCoworkers(List<CoworkerRequest> coworkers) {
-        this.coworkers = coworkers;
+    public void setCoworkersId(List<String> coworkersId) {
+        this.coworkersId = coworkersId;
     }
 
     public String getFacilityId() {

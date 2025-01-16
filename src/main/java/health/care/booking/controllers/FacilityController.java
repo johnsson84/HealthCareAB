@@ -1,6 +1,7 @@
 package health.care.booking.controllers;
 
 import health.care.booking.dto.FacilityRequest;
+import health.care.booking.dto.UserResponse;
 import health.care.booking.models.Facility;
 import health.care.booking.services.FacilityService;
 import jakarta.validation.Valid;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequestMapping("/facility")
 public class FacilityController {
 
+
     @Autowired
     private FacilityService facilityService;
 
@@ -29,6 +31,12 @@ public class FacilityController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
 
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'DOCTOR')")
+    @GetMapping("/{facilityId}/coworkers")
+    public List<UserResponse> getFacilityCoworkers(@PathVariable String facilityId) {
+        return facilityService.getFacilityCoworkers(facilityId);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER', 'DOCTOR')")
