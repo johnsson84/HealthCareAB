@@ -1,5 +1,6 @@
 package health.care.booking.controllers;
 
+import health.care.booking.dto.FeedbackAverageGradeAllResponse;
 import health.care.booking.dto.FeedbackDTO;
 import health.care.booking.models.Feedback;
 import health.care.booking.respository.FeedbackRepository;
@@ -22,7 +23,7 @@ public class FeedbackController {
     public FeedbackController(FeedbackService feedbackService, FeedbackRepository feedbackRepository) {
         this.feedbackService = feedbackService;
         this.feedbackRepository = feedbackRepository;
-    };
+    }
 
     // Get all feedback
     @PreAuthorize("hasRole('ADMIN')")
@@ -32,10 +33,11 @@ public class FeedbackController {
     }
 
     // Get all feedbacks for a doctor
-    @PreAuthorize("hasRole('DOCTOR')")
+    @PreAuthorize("hasAnyRole('DOCTOR', 'ADMIN')")
     @GetMapping("/doctor/{username}")
     public ResponseEntity<?> getDoctorFeedback(@Valid @PathVariable String username) throws Exception {
         List<Feedback> allFeedback = feedbackService.getFeedbackForDoctor(username);
+
         if (!allFeedback.isEmpty()) {
             return ResponseEntity.ok(allFeedback);
         } else {
@@ -76,5 +78,14 @@ public class FeedbackController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/find/average-grade/{username}")
+    public double feedbackAverageResponseMethod(@Valid @PathVariable String username) throws Exception {
+        return feedbackService.getAverageFeedbackGrade(username);
+    }
+    @GetMapping("/find/average-feedback/all")
+    public List<FeedbackAverageGradeAllResponse> getFeedbackAverageAll() throws Exception {
+        return feedbackService.getAverageFeedbackGradeAll();
     }
 }
