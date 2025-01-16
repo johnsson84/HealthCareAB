@@ -16,7 +16,7 @@ public class Appointment {
     private String caregiverId;
 
 
-    private String summary;
+    private String reason;
 
     // datum och tid, vill ni så kan ni ändra till något annat
     // tex ett fält för datum ett för tid det är upp till er
@@ -70,12 +70,12 @@ public class Appointment {
     }
 
 
-    public String getSummary() {
-        return summary;
+    public String getReason() {
+        return reason;
     }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
+    public void setReason(String reason) {
+        this.reason = reason;
 
     }
 }

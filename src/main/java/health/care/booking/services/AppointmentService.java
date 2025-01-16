@@ -32,9 +32,9 @@ public class AppointmentService {
     @Autowired
     AvailabilityService availabilityService;
 
-    public Appointment createNewAppointment(String patientId, String summary, String caregiverId, @NotNull Date availabilityDate) {
+    public Appointment createNewAppointment(String patientId, String reason, String caregiverId, @NotNull Date availabilityDate) {
         Appointment newAppointment = new Appointment();
-        newAppointment.setSummary(summary);
+        newAppointment.setReason(reason);
         newAppointment.setPatientId(setPatient(patientId));
         newAppointment.setCaregiverId(setCaregiver(caregiverId));
         newAppointment.setDateTime(availabilityDate);
@@ -81,7 +81,7 @@ public class AppointmentService {
         appointmentInfo.put("patientFirstName", foundPatient.getFirstName());
         appointmentInfo.put("patientLastName", foundPatient.getLastName());
         appointmentInfo.put("userEmail", foundPatient.getMail());
-        appointmentInfo.put("summary", appointment.getSummary());
+        appointmentInfo.put("reason", appointment.getReason());
         appointmentInfo.put("dateTime", appointment.getDateTime());
         appointmentInfo.put("status", appointment.getStatus());
 

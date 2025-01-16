@@ -12,7 +12,7 @@ public class AppointmentRequest {
 
 
     @NotBlank
-    public String summary;
+    public String reason;
 
     @NotBlank
     public String caregiverId;

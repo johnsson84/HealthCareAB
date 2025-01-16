@@ -20,19 +20,19 @@ public class MailService {
         mailSender.send(mailMessage);
     }
 
-    public void sendEmailAppointment(String toEmail, String subject, String text, String time, String date, String appointmentSummary) {
+    public void sendEmailAppointment(String toEmail, String subject, String text, String time, String date, String appointmentReason) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(toEmail);
         mailMessage.setSubject(subject);
-        mailMessage.setText("Your appointment on: " + date + " at the time of: " + time + ". concerning: " + appointmentSummary + " has a pending message: " + text);
+        mailMessage.setText("Your appointment on: " + date + " at the time of: " + time + ". concerning: " + appointmentReason + " has a pending message: " + text);
         mailSender.send(mailMessage);
     }
 
-    public void sendEmailRequest(String toEmail, String appointmentSummary, String time, String date, String firstName) {
+    public void sendEmailRequest(String toEmail, String appointmentReason, String time, String date, String firstName) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(toEmail);
         mailMessage.setSubject("Mail request from: " + firstName);
-        mailMessage.setText("You have requested an email concerning: " + appointmentSummary + ". your booked appointment is on " + date + " time: " + time + ". Please write below why you requested this mail:");
+        mailMessage.setText("You have requested an email concerning: " + appointmentReason + ". your booked appointment is on " + date + " time: " + time + ". Please write below why you requested this mail:");
         mailSender.send(mailMessage);
     }
 }

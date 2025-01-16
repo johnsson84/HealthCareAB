@@ -10,7 +10,7 @@ public class SendMail {
 
     private String text;
 
-    private String appointmentSummary;
+    private String appointmentReason;
 
     private String time;
     private String date;
@@ -40,12 +40,12 @@ public class SendMail {
         this.text = text;
     }
 
-    public String getAppointmentSummary() {
-        return appointmentSummary;
+    public String getAppointmentReason() {
+        return appointmentReason;
     }
 
-    public void setAppointmentSummary(String appointmentSummary) {
-        this.appointmentSummary = appointmentSummary;
+    public void setAppointmentReason(String appointmentReason) {
+        this.appointmentReason = appointmentReason;
     }
 
     public String getTime() {

@@ -31,7 +31,7 @@ public class MailController {
     public void SendMailRequestFromClientSide(@Valid @RequestBody SendMail sendMail) {
         try {
 
-            mailService.sendEmailRequest(sendMail.getToEmail(), sendMail.getAppointmentSummary(), sendMail.getDate(), sendMail.getTime(), sendMail.getFirstName());
+            mailService.sendEmailRequest(sendMail.getToEmail(), sendMail.getAppointmentReason(), sendMail.getDate(), sendMail.getTime(), sendMail.getFirstName());
         } catch (Exception e) {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
