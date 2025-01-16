@@ -59,6 +59,11 @@ public class FacilityController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{facilityId}")
+    public Facility updateFacility(@PathVariable String facilityId, @RequestBody FacilityRequest facilityRequest) {
+        return facilityService.updateFacility(facilityId, facilityRequest);
+    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")

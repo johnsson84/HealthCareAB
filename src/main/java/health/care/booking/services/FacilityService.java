@@ -30,19 +30,7 @@ public class FacilityService {
         newFacility.setEmail(facilityRequest.getEmail());
         newFacility.setHoursOpen(facilityRequest.getHoursOpen());
        // Hämtar info om cowokers baserat på ID, kollar att role inte är USER
-        List<String> coworkersId = facilityRequest.getCoworkersId().stream()
-                .map(userId -> {
-                    User user = userRepository.findById(userId)
-                            .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
-                    if (user.getRoles().contains(Role.USER)) {
-                        throw new IllegalArgumentException(
-                                "Invalid role for user: " + user.getUsername() + ". Role: " + user.getRoles());
-                    }
-                    return user.getId();
-                })
-                .toList();
-        newFacility.setCoworkers(coworkersId);
-        return facilityRepository.save(newFacility);
+        return getFacility(facilityRequest, newFacility);
     }
 
     // hämta facilitet med detaljer om coworkers
@@ -50,7 +38,6 @@ public class FacilityService {
         // Hämta facility via ID
         Facility facility = facilityRepository.findById(facilityId)
                 .orElseThrow(() -> new IllegalArgumentException("Facility not found: " + facilityId));
-
         // Hämta detaljer om kollegorna baserat på deras ID
         return facility.getCoworkersId().stream()
                 .map(userId -> userRepository.findById(userId)
@@ -69,6 +56,28 @@ public class FacilityService {
                 })
                 .collect(Collectors.toList());
     }
+
+    public Facility updateFacility(String facilityId, FacilityRequest facilityRequest) {
+        Facility existingFacility = facilityRepository.findById(facilityId)
+                .orElseThrow(() -> new IllegalArgumentException("Facility not found: " + facilityId));
+        return getFacility(facilityRequest, existingFacility);
+    }
+
+    private Facility getFacility(FacilityRequest facilityRequest, Facility existingFacility) {
+        List<String> updatedCoworkers = facilityRequest.getCoworkersId().stream()
+                .map(userId -> {
+                    User user = userRepository.findById(userId)
+                            .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+                    if (user.getRoles().contains(Role.USER)) {
+                        throw new IllegalArgumentException("Invalid role for user: " + user.getUsername() + ". Role: " + user.getRoles());
+                    }
+                    return user.getId();
+                })
+                .toList();
+        existingFacility.setCoworkers(updatedCoworkers);
+        return facilityRepository.save(existingFacility);
+    }
+
 
     public List<Facility> getAllFacilities() {
         return facilityRepository.findAll();
