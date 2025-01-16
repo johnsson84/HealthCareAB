@@ -19,7 +19,6 @@ public class FacilityRequest {
     // You don't have to have it here if you have it in the Model
     private List<String> coworkersId; // this is now my object list of coworkers (this is not full User Objects)
 
-
     public FacilityRequest(String facilityName, String hoursOpen, String email, FacilityAddress facilityAddress, String phoneNumber) {
         this.facilityName = facilityName;
         this.hoursOpen = hoursOpen;

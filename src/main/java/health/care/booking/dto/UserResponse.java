@@ -2,40 +2,43 @@ package health.care.booking.dto;
 
 public class UserResponse {
 
-    private String usernameDto;
-    private String emailDto;
-    private String firstNameDto;
-    private String lastNameDto;
+    private String coworkerUsername;
+    private String coworkerEmail;
+    private String coworkerFirstName;
+    private String coworkerLastName;
+    private String coworkerRole;
 
-    public String getUsernameDto() {
-        return usernameDto;
+    // GETTERS
+    public String getCoworkerUsername() {
+        return coworkerUsername;
+    }
+    public String getCoworkerEmail() {
+        return coworkerEmail;
+    }
+    public String getCoworkerFirstName() {
+        return coworkerFirstName;
+    }
+    public String getCoworkerLastName() {
+        return coworkerLastName;
+    }
+    public String getCoworkerRole() {
+        return coworkerRole;
     }
 
-    public void setUsernameDto(String usernameDto) {
-        this.usernameDto = usernameDto;
+    // SETTERS
+    public void setCoworkerUsername(String coworkerUsername) {
+        this.coworkerUsername = coworkerUsername;
     }
-
-    public String getLastNameDto() {
-        return lastNameDto;
+    public void setCoworkerEmail(String coworkerEmail) {
+        this.coworkerEmail = coworkerEmail;
     }
-
-    public void setLastNameDto(String lastNameDto) {
-        this.lastNameDto = lastNameDto;
+    public void setCoworkerFirstName(String coworkerFirstName) {
+        this.coworkerFirstName = coworkerFirstName;
     }
-
-    public String getFirstNameDto() {
-        return firstNameDto;
+    public void setCoworkerLastName(String coworkerLastName) {
+        this.coworkerLastName = coworkerLastName;
     }
-
-    public void setFirstNameDto(String firstNameDto) {
-        this.firstNameDto = firstNameDto;
-    }
-
-    public String getEmailDto() {
-        return emailDto;
-    }
-
-    public void setEmailDto(String emailDto) {
-        this.emailDto = emailDto;
+    public void setCoworkerRole(String coworkerRole) {
+        this.coworkerRole = coworkerRole;
     }
 }

@@ -2,6 +2,8 @@ package health.care.booking.services;
 import health.care.booking.dto.FacilityRequest;
 import health.care.booking.dto.UserResponse;
 import health.care.booking.models.Facility;
+import health.care.booking.models.Role;
+import health.care.booking.models.User;
 import health.care.booking.respository.FacilityRepository;
 import health.care.booking.respository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +29,19 @@ public class FacilityService {
         newFacility.setPhoneNumber(facilityRequest.getPhoneNumber());
         newFacility.setEmail(facilityRequest.getEmail());
         newFacility.setHoursOpen(facilityRequest.getHoursOpen());
-       // Hämtar info om cowokers baserat på ID
-        List<String> coworkerIds = facilityRequest.getCoworkersId().stream()
-                .map(username -> userRepository.findByUsername(username)
-                        .orElseThrow(() -> new IllegalArgumentException("User not found " + username))
-                        .getId())
+       // Hämtar info om cowokers baserat på ID, kollar att role inte är USER
+        List<String> coworkersId = facilityRequest.getCoworkersId().stream()
+                .map(userId -> {
+                    User user = userRepository.findById(userId)
+                            .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+                    if (user.getRoles().contains(Role.USER)) {
+                        throw new IllegalArgumentException(
+                                "Invalid role for user: " + user.getUsername() + ". Role: " + user.getRoles());
+                    }
+                    return user.getId();
+                })
                 .toList();
-        newFacility.setCoworkers(coworkerIds);
+        newFacility.setCoworkers(coworkersId);
         return facilityRepository.save(newFacility);
     }
 
@@ -50,10 +58,13 @@ public class FacilityService {
                 .map(user -> {
                     // Omvandla User till UserResponse
                     UserResponse response = new UserResponse();
-                    response.setUsernameDto(user.getUsername());
-                    response.setEmailDto(user.getMail());
-                    response.setFirstNameDto(user.getFirstName());
-                    response.setLastNameDto(user.getLastName());
+                    response.setCoworkerUsername(user.getUsername());
+                    response.setCoworkerEmail(user.getMail());
+                    response.setCoworkerFirstName(user.getFirstName());
+                    response.setCoworkerLastName(user.getLastName());
+                    response.setCoworkerRole(user.getRoles().stream()
+                            .map(Enum::name)
+                            .collect(Collectors.joining(", ")));
                     return response;
                 })
                 .collect(Collectors.toList());
