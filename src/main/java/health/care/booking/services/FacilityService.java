@@ -30,7 +30,7 @@ public class FacilityService {
         newFacility.setEmail(facilityRequest.getEmail());
         newFacility.setHoursOpen(facilityRequest.getHoursOpen());
        // Hämtar info om cowokers baserat på ID, kollar att role inte är USER
-        return getFacility(facilityRequest, newFacility);
+        return updateCoworkersToFacility(facilityRequest, newFacility);
     }
 
     // hämta facilitet med detaljer om coworkers
@@ -60,10 +60,16 @@ public class FacilityService {
     public Facility updateFacility(String facilityId, FacilityRequest facilityRequest) {
         Facility existingFacility = facilityRepository.findById(facilityId)
                 .orElseThrow(() -> new IllegalArgumentException("Facility not found: " + facilityId));
-        return getFacility(facilityRequest, existingFacility);
+
+        existingFacility.setFacilityName(facilityRequest.getFacilityName());
+        existingFacility.setAddress(facilityRequest.getFacilityAddress());
+        existingFacility.setPhoneNumber(facilityRequest.getPhoneNumber());
+        existingFacility.setEmail(facilityRequest.getEmail());
+        existingFacility.setHoursOpen(facilityRequest.getHoursOpen());
+        return updateCoworkersToFacility(facilityRequest, existingFacility);
     }
 
-    private Facility getFacility(FacilityRequest facilityRequest, Facility existingFacility) {
+    private Facility updateCoworkersToFacility(FacilityRequest facilityRequest, Facility existingFacility) {
         List<String> updatedCoworkers = facilityRequest.getCoworkersId().stream()
                 .map(userId -> {
                     User user = userRepository.findById(userId)
@@ -87,9 +93,8 @@ public class FacilityService {
         return facilityRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("Facility not found"));
     }
 
-    public Facility DeleteFacilityById(String id) {
+    public void DeleteFacilityById(String id) {
         Facility facility = facilityRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("Facility not found"));
         facilityRepository.delete(facility);
-        return facility;
     }
 }

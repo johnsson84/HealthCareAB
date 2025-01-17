@@ -9,23 +9,21 @@ public class FacilityRequest {
     @DBRef
     private String facilityId;
     private String facilityName;
-    private final FacilityAddress facilityAddress; // this is not from a DTO so it is the full FacilityAdress object.
-    private String hoursOpen;
     private String phoneNumber;
     private String email;
+    private String hoursOpen;
+    private FacilityAddress facilityAddress;
 
-    // Reviewer: why is this a list of CoworkerRequests? could either just be Id's To coworkers or could be DbRefs
-    // John: Håller inte med dig i detta tyvärr.
-    // You don't have to have it here if you have it in the Model
-    private List<String> coworkersId; // this is now my object list of coworkers (this is not full User Objects)
+    private List<String> coworkersId;
 
-    public FacilityRequest(String facilityName, String hoursOpen, String email, FacilityAddress facilityAddress, String phoneNumber) {
+    public FacilityRequest(String facilityName, String phoneNumber, String email, String hoursOpen, FacilityAddress facilityAddress) {
         this.facilityName = facilityName;
-        this.hoursOpen = hoursOpen;
-        this.email = email;
-        this.facilityAddress = facilityAddress;
         this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.hoursOpen = hoursOpen;
+        this.facilityAddress = facilityAddress;
     }
+
 
     public String getFacilityName() {
         return facilityName;

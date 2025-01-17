@@ -26,7 +26,7 @@ public class FacilityController {
     public ResponseEntity<?> createFacility(@RequestBody FacilityRequest facilityRequest) {
         try {
             Facility createdFacility = facilityService.createFacility(facilityRequest);
-            return ResponseEntity.ok("A new facility was added");
+            return ResponseEntity.ok(createdFacility);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

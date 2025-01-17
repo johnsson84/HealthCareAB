@@ -13,7 +13,7 @@ public class FacilityAddress {
   @NotNull
   private String city;
 
-  private int postCode;
+  private int postcode;
   @NotNull
   private String region;
   @NotNull
@@ -22,10 +22,10 @@ public class FacilityAddress {
   public FacilityAddress() {
   }
 
-  public FacilityAddress(String street, String city, int postCode, String region, String country) {
+  public FacilityAddress(String street, String city, int postcode, String region, String country) {
     this.street = street;
     this.city = city;
-    this.postCode = postCode;
+    this.postcode = postcode;
     this.region = region;
     this.country = country;
   }
@@ -47,12 +47,12 @@ public class FacilityAddress {
     this.city = city;
   }
 
-  public int getPostCode() {
-    return postCode;
+  public int getPostcode() {
+    return postcode;
   }
 
-  public void setPostCode(int postCode) {
-    this.postCode = postCode;
+  public void setPostcode(int postcode) {
+    this.postcode = postcode;
   }
 
   public String getRegion() {

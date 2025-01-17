@@ -20,9 +20,11 @@ public class Facility {
   private String email;
   @NotNull
   private String hoursOpen;
-  private List<String> coworkersId;
   @NotNull
   private FacilityAddress facilityAddress;
+
+  private List<String> coworkersId;
+
 
   // CONSTRUCTOR
   public Facility() {}
