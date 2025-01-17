@@ -99,7 +99,8 @@ public class UserService {
                     user.getId(),
                     user.getFirstName(),
                     user.getLastName(),
-                    user.getUsername()
+                    user.getUsername(),
+                    user.getSpecialities()
             );
             idResponses.add(idResponse);
         }
