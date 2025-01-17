@@ -40,7 +40,7 @@ public class AppointmentController {
     @PostMapping("/new")
     public ResponseEntity<?> createNewAppointment(@Valid @RequestBody AppointmentRequest appointmentRequest) {
         // should probably have a "this is a valid timeslot type deal"
-        Appointment newAppointment = appointmentService.createNewAppointment(appointmentRequest.username, appointmentRequest.summary, appointmentRequest.caregiverId, appointmentRequest.availabilityDate);
+        Appointment newAppointment = appointmentService.createNewAppointment(appointmentRequest.username, appointmentRequest.reason, appointmentRequest.caregiverId, appointmentRequest.availabilityDate);
         Availability removeAvailability = availabilityRepository.findById(appointmentRequest.availabilityId)
                 .orElseThrow(() -> new RuntimeException("Could not find availability object."));
         System.out.println(appointmentRequest.availabilityDate);
@@ -52,7 +52,7 @@ public class AppointmentController {
                 availabilityRepository.save(removeAvailability);
             }
         }
-        mailService.sendEmail(userRepository.findByUsername(appointmentRequest.username).get().getMail(), "Appointment", "Appointment has been booked for: " + appointmentRequest.availabilityDate + "\n" + "Summary for booking: " + appointmentRequest.summary);
+        mailService.sendEmail(userRepository.findByUsername(appointmentRequest.username).get().getMail(), "Appointment", "Appointment has been booked for: " + appointmentRequest.availabilityDate + "\n" + "Reason for booking: " + appointmentRequest.reason);
         appointmentRepository.save(newAppointment);
         return ResponseEntity.ok("Appointment has been made.");
     }
