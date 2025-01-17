@@ -65,7 +65,7 @@ public class AppointmentServiceTest {
     void testCreateNewAppointment() {
         String username = "john_doe";
         String caregiverId = "2";
-        String summary = "theSummary";
+        String reason = "theReason";
         Date availabilityDate = availability.getAvailableSlots().get(0);
 
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(patient));
@@ -73,7 +73,7 @@ public class AppointmentServiceTest {
         when(availabilityRepository.findById(availability.getId())).thenReturn(Optional.of(availability));
 
         // Call service method
-        Appointment appointment = appointmentService.createNewAppointment(username, summary, caregiverId, availabilityDate);
+        Appointment appointment = appointmentService.createNewAppointment(username, reason, caregiverId, availabilityDate);
 
         // Validate that the appointment is created correctly
         assertNotNull(appointment);
@@ -81,7 +81,7 @@ public class AppointmentServiceTest {
         assertEquals(caregiver.getId(), appointment.getCaregiverId()); // Now comparing Strings
         assertEquals(availabilityDate, appointment.getDateTime());
         assertEquals(Status.SCHEDULED, appointment.getStatus());
-        assertEquals("theSummary", appointment.getSummary());
+        assertEquals("theReason", appointment.getReason());
     }
 
     @Test
@@ -117,7 +117,7 @@ public class AppointmentServiceTest {
         Appointment appointment = new Appointment();
         appointment.setPatientId(patient.getId());
         appointment.setCaregiverId(caregiver.getId());
-        appointment.setSummary("theSummary");
+        appointment.setReason("theReason");
         appointment.setDateTime(new Date());
         appointment.setStatus(Status.SCHEDULED);
 
@@ -144,7 +144,7 @@ public class AppointmentServiceTest {
         assertEquals("John", responseBody.get("patientFirstName"));
         assertEquals("Doe", responseBody.get("patientLastName"));
         assertEquals("john.doe@example.com", responseBody.get("userEmail"));
-        assertEquals("theSummary", responseBody.get("summary"));
+        assertEquals("theReason", responseBody.get("reason"));
         assertEquals(appointment.getDateTime(), responseBody.get("dateTime"));
         assertEquals(Status.SCHEDULED, responseBody.get("status"));
     }
