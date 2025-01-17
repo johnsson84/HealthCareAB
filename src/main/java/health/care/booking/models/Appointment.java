@@ -1,5 +1,6 @@
 package health.care.booking.models;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,20 +11,14 @@ import java.util.Date;
 public class Appointment {
     @Id
     private String id;
-
     private String patientId;
-
     private String caregiverId;
-
-
     private String reason;
-
-    // datum och tid, vill ni så kan ni ändra till något annat
-    // tex ett fält för datum ett för tid det är upp till er
     private @NotNull Date dateTime;
-
     // använder Enum Status klassen
     private Status status;
+    @Max(500)
+    private String documentation = ""; // This fills in by a doctor after a completed meeting.
 
     public Appointment() {
     }
@@ -77,5 +72,13 @@ public class Appointment {
     public void setReason(String reason) {
         this.reason = reason;
 
+    }
+
+    public String getDocumentation() {
+        return documentation;
+    }
+
+    public void setDocumentation(String documentation) {
+        this.documentation = documentation;
     }
 }

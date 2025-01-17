@@ -1,5 +1,6 @@
 package health.care.booking.services;
 
+import health.care.booking.dto.AppointmentAddDocumentation;
 import health.care.booking.models.Appointment;
 import health.care.booking.models.Availability;
 import health.care.booking.models.Status;
@@ -196,6 +197,20 @@ public class AppointmentService {
         availabilityService.addAvailabilityByArray(cancelledAppointmentDates, updatedAvailability.getId());
     }
 
+    public Appointment addDocumentationToAppointment(AppointmentAddDocumentation dto) {
+        // Find appointment
+        Appointment appointmentToAddDokument = appointmentRepository.findById(dto.getAppointmentId())
+                .orElseThrow(() -> new RuntimeException("Could not find appointment."));
+        // Check if appointment already has documentation given
+        if (!appointmentToAddDokument.getDocumentation().isEmpty()) {
+            throw  new IllegalArgumentException("Documentation already exists!");
+        }
+        // Create updated appointment
+        appointmentToAddDokument.setDocumentation(dto.getDocumentation());
+        // Save new appointment
+        appointmentRepository.save(appointmentToAddDokument);
+        return appointmentToAddDokument;
+    }
 
 
 }

@@ -49,3 +49,12 @@ getAppointmentHistoryFromUsernameCaregiver
 http://localhost:8080/appointment/history/2/{username}
 ####################################################
 ####################################################
+
+==============================================
+As a doctor, add documentation to a completed meeting
+PUT http://localhost:8080/appointment/documentation/add
+{
+    "appointmentId": "{id}",
+    "documentation": "A short description about the meeting from doctors pov."
+}
+==============================================

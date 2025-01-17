@@ -3,6 +3,7 @@ package health.care.booking;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import health.care.booking.dto.AppointmentAddDocumentation;
 import health.care.booking.models.Appointment;
 import health.care.booking.models.Availability;
 import health.care.booking.models.Status;
@@ -235,6 +236,50 @@ public class AppointmentServiceTest {
         // Assert
         assertEquals(ResponseEntity.ok(List.of(appointment2, appointment1)), response);
         verify(appointmentRepository, times(1)).findAppointmentByCaregiverId(userId);
+    }
+
+    @Test
+    void shouldAddDocumentationToAppointment() {
+        // Arrange
+        Appointment appointment = new Appointment();
+        appointment.setId("666");
+        appointment.setDocumentation("");
+
+        AppointmentAddDocumentation appointmentAddDocumentation = new AppointmentAddDocumentation();
+        appointmentAddDocumentation.setAppointmentId(appointment.getId());
+        appointmentAddDocumentation.setDocumentation("theDocumentation");
+
+        when(appointmentRepository.findById(any())).thenReturn(Optional.of(appointment));
+
+        // Act
+        Appointment addDocumentToAppointment = appointmentService.addDocumentationToAppointment(appointmentAddDocumentation);
+
+        // Assert
+        assertEquals("theDocumentation", addDocumentToAppointment.getDocumentation(), "Failed! Documentation already added!");
+        System.out.println("Success! Documentation added!");
+    }
+
+    @Test
+    void shouldTryToAddDocumentationToAppointmentThatAlreadyHas() {
+        // Arrange
+        Appointment appointment = new Appointment();
+        appointment.setId("666");
+        appointment.setDocumentation("Documentation already added");
+
+        AppointmentAddDocumentation appointmentAddDocumentation = new AppointmentAddDocumentation();
+        appointmentAddDocumentation.setAppointmentId(appointment.getId());
+        appointmentAddDocumentation.setDocumentation("theDocumentation");
+
+        when(appointmentRepository.findById(any())).thenReturn(Optional.of(appointment));
+
+        // Act
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            appointmentService.addDocumentationToAppointment(appointmentAddDocumentation);
+        });
+
+        // Assert
+        assertEquals("Documentation already exists!", exception.getMessage(), "Failed! Documentation could be added!");
+        System.out.println("Success! Documentation failed to be added!");
     }
 
 
