@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // fyll på här när ni lägger till controllers, vill ni ha rollbaserat
                         // chaina på hasRole eller hasAnyRole
+
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/mail/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
