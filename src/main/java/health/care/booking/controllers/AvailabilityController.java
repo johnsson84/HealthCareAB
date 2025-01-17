@@ -50,7 +50,6 @@ public class AvailabilityController {
         return ResponseEntity.ok("Added available times for user: " + careGiver.getUsername());
     }
     @PreAuthorize("hasAnyRole('USER','DOCTOR', 'ADMIN')")
-
     @GetMapping
     public List<Availability> getAllAvailability() {
         return availabilityRepository.findAll();

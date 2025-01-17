@@ -1,18 +1,14 @@
 package health.care.booking.controllers;
 
 
-import health.care.booking.dto.AuthRequest;
 import health.care.booking.dto.AvailabilityUserIdRequest;
 import health.care.booking.dto.AvailabilityUserIdResponse;
 import health.care.booking.dto.UpdateURLRequest;
-import health.care.booking.models.User;
 import health.care.booking.respository.UserRepository;
-import health.care.booking.services.CustomUserDetailsService;
 
 import health.care.booking.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -21,8 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -89,12 +83,11 @@ public class UserController {
         }
     }
     @PostMapping("/find/caregivers-by-availability")
-    public List<AvailabilityUserIdResponse> findUserByAvailabilityUserId(@Valid @RequestBody AvailabilityUserIdRequest userIdList) {
+    public List<AvailabilityUserIdResponse> findDoctorByAvailability(@Valid @RequestBody AvailabilityUserIdRequest userIdList) {
         if (userIdList.getUserIds() == null || userIdList.getUserIds().isEmpty()) {
             throw new IllegalArgumentException("User ID list cannot be null or empty");
         }
-        List<AvailabilityUserIdResponse> idResponses = userService.makeAndSendBackUserResponse(userIdList.getUserIds());
-        return idResponses;
+        return userService.makeAndSendBackUserResponse(userIdList.getUserIds());
     }
     @PutMapping("update-user-picture/{username}")
     public ResponseEntity<?> updateUserProfilePicture(@Valid @RequestBody UpdateURLRequest url, @PathVariable String username){

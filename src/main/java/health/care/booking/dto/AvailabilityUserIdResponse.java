@@ -8,12 +8,22 @@ public class AvailabilityUserIdResponse {
     private String firstname;
     private String lastname;
     private String username;
+    private String specialities;
 
-    public AvailabilityUserIdResponse(String caregiverId, String firstname, String lastname, String username) {
+    public AvailabilityUserIdResponse(String caregiverId, String firstname, String lastname, String username, String specialities) {
         this.caregiverId = caregiverId;
         this.firstname = firstname;
         this.lastname = lastname;
         this.username = username;
+        this.specialities = specialities;
+    }
+
+    public String getSpecialities() {
+        return specialities;
+    }
+
+    public void setSpecialities(String specialities) {
+        this.specialities = specialities;
     }
 
     public String getCaregiverId() {
