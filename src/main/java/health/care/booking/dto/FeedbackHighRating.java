@@ -1,9 +1,18 @@
 package health.care.booking.dto;
 
 public class FeedbackHighRating {
+    String id;
     String doctorFullName;
     int rating;
     String comment;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getDoctorFullName() {
         return doctorFullName;

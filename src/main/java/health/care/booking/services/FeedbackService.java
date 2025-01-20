@@ -140,6 +140,7 @@ public class FeedbackService {
                 allNames.put(feedback.getCaregiverUsername(), user.getFirstName() + " " + user.getLastName());
             }
             FeedbackHighRating highRating = new FeedbackHighRating();
+            highRating.setId(feedback.getId());
             highRating.setDoctorFullName(allNames.get(feedback.getCaregiverUsername()));
             highRating.setRating(feedback.getRating());
             highRating.setComment(feedback.getComment());
