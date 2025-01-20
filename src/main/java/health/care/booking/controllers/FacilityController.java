@@ -81,7 +81,7 @@ public class FacilityController {
     @PostMapping("/move/coworker/{oldFacilityId}/{newFacilityId}/{userId}")
     public ResponseEntity<?> moveCoworker(@Valid @PathVariable String oldFacilityId, @PathVariable String newFacilityId, @PathVariable String userId) {
         try {
-            return ResponseEntity.ok(facilityService.moveCoworkerFromFacilityToFacility(oldFacilityId, newFacilityId, userId));
+            return facilityService.moveCoworkerFromFacilityToFacility(oldFacilityId, newFacilityId, userId);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
