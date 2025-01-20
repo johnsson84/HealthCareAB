@@ -1,5 +1,6 @@
 package health.care.booking.controllers;
 
+import health.care.booking.dto.AppointmentAddDocumentation;
 import health.care.booking.dto.AppointmentRequest;
 import health.care.booking.models.Appointment;
 import health.care.booking.models.Availability;
@@ -117,6 +118,17 @@ public class AppointmentController {
             return appointmentService.getAppointmentHistoryFromUsernameCaregiver(user.getId());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not get any appointment history from username: " + username + " " + e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasRole('DOCTOR')")
+    @PutMapping("/documentation/add")
+    public ResponseEntity<?> addDocumentationToAppointment(@Valid @RequestBody AppointmentAddDocumentation dto) {
+        try {
+            appointmentService.addDocumentationToAppointment(dto);
+            return ResponseEntity.ok("Appointment updated with documentation successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 }
