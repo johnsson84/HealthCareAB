@@ -21,6 +21,7 @@ public class RegisterDoctorRequest {
 
     private Set<Role> roles;
 
+
     @NotBlank
     private String specialities;
 

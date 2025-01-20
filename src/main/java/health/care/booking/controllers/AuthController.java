@@ -216,6 +216,7 @@ public class AuthController {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setSpecialities(request.getSpecialities());
+        user.setFacilityId(facilityId);
 
 
         // assign roles

@@ -19,13 +19,14 @@ public class User {
     private String userPictureURL;
 
     private String specialities;
+    private String facilityId;
 
     private Set<Role> roles;
 
     public User() {
     }
 
-    public User(String username, String password, Set<Role> roles, String mail, String firstName, String lastName, String specialities) {
+    public User(String username, String password, Set<Role> roles, String mail, String firstName, String lastName, String specialities, String facilityId) {
         this.username = username;
         this.password = password;
         this.roles = roles;
@@ -33,6 +34,8 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.specialities = specialities;
+        this.facilityId = facilityId;
+
     }
 
     public String getUserPictureURL() {
@@ -106,5 +109,13 @@ public class User {
 
     public void setSpecialities(String specialities) {
         this.specialities = specialities;
+    }
+
+    public String getFacilityId() {
+        return facilityId;
+    }
+
+    public void setFacilityId(String facilityId) {
+        this.facilityId = facilityId;
     }
 }
