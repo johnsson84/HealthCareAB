@@ -69,8 +69,26 @@ public class AppointmentService {
     }
 
     public List<Appointment> getAllScheduledAppointments(){
-
         return appointmentRepository.findByStatusContaining(Status.SCHEDULED);
+    }
+
+    public List<Appointment> getScheduledAppointmentsThatAreToday() {
+        List<Appointment> scheduledAppointmentsToday = getAllScheduledAppointments();
+
+        // Get today's date at start of day
+        LocalDateTime startOfToday = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
+        // Get end of today
+        LocalDateTime endOfToday = startOfToday.plusDays(1).minusNanos(1);
+
+        return scheduledAppointmentsToday.stream()
+                .filter(appointment -> {
+                    LocalDateTime appointmentDateTime = appointment.getDateTime().toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDateTime();
+                    return !appointmentDateTime.isBefore(startOfToday) &&
+                            !appointmentDateTime.isAfter(endOfToday);
+                })
+                .collect(Collectors.toList());
     }
 
     public ResponseEntity<?> getAppointmentWithNames(Appointment appointment) {
