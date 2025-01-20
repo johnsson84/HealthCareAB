@@ -24,7 +24,7 @@ public class ScheduleService {
     @Autowired
     UserRepository userRepository;
 
-    @Scheduled(cron = "0 00 7 * * ?") // Runs daily at 15:30
+    @Scheduled(cron = "0 00 7 * * ?") // "Sec, Min, Hour"
     public void sendDailyReminders() {
         List<Appointment> appointmentList = appointmentService.getScheduledAppointmentsThatAreToday();
         for (Appointment appointment : appointmentList) {
