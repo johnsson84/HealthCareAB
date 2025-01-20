@@ -98,6 +98,4 @@ public class UserController {
       }
       return ResponseEntity.ok("Picture was changed!");
     }
-
-
 }
