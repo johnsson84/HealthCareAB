@@ -88,4 +88,14 @@ public class FeedbackController {
     public List<FeedbackAverageGradeAllResponse> getFeedbackAverageAll() throws Exception {
         return feedbackService.getAverageFeedbackGradeAll();
     }
+
+    // A list with all doctors feedback that is high rate (4-5)
+    @GetMapping("/find/doctors-highrating")
+    public ResponseEntity<?> getAllDoctorsHighRating() throws Exception {
+        try {
+            return ResponseEntity.ok(feedbackService.getAllFeedbackHighRating());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage());
+        }
+    }
 }
