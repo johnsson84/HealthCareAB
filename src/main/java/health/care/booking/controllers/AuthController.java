@@ -3,8 +3,10 @@ package health.care.booking.controllers;
 import health.care.booking.dto.*;
 import health.care.booking.models.Role;
 import health.care.booking.models.User;
+import health.care.booking.respository.FacilityRepository;
 import health.care.booking.respository.UserRepository;
 import health.care.booking.services.CustomUserDetailsService;
+import health.care.booking.services.FacilityService;
 import health.care.booking.services.PasswordResetService;
 import health.care.booking.services.UserService;
 import health.care.booking.util.JwtUtil;
@@ -47,6 +49,10 @@ public class AuthController {
     private PasswordResetService passwordResetService;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private FacilityService facilityService;
+    @Autowired
+    private FacilityRepository facilityRepository;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody AuthRequest request,
@@ -186,8 +192,8 @@ public class AuthController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/register/caregiver")
-    public ResponseEntity<?> registerCaregiver(@Valid @RequestBody RegisterDoctorRequest request) {
+    @PostMapping("/register/caregiver/{facilityId}")
+    public ResponseEntity<?> registerCaregiver(@Valid @RequestBody RegisterDoctorRequest request, @PathVariable String facilityId) {
 
         // check if the username already exists
         if (userService.existsByUsername(request.getUsername())) {
@@ -211,6 +217,7 @@ public class AuthController {
         user.setLastName(request.getLastName());
         user.setSpecialities(request.getSpecialities());
 
+
         // assign roles
         user.setRoles(Set.of(Role.DOCTOR));
 
@@ -220,8 +227,14 @@ public class AuthController {
                 user.getRoles()
         );
 
-        // register the user using UserService
-        userService.registerCaregiver(user);
+
+        try {
+            // register the user using UserService
+            userService.registerCaregiver(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+        facilityService.addCoworkerToFacility(facilityId, user.getId());
         return ResponseEntity.ok(regResponse);
     }
 

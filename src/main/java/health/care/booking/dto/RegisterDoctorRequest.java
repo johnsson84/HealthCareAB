@@ -24,7 +24,7 @@ public class RegisterDoctorRequest {
     @NotBlank
     private String specialities;
 
-    // location
+
     // profile picture
 
     public RegisterDoctorRequest() {
@@ -97,4 +97,6 @@ public class RegisterDoctorRequest {
     public Set<Role> getRoles() {
         return roles;
     }
+
+
 }

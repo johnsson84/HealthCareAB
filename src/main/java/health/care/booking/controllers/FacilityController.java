@@ -59,6 +59,7 @@ public class FacilityController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{facilityId}")
     public Facility updateFacility(@PathVariable String facilityId, @RequestBody FacilityRequest facilityRequest) {
@@ -73,6 +74,16 @@ public class FacilityController {
             return ResponseEntity.ok("Facility deleted successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/move/coworker/{oldFacilityId}/{newFacilityId}/{userId}")
+    public ResponseEntity<?> moveCoworker(@Valid @PathVariable String oldFacilityId, @PathVariable String newFacilityId, @PathVariable String userId) {
+        try {
+            return ResponseEntity.ok(facilityService.moveCoworkerFromFacilityToFacility(oldFacilityId, newFacilityId, userId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 }
