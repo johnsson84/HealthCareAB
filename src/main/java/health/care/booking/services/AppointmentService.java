@@ -68,6 +68,11 @@ public class AppointmentService {
         }
     }
 
+    public List<Appointment> getAllScheduledAppointments(){
+
+        return appointmentRepository.findByStatusContaining(Status.SCHEDULED);
+    }
+
     public ResponseEntity<?> getAppointmentWithNames(Appointment appointment) {
 
         User foundPatient = userRepository.findById(appointment.getPatientId()).orElseThrow(() ->
