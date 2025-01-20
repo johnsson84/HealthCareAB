@@ -10,7 +10,6 @@ import health.care.booking.respository.AppointmentRepository;
 import health.care.booking.respository.AvailabilityRepository;
 import health.care.booking.respository.UserRepository;
 import health.care.booking.services.AppointmentService;
-import health.care.booking.services.MailService;
 import health.care.booking.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,26 +34,11 @@ public class AppointmentController {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
-    @Autowired
-    MailService mailService;
+
 
     @PostMapping("/new")
     public ResponseEntity<?> createNewAppointment(@Valid @RequestBody AppointmentRequest appointmentRequest) {
-        // should probably have a "this is a valid timeslot type deal"
-        Appointment newAppointment = appointmentService.createNewAppointment(appointmentRequest.username, appointmentRequest.reason, appointmentRequest.caregiverId, appointmentRequest.availabilityDate);
-        Availability removeAvailability = availabilityRepository.findById(appointmentRequest.availabilityId)
-                .orElseThrow(() -> new RuntimeException("Could not find availability object."));
-        System.out.println(appointmentRequest.availabilityDate);
-        for (int i = 0; i < removeAvailability.getAvailableSlots().size(); i++) {
-            if (removeAvailability.getAvailableSlots().get(i).equals(appointmentRequest.availabilityDate)) {
-                System.out.println("Should remove: " + removeAvailability.getAvailableSlots().get(i).toString());
-                removeAvailability.getAvailableSlots().remove(i);
-                System.out.println("removed: " + appointmentRequest.availabilityDate);
-                availabilityRepository.save(removeAvailability);
-            }
-        }
-        mailService.sendEmail(userRepository.findByUsername(appointmentRequest.username).get().getMail(), "Appointment", "Appointment has been booked for: " + appointmentRequest.availabilityDate + "\n" + "Reason for booking: " + appointmentRequest.reason);
-        appointmentRepository.save(newAppointment);
+            appointmentService.createNewAppointmentLogic(appointmentRequest);
         return ResponseEntity.ok("Appointment has been made.");
     }
 
