@@ -1,0 +1,17 @@
+==============================================
+List all conditions
+GET http://localhost:8080/conditions/all
+
+==============================================
+
+Add a condition
+POST http://localhost:8080/conditions/add
+{
+    "name": "Fever",
+    "description": "Solution: Headache pills",
+    "category": "disease"
+}
+==============================================
+
+Delete a condition
+DELETE http://localhost:8080/conditions/delete/{id}
