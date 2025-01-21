@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -102,6 +104,8 @@ public class FacilityService {
             coworkers.add(userId);
             facility.setCoworkers(coworkers);
             facilityRepository.save(facility);
+            user.setFacilityId(facilityId);
+            userRepository.save(user);
             return ResponseEntity.ok("Coworker added to facility");
         }
         return ResponseEntity.ok(HttpStatus.CONFLICT);
@@ -117,15 +121,28 @@ public class FacilityService {
             throw new IllegalArgumentException("Invalid role for user: " + user.getUsername() + ". Role: " + user.getRoles());
         }
 
-        List<String> coworkers = facility.getCoworkersId();
-        if (coworkers.contains(userId)) {
-            coworkers.remove(userId);
+        List<String> coworkers = new ArrayList<>(facility.getCoworkersId());
+        boolean removed = false;
+
+
+        for (Iterator<String> iterator = coworkers.iterator(); iterator.hasNext(); ) {
+            String coworker = iterator.next();
+            if (coworker.equals(userId)) {
+                iterator.remove();
+                removed = true;
+                break;
+            }
+        }
+
+        if (removed) {
             facility.setCoworkers(coworkers);
-            return ResponseEntity.ok(facilityRepository.save(facility));
+            facilityRepository.save(facility);
+            return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Coworker not found in this facility");
         }
     }
+
 
     public ResponseEntity<?> moveCoworkerFromFacilityToFacility(String oldFacilityId, String newFacilityId, String userId) {
         try {
