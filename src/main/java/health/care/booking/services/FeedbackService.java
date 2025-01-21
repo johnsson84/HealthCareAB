@@ -2,6 +2,7 @@ package health.care.booking.services;
 
 import health.care.booking.dto.FeedbackAverageGradeAllResponse;
 import health.care.booking.dto.FeedbackDTO;
+import health.care.booking.dto.FeedbackHighRating;
 import health.care.booking.models.*;
 import health.care.booking.respository.AppointmentRepository;
 import health.care.booking.respository.FeedbackRepository;
@@ -10,10 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class FeedbackService {
@@ -21,11 +19,13 @@ public class FeedbackService {
     private final FeedbackRepository feedbackRepository;
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public FeedbackService(FeedbackRepository feedbackRepository, AppointmentRepository appointmentRepository, UserRepository userRepository) {
+    public FeedbackService(FeedbackRepository feedbackRepository, AppointmentRepository appointmentRepository, UserRepository userRepository, UserService userService) {
         this.feedbackRepository = feedbackRepository;
         this.appointmentRepository = appointmentRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     // Create a feedback
@@ -122,5 +122,33 @@ public class FeedbackService {
         }
 
         return usernameAndAverageGrade;
+    }
+
+    public List<FeedbackHighRating> getAllFeedbackHighRating() throws Exception {
+        // Get all feedback by 4-5 rating
+        List<Feedback> allHighRating = feedbackRepository.findAllByRatingIn(Arrays.asList(4,5));
+        if (allHighRating.isEmpty()) {
+            throw new Exception("No feedback with high grades found!");
+        }
+        // Create empty lists
+        Map<String, String> allNames = new HashMap<>();
+        List<FeedbackHighRating> feedbacksWithHighRating = new ArrayList<>();
+        // Loop all feedback, save names and create a new FeedbackHighGrade then save to list
+        for (Feedback feedback : allHighRating) {
+            if (!allNames.containsKey(feedback.getCaregiverUsername())) {
+                User user = userService.findByUsername(feedback.getCaregiverUsername());
+                allNames.put(feedback.getCaregiverUsername(), user.getFirstName() + " " + user.getLastName());
+            }
+            FeedbackHighRating highRating = new FeedbackHighRating();
+            highRating.setId(feedback.getId());
+            highRating.setDoctorFullName(allNames.get(feedback.getCaregiverUsername()));
+            highRating.setRating(feedback.getRating());
+            highRating.setComment(feedback.getComment());
+            feedbacksWithHighRating.add(highRating);
+        }
+        // Make list in random order
+        Collections.shuffle(feedbacksWithHighRating);
+        // return list
+        return feedbacksWithHighRating;
     }
 }

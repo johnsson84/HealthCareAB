@@ -10,4 +10,5 @@ import java.util.List;
 public interface FeedbackRepository extends MongoRepository<Feedback, String> {
     List<Feedback> findAllByCaregiverUsername(String caregiverUsername);
     List<Feedback> findAllByPatientUsername(String patientUsername);
+    List<Feedback> findAllByRatingIn(List<Integer> ratings);
 }
