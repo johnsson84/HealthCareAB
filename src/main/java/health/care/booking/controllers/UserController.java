@@ -4,6 +4,7 @@ package health.care.booking.controllers;
 import health.care.booking.dto.AvailabilityUserIdRequest;
 import health.care.booking.dto.AvailabilityUserIdResponse;
 import health.care.booking.dto.UpdateURLRequest;
+import health.care.booking.dto.UserUpdateRequest;
 import health.care.booking.respository.UserRepository;
 
 import health.care.booking.services.UserService;
@@ -54,6 +55,12 @@ public class UserController {
       }
   }
 
+  @PostMapping("/update/user-information/{userId}")
+  public ResponseEntity<?> updateUserInformation(@Valid @PathVariable String userId, @RequestBody UserUpdateRequest userUpdateRequest){
+      userService.updateUserInformation(userId, userUpdateRequest);
+      return ResponseEntity.ok("User was changed: " + userUpdateRequest.getBirthDate());
+  }
+
 
   @GetMapping("/find-userId/{userId}")
   public ResponseEntity<?> findUserById(@Valid @PathVariable String userId) {
@@ -66,7 +73,6 @@ public class UserController {
 
     @GetMapping("/full-name/{userId}")
     public ResponseEntity<?> findFullNameByUserId(@Valid @PathVariable String userId) {
-
         try {
             return ResponseEntity.ok(userRepository.findById(userId).get().getFirstName() + " " + userRepository.findById(userId).get().getLastName());
         } catch (Exception e) {

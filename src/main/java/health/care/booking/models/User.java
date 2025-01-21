@@ -17,11 +17,12 @@ public class User {
     private String firstName;
     private String lastName;
     private String userPictureURL;
-
     private String specialities;
     private String facilityId;
-
     private Set<Role> roles;
+    private String birthDate;
+    private String phoneNmr;
+    private FacilityAddress address;
 
     public User() {
     }
@@ -36,6 +37,30 @@ public class User {
         this.specialities = specialities;
         this.facilityId = facilityId;
 
+    }
+
+    public String getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public String getPhoneNmr() {
+        return phoneNmr;
+    }
+
+    public void setPhoneNmr(String phoneNmr) {
+        this.phoneNmr = phoneNmr;
+    }
+
+    public FacilityAddress getAddress() {
+        return address;
+    }
+
+    public void setAddress(FacilityAddress address) {
+        this.address = address;
     }
 
     public String getUserPictureURL() {

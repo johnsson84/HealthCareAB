@@ -3,6 +3,7 @@ package health.care.booking.services;
 
 import health.care.booking.dto.AvailabilityUserIdResponse;
 
+import health.care.booking.dto.UserUpdateRequest;
 import health.care.booking.models.Role;
 import health.care.booking.models.User;
 import health.care.booking.respository.UserRepository;
@@ -113,4 +114,12 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void updateUserInformation(String userId, UserUpdateRequest updateRequest) {
+        User user = findByUserId(userId);
+        user.setMail(updateRequest.getMail());
+        user.setBirthDate(updateRequest.getBirthDate());
+        user.setPhoneNmr(updateRequest.getPhoneNmr());
+        user.setAddress(updateRequest.getAddress());
+        userRepository.save(user);
+    }
 }
