@@ -3,6 +3,7 @@ import health.care.booking.dto.CreateCondition;
 import health.care.booking.models.Conditions;
 import health.care.booking.respository.ConditionsRepository;
 import health.care.booking.services.ConditionsService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,8 +28,9 @@ public class ConditionsController {
     }
 
     // Create a condition
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
-    public ResponseEntity<?> createCondition(@RequestBody CreateCondition createCondition) {
+    public ResponseEntity<?> createCondition(@Valid @RequestBody CreateCondition createCondition) {
         try {
             return ResponseEntity.ok(conditionsService.createCondition(createCondition));
         } catch (Exception e) {
@@ -37,6 +39,7 @@ public class ConditionsController {
     }
 
     // Delete a condition
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteCondition(@PathVariable String id) {
         try {
