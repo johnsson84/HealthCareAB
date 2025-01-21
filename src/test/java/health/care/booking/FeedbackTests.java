@@ -1,11 +1,13 @@
 package health.care.booking;
 
 import health.care.booking.dto.FeedbackDTO;
+import health.care.booking.dto.FeedbackHighRating;
 import health.care.booking.models.*;
 import health.care.booking.respository.AppointmentRepository;
 import health.care.booking.respository.FeedbackRepository;
 import health.care.booking.respository.UserRepository;
 import health.care.booking.services.FeedbackService;
+import health.care.booking.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,10 +17,7 @@ import org.mockito.MockitoAnnotations;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,6 +36,9 @@ public class FeedbackTests {
 
     @InjectMocks
     private FeedbackService feedbackService;
+
+    @Mock
+    private UserService userService;
 
     private User patient = new User();
     private User doctor = new User();
@@ -222,8 +224,37 @@ public class FeedbackTests {
         System.out.println("Success! Failed to create feedback because appointment status is not COMPLETED.");
     }
 
-    // Notering
-    // Test for rating. Tänkte jag skulle gjort et test som kollar att man ger en rating mellan 1 och 5 men i och med
-    // att vi använder @min @max på rating i modellen så kastar den fel innan den hinner köra någon kod.
+    @Test
+    public void shouldReturnOneFeedbackWithHighGrade() throws Exception {
+        // Arrange
+        User doctor = new User();
+        doctor.setId("1");
+        doctor.setUsername("doctor");
+        doctor.setFirstName("Doctor");
+        doctor.setLastName("Doctorson");
+
+        Feedback f1 = new Feedback();
+        f1.setCaregiverUsername("doctor");
+        f1.setComment("comment1");
+        f1.setRating(5);
+
+        List<Feedback> feedbackList = new ArrayList<>();
+        feedbackList.add(f1);
+
+        when(userRepository.findByUsername(any())).thenReturn(Optional.ofNullable(doctor));
+        when(userService.findByUsername("doctor")).thenReturn(doctor);
+
+        when(feedbackRepository.findAllByRatingIn(any())).thenReturn(feedbackList);
+
+        // Act
+        List<FeedbackHighRating> highRatingList = feedbackService.getAllFeedbackHighRating();
+
+        // Assert
+        assertEquals(1, highRatingList.size());
+        assertEquals("Doctor Doctorson", highRatingList.get(0).getDoctorFullName(), "Name not correct");
+        assertEquals(5, highRatingList.get(0).getRating(), "Rating does not match");
+        assertEquals("comment1", highRatingList.get(0).getComment(), "Comment does not match");
+
+    }
 
 }

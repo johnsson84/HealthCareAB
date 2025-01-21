@@ -27,3 +27,9 @@ GET http://localhost:8080/feedback/patient/pepsi
 ==============================================
 Remove one feedback
 DELETE http://localhost:8080/feedback/delete/6777e42d5363be09bab42259
+
+==============================================
+Get a list with all doctors high rating feedbacks
+GET http://localhost:8080/feedback/find/doctors-highrating
+
+==============================================

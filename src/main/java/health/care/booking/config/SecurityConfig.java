@@ -50,6 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/mail/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/feedback/find/doctors-highrating").permitAll() // No login needed.
                         .requestMatchers("/error").permitAll() // ONLY FOR DEBUGGING
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session

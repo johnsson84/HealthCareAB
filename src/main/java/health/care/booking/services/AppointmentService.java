@@ -1,6 +1,7 @@
 package health.care.booking.services;
 
 import health.care.booking.dto.AppointmentAddDocumentation;
+import health.care.booking.dto.AppointmentRequest;
 import health.care.booking.models.Appointment;
 import health.care.booking.models.Availability;
 import health.care.booking.models.Status;
@@ -33,6 +34,9 @@ public class AppointmentService {
     @Autowired
     AvailabilityService availabilityService;
 
+    @Autowired
+    MailService mailService;
+
     public Appointment createNewAppointment(String patientId, String reason, String caregiverId, @NotNull Date availabilityDate) {
         Appointment newAppointment = new Appointment();
         newAppointment.setReason(reason);
@@ -41,6 +45,24 @@ public class AppointmentService {
         newAppointment.setDateTime(availabilityDate);
         newAppointment.setStatus(Status.SCHEDULED);
         return newAppointment;
+    }
+
+    public void createNewAppointmentLogic(AppointmentRequest appointmentRequest){
+        // should probably have a "this is a valid timeslot type deal"
+        Appointment newAppointment = createNewAppointment(appointmentRequest.username, appointmentRequest.reason, appointmentRequest.caregiverId, appointmentRequest.availabilityDate);
+        Availability removeAvailability = availabilityRepository.findById(appointmentRequest.availabilityId)
+                .orElseThrow(() -> new RuntimeException("Could not find availability object."));
+        System.out.println(appointmentRequest.availabilityDate);
+        for (int i = 0; i < removeAvailability.getAvailableSlots().size(); i++) {
+            if (removeAvailability.getAvailableSlots().get(i).equals(appointmentRequest.availabilityDate)) {
+                System.out.println("Should remove: " + removeAvailability.getAvailableSlots().get(i).toString());
+                removeAvailability.getAvailableSlots().remove(i);
+                System.out.println("removed: " + appointmentRequest.availabilityDate);
+                availabilityRepository.save(removeAvailability);
+            }
+        }
+        mailService.sendEmail(userRepository.findByUsername(appointmentRequest.username).get().getMail(), "Appointment", "Appointment has been booked for: " + appointmentRequest.availabilityDate + "\n" + "Reason for booking: " + appointmentRequest.reason);
+        appointmentRepository.save(newAppointment);
     }
 
     public String setPatient(String patientId) {
