@@ -3,20 +3,20 @@ package health.care.booking.controllers;
 import health.care.booking.dto.SendMail;
 import health.care.booking.models.TokenPasswordReset;
 import health.care.booking.services.MailService;
+import health.care.booking.services.ScheduleService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/mail")
 public class MailController {
     @Autowired
     private MailService mailService;
+    @Autowired
+    private ScheduleService scheduleService;
 
     @PostMapping
     public void SendMailFromClientSide(@Valid @RequestBody SendMail sendMail) {

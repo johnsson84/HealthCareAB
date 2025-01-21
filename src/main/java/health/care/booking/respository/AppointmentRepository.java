@@ -3,6 +3,7 @@ package health.care.booking.respository;
 
 import health.care.booking.models.Appointment;
 import health.care.booking.models.Availability;
+import health.care.booking.models.Status;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +15,6 @@ public interface AppointmentRepository extends MongoRepository<Appointment, Stri
     //Optional<Appointment> findAppointmentByPatientIdOrCaregiverId(String id);
     List<Appointment> findAppointmentByPatientId(String patientId);
     List<Appointment> findByCaregiverId(String caregiverId);
-
-
+    List<Appointment> findByStatusContaining(Status status);
     List<Appointment> findAppointmentByCaregiverId(String caregiverId);
 }
