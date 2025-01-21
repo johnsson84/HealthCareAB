@@ -21,8 +21,8 @@ public class ConditionsService {
         condition.setName(createCondition.getName());
         condition.setDescription(createCondition.getDescription());
         switch (createCondition.getCategory().toUpperCase()) {
-            case "DISEASE":
-                condition.setCategory(ConditionsCategory.DISEASE);
+            case "DISEASES":
+                condition.setCategory(ConditionsCategory.DISEASES);
                 break;
             case "DISORDERS":
                 condition.setCategory(ConditionsCategory.DISORDERS);
