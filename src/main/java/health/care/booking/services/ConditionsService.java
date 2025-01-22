@@ -27,6 +27,12 @@ public class ConditionsService {
             case "DISORDERS":
                 condition.setCategory(ConditionsCategory.DISORDERS);
                 break;
+            case "INJURIES":
+                condition.setCategory(ConditionsCategory.INJURIES);
+                break;
+            case "ALLERGIES":
+                condition.setCategory(ConditionsCategory.ALLERGIES);
+                break;
             default:
                 throw new IllegalArgumentException("Invalid category: " + createCondition.getCategory());
         }
