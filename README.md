@@ -6,11 +6,12 @@ for it.
 ## AuthController /auth
 ### Login
 POST /login
+```
 {
 "username": "",
 "password": ""
 }
-
+```
 ### Register a new user
 POST /register
 {
