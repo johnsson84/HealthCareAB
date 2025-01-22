@@ -95,7 +95,7 @@ public class UserController {
         }
         return userService.makeAndSendBackUserResponse(userIdList.getUserIds());
     }
-    @PutMapping("update-user-picture/{username}")
+    @PutMapping("/update-user-picture/{username}")
     public ResponseEntity<?> updateUserProfilePicture(@Valid @RequestBody UpdateURLRequest url, @PathVariable String username){
       try {
           userService.findUserAndUpdatePictureUrl(url.getUrl(), username);
