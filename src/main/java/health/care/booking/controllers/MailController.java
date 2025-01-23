@@ -7,7 +7,7 @@ import health.care.booking.models.User;
 import health.care.booking.respository.UserRepository;
 import health.care.booking.services.AppointmentService;
 import health.care.booking.services.MailService;
-import health.care.booking.services.ScheduleService;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +22,6 @@ import java.util.List;
 public class MailController {
     @Autowired
     private MailService mailService;
-    @Autowired
-    private ScheduleService scheduleService;
     @Autowired
     AppointmentService appointmentService;
     @Autowired
