@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -47,7 +46,7 @@ public class AppointmentService {
         return newAppointment;
     }
 
-    public void createNewAppointmentLogic(AppointmentRequest appointmentRequest){
+    public void createNewAppointmentLogic(AppointmentRequest appointmentRequest) {
         // should probably have a "this is a valid timeslot type deal"
         Appointment newAppointment = createNewAppointment(appointmentRequest.username, appointmentRequest.reason, appointmentRequest.caregiverId, appointmentRequest.availabilityDate);
         Availability removeAvailability = availabilityRepository.findById(appointmentRequest.availabilityId)
@@ -90,7 +89,7 @@ public class AppointmentService {
         }
     }
 
-    public List<Appointment> getAllScheduledAppointments(){
+    public List<Appointment> getAllScheduledAppointments() {
         return appointmentRepository.findByStatusContaining(Status.SCHEDULED);
     }
 
@@ -135,7 +134,7 @@ public class AppointmentService {
     }
 
 
-    public List<Appointment> getCompletedUserAppointments(String userId){
+    public List<Appointment> getCompletedUserAppointments(String userId) {
         List<Appointment> userAppointments = appointmentRepository.findAppointmentByPatientId(userId);
 
         // Filter to keep only scheduled appointments
@@ -152,6 +151,7 @@ public class AppointmentService {
 
         return historyAppointments;
     }
+
     public List<Appointment> getCompletedDoctorAppointments(String caregiverId) {
         List<Appointment> userAppointments = appointmentRepository.findByCaregiverId(caregiverId);
 
@@ -169,6 +169,7 @@ public class AppointmentService {
 
         return historyAppointments;
     }
+
     public ResponseEntity<?> getAppointmentHistoryFromUsernamePatient(String userId) {
 
         List<Appointment> userAppointments = appointmentRepository.findAppointmentByPatientId(userId);
@@ -211,13 +212,17 @@ public class AppointmentService {
                 changingAppointment.setStatus(Status.COMPLETED);
                 break;
             }
+            case "SCHEDULED": {
+                changingAppointment.setStatus(Status.SCHEDULED);
+                break;
+            }
             default: {
                 changingAppointment.setStatus(Status.ERROR);
                 break;
             }
         }
         if (changingAppointment.getStatus().equals(Status.ERROR)) {
-            return "Something went wrong with the status." ;
+            return "Something went wrong with the status.";
         }
         appointmentRepository.save(changingAppointment);
         return changingAppointment.getStatus().name();
@@ -248,7 +253,7 @@ public class AppointmentService {
                 .orElseThrow(() -> new RuntimeException("Could not find appointment."));
         // Check if appointment already has documentation given
         if (!appointmentToAddDokument.getDocumentation().isEmpty()) {
-            throw  new IllegalArgumentException("Documentation already exists!");
+            throw new IllegalArgumentException("Documentation already exists!");
         }
         // Create updated appointment
         appointmentToAddDokument.setDocumentation(dto.getDocumentation());
