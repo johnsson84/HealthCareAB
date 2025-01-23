@@ -12,6 +12,7 @@ import java.util.List;
 
 @Service
 public class MailService {
+    @Autowired
     private final JavaMailSender mailSender;
     @Autowired
     private AppointmentRepository appointmentRepository;
