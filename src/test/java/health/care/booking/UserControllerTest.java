@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import health.care.booking.controllers.UserController;
+import health.care.booking.models.Feedback;
 import health.care.booking.models.User;
 import health.care.booking.respository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,4 +76,31 @@ class UserControllerTest {
         assertEquals("Database error", response.getBody());
         verify(userRepository, times(1)).findById(userId);
     }
+
+    @Test
+    void shouldFindUserById(){
+        // Arrange
+        User savedUser = new User();
+        savedUser.setId("1");
+        savedUser.setUsername("user");
+        savedUser.setMail("mail@mail.com");
+
+        when(userRepository.findById(any())).thenReturn(Optional.of(savedUser));
+
+        // Act
+        Optional<User> response = userRepository.findById("1");
+
+        // Assert
+        if (response.isPresent()) {
+            User user = response.get();
+            assertEquals("1", user.getId());
+            assertEquals("user", user.getUsername());
+            assertEquals("mail@mail.com", user.getMail());
+            System.out.println("Success! User was found");
+        }else {
+            fail("User not found");
+        }
+    }
+
+
 }
